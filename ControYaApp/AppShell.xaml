@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="ControYaApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
+    xmlns:views="clr-namespace:ControYaApp.Views"
+    Title="ControYaApp"
+    Shell.FlyoutBehavior="Flyout">
+
+    <Shell.BindingContext>
+        <viewModel:HomeViewModel />
+    </Shell.BindingContext>
+
+    <ShellContent
+        Title="ShContTittleLogin"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="login"
+        Shell.FlyoutBehavior="Disabled"
+        Shell.FlyoutItemIsVisible="False"
+        Shell.NavBarIsVisible="False" />
+
+    <FlyoutItem Title="FlyoutItem Tittle">
+        <ShellContent
+            Title=" ShCont Tittle Home"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="home" />
+
+    </FlyoutItem>
+
+    <Shell.FlyoutHeader>
+        <HorizontalStackLayout BackgroundColor="Blue">
+            <Button
+                BackgroundColor="Red"
+                Command="{Binding GoToAsyncLogin}"
+                HorizontalOptions="Center"
+                Text="Cerrar sesiòn"
+                VerticalOptions="Center" />
+        </HorizontalStackLayout>
+    </Shell.FlyoutHeader>
+
+    <!--<FlyoutItem Title="FlyoutItem Tittle"
+                Route="login">
+        <ShellContent Title=" ShCont Tittle Login"
+                      ContentTemplate="{DataTemplate views:LoginPage}"/>
+
+    </FlyoutItem>-->
+
+
+    <!--<ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />-->
+
+</Shell>

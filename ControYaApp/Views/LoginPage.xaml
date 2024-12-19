@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ControYaApp.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
+    Title="LoginPage">
+
+    <ContentPage.BindingContext>
+        <viewModel:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+
+        <Grid
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            RowSpacing="13"
+            VerticalOptions="Center">
+            <Label
+                Margin="0,0,0,3"
+                FontAttributes="Bold"
+                FontFamily="AileronSemibold"
+                FontSize="29"
+                HorizontalOptions="Center"
+                Text="Iniciar Sesión"
+                TextColor="#0f2b57" />
+            <Border Grid.Row="1">
+                <Entry IsTextPredictionEnabled="False" Placeholder="USUARIO" />
+            </Border>
+            <Border Grid.Row="2">
+                <Entry
+                    IsPassword="True"
+                    IsTextPredictionEnabled="False"
+                    Placeholder="CONTRASEÑA" />
+            </Border>
+            <Button
+                Grid.Row="3"
+                Margin="40,5,40,0"
+                BackgroundColor="#0f2b57"
+                Command="{Binding GoToAsyncHome}"
+                FontSize="15"
+                MinimumHeightRequest="37"
+                Text="Ingresar" />
+            <Button
+                Grid.Row="4"
+                Margin="80,0"
+                BackgroundColor="#4a6a9c"
+                FontSize="13"
+                MaximumWidthRequest="270"
+                MinimumHeightRequest="33"
+                Text="Registrarse" />
+
+        </Grid>
+    </ScrollView>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#f1f1f1" />
+                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='15'}" />
+                <Setter Property="Padding" Value="13,3" />
+                <Setter Property="Margin" Value="25,0" />
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="FontAutoScalingEnabled" Value="False" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Background>
+
+        <Color>#8db3d6</Color>
+
+    </ContentPage.Background>
+
+</ContentPage>
