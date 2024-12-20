@@ -13,10 +13,15 @@
     <ScrollView>
 
         <Grid
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
             RowSpacing="13"
             VerticalOptions="Center">
+            <Image
+                Opacity="50"
+                Source="logo_desoteem.png"
+                WidthRequest="140" />
             <Label
+                Grid.Row="1"
                 Margin="0,0,0,3"
                 FontAttributes="Bold"
                 FontFamily="AileronSemibold"
@@ -24,31 +29,31 @@
                 HorizontalOptions="Center"
                 Text="Iniciar Sesión"
                 TextColor="#0f2b57" />
-            <Border Grid.Row="1">
+            <Border Grid.Row="2">
                 <Entry IsTextPredictionEnabled="False" Placeholder="USUARIO" />
             </Border>
-            <Border Grid.Row="2" >
+            <Border Grid.Row="3">
                 <Entry
                     IsPassword="True"
                     IsTextPredictionEnabled="False"
                     Placeholder="CONTRASEÑA" />
             </Border>
             <Button
-                Grid.Row="3"
+                Grid.Row="4"
                 BackgroundColor="#0f2b57"
                 Command="{Binding GoToAsyncHome}"
+                FontAttributes="Bold"
                 FontSize="15"
+                HeightRequest="37"
                 MaximumWidthRequest="245"
-                MinimumHeightRequest="37" FontAttributes="Bold"  
                 Text="Ingresar" />
             <Button
-                Grid.Row="4"
+                Grid.Row="5"
                 BackgroundColor="#4a6a9c"
-                FontSize="13"    
+                FontSize="13"
+                HeightRequest="33"
                 MaximumWidthRequest="130"
-                MinimumHeightRequest="33"
                 Text="Registrarse" />
-
         </Grid>
     </ScrollView>
 
@@ -59,14 +64,14 @@
                 <Setter Property="BackgroundColor" Value="#f1f1f1" />
                 <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='15'}" />
                 <Setter Property="Padding" Value="13,3" />
-                <Setter Property="MaximumWidthRequest" Value="310"/>
+                <Setter Property="Margin" Value="15,3" />
+                <Setter Property="MaximumWidthRequest" Value="310" />
             </Style>
 
             <Style TargetType="Entry">
                 <Setter Property="BackgroundColor" Value="Transparent" />
                 <Setter Property="HorizontalOptions" Value="FillAndExpand" />
                 <Setter Property="TextColor" Value="Black" />
-                <Setter Property="PlaceholderColor" Value="Gray"/>
             </Style>
 
             <Style TargetType="Button">
