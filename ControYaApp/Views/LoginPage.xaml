@@ -22,7 +22,7 @@
                 FontFamily="AileronSemibold"
                 FontSize="29"
                 HorizontalOptions="Center"
-                Text="Iniciar Sesión"
+                Text="Iniciar Sesiónn"
                 TextColor="#0f2b57" />
             <Border Grid.Row="1">
                 <Entry IsTextPredictionEnabled="False" Placeholder="USUARIO" />
