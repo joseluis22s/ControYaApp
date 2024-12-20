@@ -22,12 +22,12 @@
                 FontFamily="AileronSemibold"
                 FontSize="29"
                 HorizontalOptions="Center"
-                Text="Iniciar Sesiónn"
+                Text="Iniciar Sesión"
                 TextColor="#0f2b57" />
             <Border Grid.Row="1">
                 <Entry IsTextPredictionEnabled="False" Placeholder="USUARIO" />
             </Border>
-            <Border Grid.Row="2">
+            <Border Grid.Row="2" >
                 <Entry
                     IsPassword="True"
                     IsTextPredictionEnabled="False"
@@ -35,18 +35,17 @@
             </Border>
             <Button
                 Grid.Row="3"
-                Margin="40,5,40,0"
                 BackgroundColor="#0f2b57"
                 Command="{Binding GoToAsyncHome}"
                 FontSize="15"
-                MinimumHeightRequest="37"
+                MaximumWidthRequest="245"
+                MinimumHeightRequest="37" FontAttributes="Bold"  
                 Text="Ingresar" />
             <Button
                 Grid.Row="4"
-                Margin="80,0"
                 BackgroundColor="#4a6a9c"
-                FontSize="13"
-                MaximumWidthRequest="270"
+                FontSize="13"    
+                MaximumWidthRequest="130"
                 MinimumHeightRequest="33"
                 Text="Registrarse" />
 
@@ -60,12 +59,14 @@
                 <Setter Property="BackgroundColor" Value="#f1f1f1" />
                 <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='15'}" />
                 <Setter Property="Padding" Value="13,3" />
-                <Setter Property="Margin" Value="25,0" />
+                <Setter Property="MaximumWidthRequest" Value="310"/>
             </Style>
 
             <Style TargetType="Entry">
                 <Setter Property="BackgroundColor" Value="Transparent" />
                 <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="TextColor" Value="Black" />
+                <Setter Property="PlaceholderColor" Value="Gray"/>
             </Style>
 
             <Style TargetType="Button">

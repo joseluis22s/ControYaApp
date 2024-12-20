@@ -17,13 +17,6 @@ namespace ControYaApp
                     fonts.AddFont("Aileron-Semibol", "AileronSemibold");
                 });
 
-            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
-            {
-                #if ANDROID
-                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
-                #endif
-            });
-
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

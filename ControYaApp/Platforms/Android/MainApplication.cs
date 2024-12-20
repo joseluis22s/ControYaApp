@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content.Res;
 using Android.Runtime;
 
 namespace ControYaApp
@@ -9,15 +10,16 @@ namespace ControYaApp
         public MainApplication(IntPtr handle, JniHandleOwnership ownership)
             : base(handle, ownership)
         {
-        }
-
-        protected override MauiApp CreateMauiApp()
-        {
             Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(nameof(Entry), (handler, view) =>
             {
-                handler.PlatformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
+                if (view is Entry)
+                {
+                    // Remove underline
+                    handler.PlatformView.BackgroundTintList = ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+                }
             });
-            return MauiProgram.CreateMauiApp();
         }
+
+        protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
     }
 }
