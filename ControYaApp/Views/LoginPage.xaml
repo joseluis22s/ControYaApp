@@ -30,18 +30,35 @@
                 Text="Iniciar Sesión"
                 TextColor="#0f2b57" />
             <Border Grid.Row="2">
-                <Entry IsTextPredictionEnabled="False" Placeholder="USUARIO" />
+                <Entry
+                    IsTextPredictionEnabled="False"
+                    Placeholder="USUARIO"
+                    Text="{Binding Usuario}" />
             </Border>
             <Border Grid.Row="3">
-                <Entry
-                    IsPassword="True"
-                    IsTextPredictionEnabled="False"
-                    Placeholder="CONTRASEÑA" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry
+                        IsPassword="True"
+                        IsTextPredictionEnabled="False"
+                        IsVisible="{Binding EsVisibleContrasena}"
+                        Placeholder="CONTRASEÑA"
+                        Text="{Binding Contrasena}" />
+                    <ImageButton
+                        Grid.Column="1"
+                        Command="{Binding ContrasenaVisibleCommand}"
+                        IsEnabled="{Binding NoEsVisibleContrasena}"
+                        Source="eye_on_icon.png" />
+                    <ImageButton
+                        Grid.Column="1"
+                        Command="{Binding ContrasenaVisibleCommand}"
+                        IsEnabled="{Binding EsVisibleContrasena}"
+                        Source="eye_off_icon.png" />
+                </Grid>
             </Border>
             <Button
                 Grid.Row="4"
                 BackgroundColor="#0f2b57"
-                Command="{Binding GoToAsyncHome}"
+                Command="{Binding GoToHomeCommand}"
                 FontAttributes="Bold"
                 FontSize="15"
                 HeightRequest="37"
