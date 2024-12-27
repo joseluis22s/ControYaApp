@@ -11,7 +11,7 @@ namespace ControYaApp.Database
             string ipServidor = "https://www.youtube.com/watch?v=xNmIdFjXzl4";
 
 
-            string connStr = $"Data Sorce={}\MSSQLLocalDB;Initial Catalog=exam_prototypingDB;Integrated Security=True";
+            //string connStr = $"Data Sorce={}\MSSQLLocalDB;Initial Catalog=exam_prototypingDB;Integrated Security=True";
         }
     }
 }
