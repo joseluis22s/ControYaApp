@@ -1,7 +1,6 @@
 ﻿
-using ControYaApp.Models;
-using ControYaApp.ViewModels;
 using System.Windows.Input;
+using ControYaApp.Models;
 
 namespace ControYaApp.ViewModels
 {
@@ -19,9 +18,11 @@ namespace ControYaApp.ViewModels
         public bool EsVisibleContrasena
         {
             get => _esVisibleContrasena;
-            set => SetProperty(ref _esVisibleContrasena, value); 
+            set => SetProperty(ref _esVisibleContrasena, value);
         }
+
         private bool _noEsVisibleContrasena;
+
         public bool NoEsVisibleContrasena
         {
             get => _noEsVisibleContrasena;
@@ -44,12 +45,18 @@ namespace ControYaApp.ViewModels
         private Command GoToHomeAsync()
         {
             EsVisibleContrasena = false;
-                
-            return new Command( async () =>
+
+            return new Command(async () =>
             {
-                await Shell.Current.GoToAsync("//home");    
+                await Shell.Current.GoToAsync("//home");
             });
         }
+
+        private void VerificarConexionDatabase()
+        {
+            // TODO: VERIFICAR SI SE LOGRO VERIFICAR A LA BASE DE DATOS 
+        }
+
 
         private void EstadoEsVisibleContrasena()
         {

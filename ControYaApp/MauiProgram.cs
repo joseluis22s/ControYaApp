@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ControYaApp.UserExperience.Interfaces;
+using ControYaApp.UserExperience.Services;
+using Microsoft.Extensions.Logging;
 
 namespace ControYaApp
 {
@@ -17,6 +19,7 @@ namespace ControYaApp
                     fonts.AddFont("Aileron-Semibol", "AileronSemibold");
                 });
 
+            builder.Services.AddSingleton<IAlertService, AlertService>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
