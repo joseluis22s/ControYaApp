@@ -9,8 +9,8 @@ namespace ControYaApp
     {
         public static MauiApp CreateMauiApp()
         {
-            var builder = MauiApp.CreateBuilder();
-            builder
+            MauiAppBuilder builder = MauiApp.CreateBuilder();
+            _ = builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
                 {
@@ -20,9 +20,8 @@ namespace ControYaApp
                     fonts.AddFont("Aileron-Semibol", "AileronSemibold");
                 })
                 .UseMauiCommunityToolkit()
-                .RegisterViewModels();
-
-            builder.Services.AddSingleton<DatabaseConnection>();
+                .RegistrarViewModels()
+                .RegistrarServiciosDatabase();
 
 #if DEBUG
             builder.Logging.AddDebug();
@@ -30,10 +29,17 @@ namespace ControYaApp
             return builder.Build();
         }
 
-        private static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+        private static MauiAppBuilder RegistrarViewModels(this MauiAppBuilder mauiAppBuilder)
         {
             _ = mauiAppBuilder.Services.AddTransient<LoginViewModel>();
             _ = mauiAppBuilder.Services.AddTransient<HomeViewModel>();
+
+            return mauiAppBuilder;
+        }
+
+        private static MauiAppBuilder RegistrarServiciosDatabase(this MauiAppBuilder mauiAppBuilder)
+        {
+            _ = mauiAppBuilder.Services.AddSingleton<DatabaseConnection>();
 
             return mauiAppBuilder;
         }
