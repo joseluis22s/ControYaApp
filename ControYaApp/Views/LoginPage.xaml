@@ -3,12 +3,8 @@
     x:Class="ControYaApp.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
+    xmlns:viewModels="clr-namespace:ControYaApp.ViewModels"
     Title="LoginPage">
-
-    <ContentPage.BindingContext>
-        <viewModel:LoginViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView>
 
@@ -33,25 +29,24 @@
                 <Entry
                     IsTextPredictionEnabled="False"
                     Placeholder="USUARIO"
-                    Text="{Binding Usuario}" />
+                    Text="{Binding Usuario.NombreUsuario}" />
             </Border>
             <Border Grid.Row="3">
                 <Grid ColumnDefinitions="*,Auto">
                     <Entry
-                        IsPassword="True"
+                        IsPassword="{Binding EsVisibleContrasena}"
                         IsTextPredictionEnabled="False"
-                        IsVisible="{Binding EsVisibleContrasena}"
                         Placeholder="CONTRASEÑA"
-                        Text="{Binding Contrasena}" />
-                    <ImageButton
-                        Grid.Column="1"
-                        Command="{Binding ContrasenaVisibleCommand}"
-                        IsEnabled="{Binding NoEsVisibleContrasena}"
-                        Source="eye_on_icon.png" />
+                        Text="{Binding Usuario.Contrasena}" />
                     <ImageButton
                         Grid.Column="1"
                         Command="{Binding ContrasenaVisibleCommand}"
                         IsEnabled="{Binding EsVisibleContrasena}"
+                        Source="eye_on_icon.png" />
+                    <ImageButton
+                        Grid.Column="1"
+                        Command="{Binding ContrasenaVisibleCommand}"
+                        IsEnabled="{Binding NoEsVisibleContrasena}"
                         Source="eye_off_icon.png" />
                 </Grid>
             </Border>
@@ -95,6 +90,10 @@
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="CornerRadius" Value="6" />
                 <Setter Property="FontAutoScalingEnabled" Value="False" />
+            </Style>
+            <Style TargetType="ImageButton">
+                <Setter Property="HeightRequest" Value="35" />
+                <Setter Property="WidthRequest" Value="35" />
             </Style>
 
         </ResourceDictionary>

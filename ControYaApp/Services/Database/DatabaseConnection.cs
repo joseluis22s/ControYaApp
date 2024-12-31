@@ -4,32 +4,42 @@ namespace ControYaApp.Services.Database
 {
     public class DatabaseConnection
     {
-
         private readonly string _cadenaConexion;
 
-        public DatabaseConnection(string cadenaConexion)
+        public DatabaseConnection()
         {
-            if (string.IsNullOrEmpty(cadenaConexion))
-            {
-                throw new ArgumentException("La cadena de conexión no puede estar vacía.");
-            }
+            string server = "192.168.47.4";
+            string nombreDatabase = "POLLOSCRIOLLOCIA";
+            string usuario = "sa";
+            string contrasena = "sa2025";
+
+            string cadenaConexion = $"Server={server};Database={nombreDatabase};User Id={usuario};Password={contrasena};";
 
             _cadenaConexion = cadenaConexion;
+
         }
 
-        public SqlConnection ConectarDatabase()
+        public SqlConnection GetConexionDatabase()
+        {
+            return new SqlConnection(_cadenaConexion);
+        }
+
+        public bool ConectarDatabase()
         {
             try
             {
-                SqlConnection conexion = new SqlConnection(_cadenaConexion);
-                conexion.Open();
-                return conexion;
+                using (SqlConnection conexionDatabase = GetConexionDatabase())
+                {
+                    conexionDatabase.Open();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al conectar a la base de datos: {ex.Message}");
-                throw;
+                return false;
             }
         }
+
     }
 }

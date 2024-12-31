@@ -1,27 +1,32 @@
-﻿
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
 using ControYaApp.Models;
+using ControYaApp.Services.Database;
 
 namespace ControYaApp.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        private Usuario? _usuario;
 
-        public Usuario? Usuario
+        private readonly DatabaseConnection _databaseConnection;
+
+        private Usuario _usuario;
+
+        private bool _esVisibleContrasena;
+
+        private bool _noEsVisibleContrasena;
+
+        public Usuario Usuario
         {
             get => _usuario;
             set => SetProperty(ref _usuario, value);
         }
 
-        private bool _esVisibleContrasena;
         public bool EsVisibleContrasena
         {
             get => _esVisibleContrasena;
             set => SetProperty(ref _esVisibleContrasena, value);
         }
-
-        private bool _noEsVisibleContrasena;
 
         public bool NoEsVisibleContrasena
         {
@@ -29,32 +34,39 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _noEsVisibleContrasena, value);
         }
 
-        public ICommand GoToHomeCommand { get; private set; }
-        public ICommand ContrasenaVisibleCommand { get; private set; }
+        public ICommand? GoToHomeCommand { get; private set; }
 
-        // TODO: REVISAR SI EL DATABINDING EN LA VISTA  NECESITA UN CONSTRUCTOR SIN ARGUMENTOS DEL VIEWMODEL
-        public LoginViewModel()
+        public ICommand? ContrasenaVisibleCommand { get; private set; }
+
+
+        public LoginViewModel(DatabaseConnection databaseConnection)
         {
-        }
-        public LoginViewModel(Usuario usuario)
-        {
+            EsVisibleContrasena = true;
+            _databaseConnection = databaseConnection;
             GoToHomeCommand = GoToHomeAsync();
             ContrasenaVisibleCommand = new Command(EstadoEsVisibleContrasena);
+            VerificarConexionDatabase().GetAwaiter();
         }
 
         private Command GoToHomeAsync()
         {
-            EsVisibleContrasena = false;
-
             return new Command(async () =>
             {
                 await Shell.Current.GoToAsync("//home");
             });
         }
 
-        private void VerificarConexionDatabase()
+        private async Task VerificarConexionDatabase()
         {
-            // TODO: VERIFICAR SI SE LOGRO VERIFICAR A LA BASE DE DATOS 
+            bool estaConectado = _databaseConnection.ConectarDatabase();
+            if (estaConectado)
+            {
+                await Toast.Make("Conexión a la base de datos exitosa.").Show();
+            }
+            else
+            {
+                await Toast.Make("No se pudo conectar la base de datos.").Show();
+            }
         }
 
 

@@ -1,5 +1,6 @@
-﻿using ControYaApp.UserExperience.Interfaces;
-using ControYaApp.UserExperience.Services;
+﻿using CommunityToolkit.Maui;
+using ControYaApp.Services.Database;
+using ControYaApp.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace ControYaApp
@@ -17,14 +18,24 @@ namespace ControYaApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("Aileron-Regular", "AileronRegular");
                     fonts.AddFont("Aileron-Semibol", "AileronSemibold");
-                });
+                })
+                .UseMauiCommunityToolkit()
+                .RegisterViewModels();
 
-            builder.Services.AddSingleton<IAlertService, AlertService>();
+            builder.Services.AddSingleton<DatabaseConnection>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
             return builder.Build();
+        }
+
+        private static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+        {
+            _ = mauiAppBuilder.Services.AddTransient<LoginViewModel>();
+            _ = mauiAppBuilder.Services.AddTransient<HomeViewModel>();
+
+            return mauiAppBuilder;
         }
     }
 }
