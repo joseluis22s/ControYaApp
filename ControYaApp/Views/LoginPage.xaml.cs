@@ -4,10 +4,9 @@ namespace ControYaApp.Views;
 
 public partial class LoginPage : ContentPage
 {
-    public LoginPage()
+    public LoginPage(LoginViewModel loginViewModel)
     {
-        InitializeComponent(LoginViewModel loginViewModel);
+        InitializeComponent();
         BindingContext = loginViewModel;
-
     }
 }

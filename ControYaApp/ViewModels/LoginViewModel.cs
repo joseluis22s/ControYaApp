@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Database;
 
@@ -43,17 +44,14 @@ namespace ControYaApp.ViewModels
         {
             EsVisibleContrasena = true;
             _databaseConnection = databaseConnection;
-            GoToHomeCommand = GoToHomeAsync();
+            GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
             ContrasenaVisibleCommand = new Command(EstadoEsVisibleContrasena);
-            VerificarConexionDatabase().GetAwaiter();
+            //VerificarConexionDatabase().GetAwaiter();
         }
 
-        private Command GoToHomeAsync()
+        private async Task GoToHomeAsync()
         {
-            return new Command(async () =>
-            {
-                await Shell.Current.GoToAsync("//home");
-            });
+            await Shell.Current.GoToAsync("//home");
         }
 
         private async Task VerificarConexionDatabase()
