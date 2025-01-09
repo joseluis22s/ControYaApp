@@ -1,21 +1,17 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
-using ControYaApp.Services.Database;
 
 namespace ControYaApp.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-
-        private readonly DatabaseConnection _databaseConnection;
-
         private Usuario _usuario;
 
         private bool _esVisibleContrasena;
 
         private bool _noEsVisibleContrasena;
+
 
         public Usuario Usuario
         {
@@ -35,36 +31,24 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _noEsVisibleContrasena, value);
         }
 
-        public ICommand? GoToHomeCommand { get; private set; }
 
-        public ICommand? ContrasenaVisibleCommand { get; private set; }
+        public ICommand? GoToHomeCommand { get; }
+
+        public ICommand? ContrasenaVisibleCommand { get; }
 
 
-        public LoginViewModel(DatabaseConnection databaseConnection)
+        public LoginViewModel()
         {
             EsVisibleContrasena = true;
-            _databaseConnection = databaseConnection;
-            GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
+            //_databaseConnection = databaseConnection;
+            GoToHomeCommand = new AsyncRelayCommand(GoToHome);
             ContrasenaVisibleCommand = new Command(EstadoEsVisibleContrasena);
             //VerificarConexionDatabase().GetAwaiter();
         }
 
-        private async Task GoToHomeAsync()
+        private async Task GoToHome()
         {
             await Shell.Current.GoToAsync("//home");
-        }
-
-        private async Task VerificarConexionDatabase()
-        {
-            bool estaConectado = _databaseConnection.ConectarDatabase();
-            if (estaConectado)
-            {
-                await Toast.Make("Conexión a la base de datos exitosa.").Show();
-            }
-            else
-            {
-                await Toast.Make("No se pudo conectar la base de datos.").Show();
-            }
         }
 
 
@@ -72,6 +56,25 @@ namespace ControYaApp.ViewModels
         {
             EsVisibleContrasena = !EsVisibleContrasena;
             NoEsVisibleContrasena = EsVisibleContrasena;
+        }
+
+        private void VerificarCamposVacios()
+        {
+
+        }
+
+
+        private async Task VerificarConexionDatabase()
+        {
+            //bool estaConectado = _databaseConnection.ConectarDatabase();
+            //if (estaConectado)
+            //{
+            //    await Toast.Make("Conexión a la base de datos exitosa.").Show();
+            //}
+            //else
+            //{
+            //    await Toast.Make("No se pudo conectar la base de datos.").Show();
+            //}
         }
     }
 }
