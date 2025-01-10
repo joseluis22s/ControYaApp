@@ -1,22 +1,9 @@
-﻿using ControYaApp.ViewModels;
-
-namespace ControYaApp.Models
+﻿namespace ControYaApp.Models
 {
-    public class Usuario : ViewModelBase
+    public class Usuario
     {
-        private string? _nombreUsuario;
-        private string? _contrasena;
-
-        public string? NombreUsuario
-        {
-            get => _nombreUsuario;
-            set => SetProperty(ref _nombreUsuario, value);
-        }
-        public string? Contrasena
-        {
-            get => _contrasena;
-            set => SetProperty(ref _contrasena, value);
-        }
+        public string? NombreUsuario { get; set; }
+        public string? Contrasena { get; set; }
 
     }
 }

@@ -6,11 +6,8 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     xmlns:views="clr-namespace:ControYaApp.Views"
     Title="ControYaApp"
+    x:DataType="viewModel:HomeViewModel"
     Shell.FlyoutBehavior="Flyout">
-
-    <Shell.BindingContext>
-        <viewModel:HomeViewModel />
-    </Shell.BindingContext>
 
     <ShellContent
         Title="ShContTittleLogin"
@@ -32,24 +29,11 @@
         <HorizontalStackLayout BackgroundColor="Blue">
             <Button
                 BackgroundColor="Red"
-                Command="{Binding GoToAsyncLogin}"
+                Command="{Binding GoToLoginCommand}"
                 HorizontalOptions="Center"
                 Text="Cerrar sesiòn"
                 VerticalOptions="Center" />
         </HorizontalStackLayout>
     </Shell.FlyoutHeader>
-
-    <!--<FlyoutItem Title="FlyoutItem Tittle"
-                Route="login">
-        <ShellContent Title=" ShCont Tittle Login"
-                      ContentTemplate="{DataTemplate views:LoginPage}"/>
-
-    </FlyoutItem>-->
-
-
-    <!--<ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />-->
 
 </Shell>

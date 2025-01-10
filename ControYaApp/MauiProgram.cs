@@ -23,8 +23,11 @@ namespace ControYaApp
 
 
             builder.Services.AddSingleton<DatabaseConnection>();
-            builder.Services.AddTransient<LoginPage>();
-            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<LoginViewModel>();
+
+            builder.Services.AddSingleton<HomePage>();
+            //builder.Services.AddSingleton<ViewModelBase>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

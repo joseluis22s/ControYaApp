@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 namespace ControYaApp.ViewModels
 {
-    class HomeViewModel : INotifyPropertyChanged
+    public class HomeViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public ICommand GoToAsyncLogin { get; private set; }
+        public ICommand GoToLoginCommand { get; }
 
         public HomeViewModel()
         {
-            GoToAsyncLogin = new Command(() => {
-                Shell.Current.GoToAsync("//login");
-            });
+            GoToLoginCommand = new AsyncRelayCommand(GoToLogin);
         }
 
-        public void OnPropertyChanged([CallerMemberName] string name = "") =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        private async Task GoToLogin()
+        {
+
+            await Shell.Current.GoToAsync("//login");
+        }
     }
 }
