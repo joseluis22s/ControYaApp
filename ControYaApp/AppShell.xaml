@@ -22,6 +22,7 @@
         Shell.FlyoutItemIsVisible="False"
         Shell.NavBarIsVisible="False" />
 
+
     <FlyoutItem Title="FlyoutItem Tittle">
         <ShellContent
             Title=" ShCont Tittle Home"

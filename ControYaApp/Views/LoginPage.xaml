@@ -3,8 +3,8 @@
     x:Class="ControYaApp.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
-    Title="LoginPage"
     x:DataType="viewModel:LoginViewModel">
 
     <!--<ContentPage.BindingContext>
@@ -13,10 +13,12 @@
 
     <ScrollView>
 
+
         <Grid
             RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
             RowSpacing="13"
             VerticalOptions="Center">
+
             <Image
                 Opacity="50"
                 Source="logo_desoteem.png"
@@ -69,10 +71,11 @@
             <Button
                 Grid.Row="5"
                 BackgroundColor="#4a6a9c"
+                Command="{Binding ProbarConexionCommand}"
                 FontSize="13"
                 HeightRequest="33"
                 MaximumWidthRequest="130"
-                Text="Registrarse" />
+                Text="Probar conexión" />
         </Grid>
     </ScrollView>
 

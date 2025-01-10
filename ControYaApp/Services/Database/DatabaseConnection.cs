@@ -8,7 +8,7 @@ namespace ControYaApp.Services.Database
 
         public DatabaseConnection()
         {
-            string server = "192.168.47.4";
+            string server = "SoporteJ";
             string nombreDatabase = "POLLOSCRIOLLOCIA";
             string usuario = "sa";
             string contrasena = "sa2025";
@@ -37,6 +37,7 @@ namespace ControYaApp.Services.Database
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al conectar a la base de datos: {ex.Message}");
+                var a = ex.Message;
                 return false;
             }
         }
