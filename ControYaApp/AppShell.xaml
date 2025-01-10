@@ -6,8 +6,12 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     xmlns:views="clr-namespace:ControYaApp.Views"
     Title="ControYaApp"
-    x:DataType="viewModel:HomeViewModel"
     Shell.FlyoutBehavior="Flyout">
+
+    <Shell.BindingContext>
+        <viewModel:HomeViewModel />
+    </Shell.BindingContext>
+
 
     <ShellContent
         Title="ShContTittleLogin"
@@ -27,7 +31,7 @@
 
     <Shell.FlyoutHeader>
         <HorizontalStackLayout BackgroundColor="Blue">
-            <Button
+            <Button     
                 BackgroundColor="Red"
                 Command="{Binding GoToLoginCommand}"
                 HorizontalOptions="Center"
