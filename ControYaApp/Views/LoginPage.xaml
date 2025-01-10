@@ -30,7 +30,7 @@
                 <Entry
                     IsTextPredictionEnabled="False"
                     Placeholder="USUARIO"
-                    Text="{Binding Usuario.NombreUsuario}" />
+                    Text="{Binding Usuario.NombreUsuario    }" />
             </Border>
             <Border Grid.Row="3">
                 <Grid ColumnDefinitions="*,Auto">
