@@ -8,12 +8,12 @@ namespace ControYaApp.Services.Database
 
         public DatabaseConnection()
         {
-            string server = "SoporteJ";
+            string server = "192.168.47.72";
             string nombreDatabase = "POLLOSCRIOLLOCIA";
             string usuario = "sa";
             string contrasena = "sa2025";
 
-            string cadenaConexion = $"Server={server};Database={nombreDatabase};User Id={usuario};Password={contrasena};";
+            string cadenaConexion = $"Server={server};Database={nombreDatabase};User Id={usuario};Password={contrasena};TrustServerCertificate=true";
 
             _cadenaConexion = cadenaConexion;
 

@@ -55,7 +55,7 @@ namespace ControYaApp.ViewModels
             NoEsVisibleContrasena = false;
             GoToHomeCommand = new AsyncRelayCommand(GoToHome);
             ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
-            ProbarConexionCommand = new AsyncRelayCommand(ProbarConexion);
+            ProbarConexionCommand = new RelayCommand(ProbarConexion);
         }
 
         private async Task GoToHome()
@@ -77,9 +77,9 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private async Task ProbarConexion()
+        private void ProbarConexion()
         {
-
+            _popupService.ShowPopup<LoadingPopUpViewModel>();
             if (_databaseConnection.ConectarDatabase())
             {
                 Toast.Make("Se ha conectado");
@@ -88,9 +88,7 @@ namespace ControYaApp.ViewModels
             {
                 Toast.Make("Error al conectar");
             }
-
-            await _popupService.ShowPopupAsync<LoadingPopUpViewModel>();
-            await _popupService.ClosePopupAsync();
+            _popupService.ClosePopup();
         }
     }
 }
