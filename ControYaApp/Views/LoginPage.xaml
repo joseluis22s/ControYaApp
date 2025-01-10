@@ -4,11 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
-    Title="LoginPage">
+    Title="LoginPage"
+    x:DataType="viewModel:LoginViewModel">
 
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <viewModel:LoginViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
 
     <ScrollView>
 
@@ -46,11 +47,13 @@
                         Grid.Column="1"
                         Command="{Binding ContrasenaVisibleCommand}"
                         IsEnabled="{Binding EsVisibleContrasena}"
+                        IsVisible="{Binding EsVisibleContrasena}"
                         Source="eye_on_icon.png" />
                     <ImageButton
                         Grid.Column="1"
                         Command="{Binding ContrasenaVisibleCommand}"
                         IsEnabled="{Binding NoEsVisibleContrasena}"
+                        IsVisible="{Binding NoEsVisibleContrasena}"
                         Source="eye_off_icon.png" />
                 </Grid>
             </Border>

@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Maui;
+using ControYaApp.ViewModels;
+using ControYaApp.Views;
 using Microsoft.Extensions.Logging;
 
 namespace ControYaApp
@@ -18,7 +20,10 @@ namespace ControYaApp
                     fonts.AddFont("Aileron-Semibol", "AileronSemibold");
                 }).UseMauiCommunityToolkit();
 
-            //builder.Services.AddSingleton<ViewModelBase>();
+            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<LoginViewModel>();
+            builder.Services.AddSingleton<HomePage>();
+            builder.Services.AddSingleton<HomeViewModel>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

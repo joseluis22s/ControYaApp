@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ControYaApp.Views.HomePage"
-             Title="HomePage">
+<ContentPage
+    x:Class="ControYaApp.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
+    Title="HomePage"
+    x:DataType="viewModel:LoginViewModel">
+
     <VerticalStackLayout>
-        <Label 
+        <Label
+            HorizontalOptions="Center"
             Text="Welcome to .NET MAUI!  HOOOOOOOOOOOOOOOOOOOOOOOOOOOOMME"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+            VerticalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

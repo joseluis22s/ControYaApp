@@ -52,8 +52,17 @@ namespace ControYaApp.ViewModels
 
         private void EstadoEsVisibleContrasena()
         {
-            EsVisibleContrasena = false;
-            NoEsVisibleContrasena = true;
+            if (EsVisibleContrasena)
+            {
+                EsVisibleContrasena = false;
+                NoEsVisibleContrasena = true;
+            }
+            else
+            {
+
+                EsVisibleContrasena = true;
+                NoEsVisibleContrasena = false;
+            }
         }
     }
 }
