@@ -1,10 +1,11 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Database;
-using ControYaApp.ViewModels.Controls;
+using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -55,7 +56,7 @@ namespace ControYaApp.ViewModels
             NoEsVisibleContrasena = false;
             GoToHomeCommand = new AsyncRelayCommand(GoToHome);
             ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
-            ProbarConexionCommand = new RelayCommand(ProbarConexion);
+            ProbarConexionCommand = new AsyncRelayCommand(ProbarConexion);
         }
 
         private async Task GoToHome()
@@ -77,18 +78,22 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private void ProbarConexion()
+        private async Task ProbarConexion()
         {
-            _popupService.ShowPopup<LoadingPopUpViewModel>();
-            if (_databaseConnection.ConectarDatabase())
+            LoadingPopUp loadingPopUpp = new LoadingPopUp();
+            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+            bool estaConectado = await _databaseConnection.ConectarDatabase();
+
+            if (estaConectado)
             {
-                Toast.Make("Se ha conectado");
+                await Toast.Make("Se ha conectado").Show();
             }
             else
             {
-                Toast.Make("Error al conectar");
+                await Toast.Make("Error al conectar").Show();
             }
-            _popupService.ClosePopup();
+            await loadingPopUpp.CloseAsync();
         }
     }
 }

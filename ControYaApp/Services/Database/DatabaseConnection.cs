@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Diagnostics;
+using Microsoft.Data.SqlClient;
 
 namespace ControYaApp.Services.Database
 {
@@ -8,7 +9,7 @@ namespace ControYaApp.Services.Database
 
         public DatabaseConnection()
         {
-            string server = "192.168.47.72";
+            string server = "192.168.47.4";
             string nombreDatabase = "POLLOSCRIOLLOCIA";
             string usuario = "sa";
             string contrasena = "sa2025";
@@ -19,26 +20,24 @@ namespace ControYaApp.Services.Database
 
         }
 
-        public SqlConnection GetConexionDatabase()
+        public async Task<bool> ConectarDatabase()
         {
-            return new SqlConnection(_cadenaConexion);
-        }
-
-        public bool ConectarDatabase()
-        {
-            try
+            using (SqlConnection conexionDatabase = new SqlConnection(_cadenaConexion))
             {
-                using (SqlConnection conexionDatabase = GetConexionDatabase())
+                try
                 {
-                    conexionDatabase.Open();
+                    await conexionDatabase.OpenAsync();
                     return true;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al conectar a la base de datos: {ex.Message}");
-                var a = ex.Message;
-                return false;
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Error al conectar a la base de datos: {ex.Message}");
+                    return false;
+                }
+                finally
+                {
+                    await conexionDatabase.CloseAsync();
+                }
             }
         }
 

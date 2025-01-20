@@ -4,11 +4,27 @@ namespace ControYaApp.ViewModels.Controls
 {
     public class LoadingPopUpViewModel : ViewModelBase
     {
-        readonly IPopupService popupService;
+        private readonly IPopupService _popupService;
 
-        public LoadingPopUpViewModel(IPopupService popupService)
+        public LoadingPopUpViewModel(IPopupService popupService, Func<Task> operacion)
         {
-            this.popupService = popupService;
+            _popupService = popupService;
+            EjecutarOperacion(operacion).GetAwaiter();
+        }
+
+        private async Task EjecutarOperacion(Func<Task> operacion)
+        {
+            try
+            {
+                if (operacion != null)
+                {
+                    await operacion();
+                }
+            }
+            finally
+            {
+                await _popupService.ClosePopupAsync();
+            }
         }
     }
 }
