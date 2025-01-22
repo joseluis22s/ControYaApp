@@ -17,10 +17,13 @@
             </Label.FormattedText>
         </Label>
         <Button Command="{Binding ObtenerPedidosCommand}" Text="Obtener ordenes" />
+        <Button
+            Grid.Row="4"
+            Command="{Binding GoToHomeCommand}"
+            FontAttributes="Bold"
+            FontSize="15"
+            HeightRequest="37"
+            MaximumWidthRequest="245"
+            Text="Ingresar" />
     </VerticalStackLayout>
-    <ContentPage.Background>
-
-        <Color>#8db3d6</Color>
-
-    </ContentPage.Background>
 </ContentPage>

@@ -19,7 +19,7 @@ namespace ControYaApp
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("Aileron-Regular", "AileronRegular");
-                    fonts.AddFont("Aileron-Semibol", "AileronSemibold");
+                    fonts.AddFont("Aileron-Semibol", "OpenSansRegular");
                 }).UseMauiCommunityToolkit()
                 .RegisterAppServices()
                 .RegisterViews()

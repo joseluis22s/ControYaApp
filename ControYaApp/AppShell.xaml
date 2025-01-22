@@ -23,10 +23,7 @@
 
 
     <FlyoutItem Title="FlyoutItem Tittle">
-        <ShellContent
-            ContentTemplate="{DataTemplate views:HomePage}"
-            Route="home"
-            Shell.BackgroundColor="#8db3d6" />
+        <ShellContent ContentTemplate="{DataTemplate views:HomePage}" Route="home" />
 
     </FlyoutItem>
 
