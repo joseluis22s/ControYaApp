@@ -4,12 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
-    x:DataType="viewModel:LoginViewModel">
+    x:DataType="viewModel:HomeViewModel">
 
     <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!  HOOOOOOOOOOOOOOOOOOOOOOOOOOOOMME"
-            VerticalOptions="Center" />
+        <Label Text="dddddddddddddd" />
+        <Label Text="{Binding NombreUsuario}" VerticalOptions="Center" />
+        <Button Command="{Binding ObtenerPedidosCommand}" Text="Obtener ordenes" />
     </VerticalStackLayout>
+    <ContentPage.Background>
+
+        <Color>#8db3d6</Color>
+
+    </ContentPage.Background>
 </ContentPage>

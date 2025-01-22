@@ -22,22 +22,20 @@ namespace ControYaApp.Services.Database
 
         public async Task<bool> ConectarDatabase()
         {
-            using (SqlConnection conexionDatabase = new SqlConnection(_cadenaConexion))
+            using var conexionDatabase = new SqlConnection(_cadenaConexion);
+            try
             {
-                try
-                {
-                    await conexionDatabase.OpenAsync();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"Error al conectar a la base de datos: {ex.Message}");
-                    return false;
-                }
-                finally
-                {
-                    await conexionDatabase.CloseAsync();
-                }
+                await conexionDatabase.OpenAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error al conectar a la base de datos: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                await conexionDatabase.CloseAsync();
             }
         }
 

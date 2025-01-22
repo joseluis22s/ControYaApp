@@ -6,16 +6,15 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     xmlns:views="clr-namespace:ControYaApp.Views"
     Title="ControYaApp"
-    x:DataType="viewModel:HomeViewModel"
+    x:DataType="viewModel:AppShellViewModel"
     Shell.FlyoutBehavior="Flyout">
 
-    <Shell.BindingContext>
+    <!--<Shell.BindingContext>
         <viewModel:HomeViewModel />
-    </Shell.BindingContext>
+    </Shell.BindingContext>-->
 
 
     <ShellContent
-        Title="ShContTittleLogin"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
         Shell.FlyoutBehavior="Disabled"
@@ -25,9 +24,9 @@
 
     <FlyoutItem Title="FlyoutItem Tittle">
         <ShellContent
-            Title=" ShCont Tittle Home"
             ContentTemplate="{DataTemplate views:HomePage}"
-            Route="home" />
+            Route="home"
+            Shell.BackgroundColor="#8db3d6" />
 
     </FlyoutItem>
 

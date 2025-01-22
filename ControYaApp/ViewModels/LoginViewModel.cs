@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
@@ -9,13 +8,13 @@ using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    public partial class LoginViewModel : ViewModelBase
     {
+        private Usuario? _usuario = new();
+
+
         private readonly DatabaseConnection _databaseConnection;
 
-        private readonly IPopupService _popupService;
-
-        private Usuario? _usuario;
 
         private bool _esVisibleContrasena;
 
@@ -41,6 +40,7 @@ namespace ControYaApp.ViewModels
         }
 
 
+
         public ICommand? GoToHomeCommand { get; }
 
         public ICommand? ContrasenaVisibleCommand { get; }
@@ -48,20 +48,31 @@ namespace ControYaApp.ViewModels
         public ICommand? ProbarConexionCommand { get; }
 
 
-        public LoginViewModel(DatabaseConnection databaseConnection, IPopupService popupService)
+        public LoginViewModel(DatabaseConnection databaseConnection)
         {
-            _popupService = popupService;
-            _databaseConnection = databaseConnection;
             EsVisibleContrasena = true;
             NoEsVisibleContrasena = false;
-            GoToHomeCommand = new AsyncRelayCommand(GoToHome);
+            GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
             ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
-            ProbarConexionCommand = new AsyncRelayCommand(ProbarConexion);
+            ProbarConexionCommand = new AsyncRelayCommand(ProbarConexionAsync);
+
+            _databaseConnection = databaseConnection;
         }
 
-        private async Task GoToHome()
+        private async Task GoToHomeAsync()
         {
-            await Shell.Current.GoToAsync("//home");
+            if (string.IsNullOrEmpty(Usuario?.NombreUsuario) || string.IsNullOrEmpty(Usuario?.Contrasena))
+            {
+                await Toast.Make("Los campos no seben estar vacios.").Show();
+            }
+            else
+            {
+                var navParameter = new ShellNavigationQueryParameters
+                {
+                    {"NombreUsuario", Usuario.NombreUsuario}
+                };
+                await Shell.Current.GoToAsync("//home", navParameter);
+            }
         }
 
         private void EstadoEsVisibleContrasena()
@@ -78,9 +89,9 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private async Task ProbarConexion()
+        private async Task ProbarConexionAsync()
         {
-            LoadingPopUp loadingPopUpp = new LoadingPopUp();
+            var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
             bool estaConectado = await _databaseConnection.ConectarDatabase();
