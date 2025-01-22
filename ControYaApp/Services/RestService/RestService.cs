@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
-using ControYaApp.Modelss;
+using ControYaApp.Models;
 
 namespace ControYaApp.Services.RestService
 {

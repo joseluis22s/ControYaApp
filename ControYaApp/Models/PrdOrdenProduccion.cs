@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ControYaApp.Modelss;
+namespace ControYaApp.Models;
 
 public partial class PrdOrdenProduccion
 {

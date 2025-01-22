@@ -3,27 +3,138 @@
     x:Class="ControYaApp.Views.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ControYaApp.Models"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:HomeViewModel">
 
-    <VerticalStackLayout>
-        <Label Text="dddddddddddddd" />
-        <Label Text="{Binding NombreUsuario, StringFormat='Usuario: {0}'}" VerticalOptions="Center">
-            <Label.FormattedText>
-                <FormattedString>
-                    <Span FontSize="Medium" Text="Usuario: " />
-                    <Span FontSize="Large" Text="{Binding NombreUsuario}" />
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-        <Button Command="{Binding ObtenerPedidosCommand}" Text="Obtener ordenes" />
-        <Button
-            Grid.Row="4"
-            Command="{Binding GoToHomeCommand}"
-            FontAttributes="Bold"
-            FontSize="15"
-            HeightRequest="37"
-            MaximumWidthRequest="245"
-            Text="Ingresar" />
-    </VerticalStackLayout>
+    <Grid
+        Padding="10,0"
+        ColumnDefinitions="*"
+        RowDefinitions="Auto,*"
+        RowSpacing="10">
+        <VerticalStackLayout>
+            <Label Text="{Binding NombreUsuario, StringFormat='Usuario: {0}'}" VerticalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span
+                            FontAttributes="Bold"
+                            FontSize="Medium"
+                            Text="Usuario: " />
+                        <Span FontSize="Title" Text="{Binding NombreUsuario}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Button
+                Command="{Binding ObtenerPedidosCommand}"
+                FontAttributes="Bold"
+                FontSize="Body"
+                MaximumWidthRequest="200"
+                Text="Obtener ordenes" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding OrdenesProduccion}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:PrdOrdenProduccion">
+                    <Grid Padding="10">
+                        <Border Style="{StaticResource Border_ColVie_Ordenes}">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
+
+                                <Grid
+                                    ColumnDefinitions="*,*"
+                                    RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Código producción" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding CodigoProduccion}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Orden" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Orden}" />
+                                </Grid>
+
+                                <Grid
+                                    Grid.Row="1"
+                                    ColumnDefinitions="*,*"
+                                    Style="{StaticResource Grid_DatosOrdenes}"
+                                    RowDefinitions="Auto,Auto">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Ejercicio" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Ejercicio}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Periodo" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Periodo}" />
+                                </Grid>
+
+                                <Grid Grid.Row="2" RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Referencia" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Referencia}" />
+                                </Grid>
+
+                                <Grid Grid.Row="3" RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Detalle" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Detalle}" />
+                                </Grid>
+
+                                <Grid Grid.Row="4" RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="pppgjEstado" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Estado}" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Border_ColVie_Ordenes" TargetType="Border">
+                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='10'}" />
+                <Setter Property="BackgroundColor" Value="#c7d1e1" />
+                <Setter Property="Padding" Value="20,12" />
+                <Setter Property="Shadow" Value="{Shadow}" />
+            </Style>
+
+            <Style x:Key="Label_ValorPropiedadOrden" TargetType="Label">
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="Label_PropiedadOrden" TargetType="Label">
+                <Setter Property="VerticalTextAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="Grid_DatosOrdenes" TargetType="Grid">
+                <Setter Property="RowSpacing" Value="-4" />
+                <Setter Property="ColumnSpacing" Value="3" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 </ContentPage>
