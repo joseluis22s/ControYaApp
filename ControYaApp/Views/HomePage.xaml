@@ -8,7 +8,14 @@
 
     <VerticalStackLayout>
         <Label Text="dddddddddddddd" />
-        <Label Text="{Binding NombreUsuario}" VerticalOptions="Center" />
+        <Label Text="{Binding NombreUsuario, StringFormat='Usuario: {0}'}" VerticalOptions="Center">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span FontSize="Medium" Text="Usuario: " />
+                    <Span FontSize="Large" Text="{Binding NombreUsuario}" />
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
         <Button Command="{Binding ObtenerPedidosCommand}" Text="Obtener ordenes" />
     </VerticalStackLayout>
     <ContentPage.Background>

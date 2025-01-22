@@ -7,10 +7,6 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:LoginViewModel">
 
-    <!--<ContentPage.BindingContext>
-        <viewModel:LoginViewModel />
-    </ContentPage.BindingContext>-->
-
     <ScrollView>
 
 
@@ -27,7 +23,6 @@
                 Grid.Row="1"
                 Margin="0,0,0,3"
                 FontAttributes="Bold"
-                FontFamily="AileronSemibold"
                 FontSize="29"
                 HorizontalOptions="Center"
                 Text="Iniciar Sesión"
@@ -61,7 +56,6 @@
             </Border>
             <Button
                 Grid.Row="4"
-                BackgroundColor="#0f2b57"
                 Command="{Binding GoToHomeCommand}"
                 FontAttributes="Bold"
                 FontSize="15"
