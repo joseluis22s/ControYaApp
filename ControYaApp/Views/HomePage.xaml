@@ -8,11 +8,20 @@
     x:DataType="viewModel:HomeViewModel">
 
     <Grid
-        Padding="10,0"
+        Padding="10,10"
         ColumnDefinitions="*"
-        RowDefinitions="Auto,*"
+        RowDefinitions="Auto,Auto,*"
         RowSpacing="10">
-        <VerticalStackLayout>
+        <HorizontalStackLayout Spacing="10">
+            <ImageButton
+                x:Name="ImageButton_FlyoutShell"
+                Padding="10"
+                BackgroundColor="AliceBlue"
+                BorderColor="AliceBlue"
+                CornerRadius="10"
+                HeightRequest="10"
+                Source="menu_icon.png"
+                WidthRequest="10" />
             <Label Text="{Binding NombreUsuario, StringFormat='Usuario: {0}'}" VerticalOptions="Center">
                 <Label.FormattedText>
                     <FormattedString>
@@ -24,6 +33,9 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
+        </HorizontalStackLayout>
+        <VerticalStackLayout Grid.Row="1">
+
             <Button
                 Command="{Binding ObtenerPedidosCommand}"
                 FontAttributes="Bold"
@@ -32,7 +44,7 @@
                 Text="Obtener ordenes" />
         </VerticalStackLayout>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding OrdenesProduccion}">
+        <CollectionView Grid.Row="2" ItemsSource="{Binding OrdenesProduccion}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:PrdOrdenProduccion">
                     <Grid Padding="10">
@@ -62,8 +74,8 @@
                                 <Grid
                                     Grid.Row="1"
                                     ColumnDefinitions="*,*"
-                                    Style="{StaticResource Grid_DatosOrdenes}"
-                                    RowDefinitions="Auto,Auto">
+                                    RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
                                     <Label Style="{StaticResource Label_PropiedadOrden}" Text="Ejercicio" />
                                     <Label
                                         Grid.Row="1"
@@ -80,7 +92,9 @@
                                         Text="{Binding Periodo}" />
                                 </Grid>
 
-                                <Grid Grid.Row="2" RowDefinitions="Auto,Auto"
+                                <Grid
+                                    Grid.Row="2"
+                                    RowDefinitions="Auto,Auto"
                                     Style="{StaticResource Grid_DatosOrdenes}">
                                     <Label Style="{StaticResource Label_PropiedadOrden}" Text="Referencia" />
                                     <Label
@@ -89,7 +103,9 @@
                                         Text="{Binding Referencia}" />
                                 </Grid>
 
-                                <Grid Grid.Row="3" RowDefinitions="Auto,Auto"
+                                <Grid
+                                    Grid.Row="3"
+                                    RowDefinitions="Auto,Auto"
                                     Style="{StaticResource Grid_DatosOrdenes}">
                                     <Label Style="{StaticResource Label_PropiedadOrden}" Text="Detalle" />
                                     <Label
@@ -98,7 +114,9 @@
                                         Text="{Binding Detalle}" />
                                 </Grid>
 
-                                <Grid Grid.Row="4" RowDefinitions="Auto,Auto"
+                                <Grid
+                                    Grid.Row="4"
+                                    RowDefinitions="Auto,Auto"
                                     Style="{StaticResource Grid_DatosOrdenes}">
                                     <Label Style="{StaticResource Label_PropiedadOrden}" Text="pppgjEstado" />
                                     <Label
@@ -116,6 +134,7 @@
     </Grid>
 
     <ContentPage.Resources>
+
         <ResourceDictionary>
             <Style x:Key="Border_ColVie_Ordenes" TargetType="Border">
                 <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='10'}" />

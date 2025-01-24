@@ -11,7 +11,7 @@ namespace ControYaApp.ViewModels
     {
         private string? _nombreUsuario;
 
-        private ObservableCollection<PrdOrdenProduccion> _prdOrdenesProduccion;
+        private ObservableCollection<PrdOrdenProduccion>? _prdOrdenesProduccion;
         public string? NombreUsuario
         {
             get => _nombreUsuario;
@@ -25,7 +25,7 @@ namespace ControYaApp.ViewModels
         private readonly RestService _restService;
 
 
-        public ObservableCollection<PrdOrdenProduccion> OrdenesProduccion
+        public ObservableCollection<PrdOrdenProduccion>? OrdenesProduccion
         {
             get => _prdOrdenesProduccion;
             set => SetProperty(ref _prdOrdenesProduccion, value);
@@ -38,7 +38,7 @@ namespace ControYaApp.ViewModels
         public HomeViewModel(RestService restService)
         {
             var fecha = DateTime.Now;
-            ObtenerPedidosCommand = new RelayCommand(ObtenerPedidosAsync);
+            ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
 
             _restService = restService;
 
@@ -47,8 +47,9 @@ namespace ControYaApp.ViewModels
 
 
 
-        public void ObtenerPedidosAsync()
+        public async Task ObtenerPedidosAsync()
         {
+            //OrdenesProduccion = await _restService.GetAllPrdOrdenesProduccionAsync();
             OrdenesProduccion = new ObservableCollection<PrdOrdenProduccion>
             {
                 new PrdOrdenProduccion

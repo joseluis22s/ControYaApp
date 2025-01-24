@@ -9,23 +9,20 @@
     x:DataType="viewModel:AppShellViewModel"
     Shell.FlyoutBehavior="Flyout">
 
-    <!--<Shell.BindingContext>
-        <viewModel:HomeViewModel />
-    </Shell.BindingContext>-->
-
 
     <ShellContent
+        Title="hola"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
         Shell.FlyoutBehavior="Disabled"
         Shell.FlyoutItemIsVisible="False"
         Shell.NavBarIsVisible="False" />
 
-
-    <FlyoutItem Title="FlyoutItem Tittle">
-        <ShellContent ContentTemplate="{DataTemplate views:HomePage}" Route="home" />
-
-    </FlyoutItem>
+    <ShellContent
+        Title="Inicio"
+        ContentTemplate="{DataTemplate views:HomePage}"
+        Route="home"
+        Shell.NavBarIsVisible="False" />
 
     <Shell.FlyoutHeader>
         <HorizontalStackLayout BackgroundColor="Blue">

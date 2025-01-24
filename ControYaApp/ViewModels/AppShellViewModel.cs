@@ -7,15 +7,23 @@ namespace ControYaApp.ViewModels
     {
 
         public ICommand GoToLoginCommand { get; }
+
+        public ICommand FlyoutShellCommand { get; }
+
+
         public AppShellViewModel()
         {
-
             GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
+            FlyoutShellCommand = new RelayCommand(FlyoutShell);
         }
         private async Task GoToLoginAsync()
         {
             await Shell.Current.GoToAsync("//login");
 
+        }
+        private void FlyoutShell()
+        {
+            Shell.Current.FlyoutIsPresented = !Shell.Current.FlyoutIsPresented;
         }
     }
 }
