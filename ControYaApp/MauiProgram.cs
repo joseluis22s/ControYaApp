@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using ControYaApp.Services.Database;
-using ControYaApp.Services.RestService;
+using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels;
 using ControYaApp.ViewModels.Controls;
 using ControYaApp.Views;
@@ -61,6 +62,7 @@ namespace ControYaApp
         {
             mauiAppBuilder.Services.AddSingleton<DatabaseConnection>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
+            mauiAppBuilder.Services.AddSingleton<OrdenRepo>();
 
             return mauiAppBuilder;
         }

@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using ControYaApp.Models;
 
-namespace ControYaApp.Services.RestService
+namespace ControYaApp.Services.WebService
 {
     public class RestService
     {
@@ -56,12 +56,21 @@ namespace ControYaApp.Services.RestService
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetAllPrdOrdenesProduccionAsync(string? nombreUsuario)
+        public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionAsync(string? nombreUsuario)
         {
-            string uri = _uri + $"/ordenes/by-usuario/{nombreUsuario}";
+            string uri = _uri + $"/ordenes/by-usuario";
+            Usuario usuario = new Usuario()
+            {
+                NombreUsuario = nombreUsuario,
+                Contrasena = ""
+            };
             try
             {
-                var response = await _client.GetAsync(uri);
+                string json = JsonSerializer.Serialize<Usuario>(usuario, SerializerOptions());
+                StringContent request = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _client.PostAsync(uri, request);
+
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

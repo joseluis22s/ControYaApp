@@ -16,7 +16,7 @@ namespace ControYaApp.Models
 
         public string Referencia { get; set; }
 
-        public string Detalle { get; set; }
+        //public string Detalle { get; set; }
 
         public ObservableCollection<OrdenProduccionDetalle> Detalles { get; set; }
 

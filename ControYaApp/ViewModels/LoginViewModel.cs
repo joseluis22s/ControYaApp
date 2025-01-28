@@ -4,7 +4,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Database;
-using ControYaApp.Services.RestService;
+using ControYaApp.Services.WebService;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
@@ -82,7 +82,7 @@ namespace ControYaApp.ViewModels
                     {
                         {"NombreUsuario", Usuario.NombreUsuario}
                     };
-                    await Shell.Current.GoToAsync("//home", navParameter);
+                    await Shell.Current.GoToAsync("//ordenes", navParameter);
                 }
                 else
                 {

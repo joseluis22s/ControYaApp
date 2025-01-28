@@ -11,7 +11,6 @@
 
 
     <ShellContent
-        Title="hola"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
         Shell.FlyoutBehavior="Disabled"
@@ -19,9 +18,9 @@
         Shell.NavBarIsVisible="False" />
 
     <ShellContent
-        Title="Inicio"
+        Title="Ordenes de Producción"
         ContentTemplate="{DataTemplate views:OrdenesPage}"
-        Route="Ordenes de Producción"
+        Route="ordenes"
         Shell.NavBarIsVisible="False" />
 
     <Shell.FlyoutHeader>

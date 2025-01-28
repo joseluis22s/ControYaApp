@@ -10,6 +10,8 @@ namespace ControYaApp.Models
 
         public int Orden { get; set; }
 
+        public string CodigoUsuario { get; set; }
+
         public DateTime Fecha { get; set; }
 
         public string Referencia { get; set; }

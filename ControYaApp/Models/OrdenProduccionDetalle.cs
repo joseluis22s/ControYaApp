@@ -3,6 +3,7 @@ namespace ControYaApp.Models
 {
     public class OrdenProduccionDetalle
     {
+        public string Detalle { get; set; }
         public string CodigoMaterial { get; set; }
 
         public string CodigoProducto { get; set; }
