@@ -1,17 +1,26 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.RestService;
+using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(NombreUsuario), "NombreUsuario")]
     public partial class HomeViewModel : ViewModelBase
     {
+
+        private readonly RestService _restService;
+
+
         private string? _nombreUsuario;
 
-        private ObservableCollection<PrdOrdenProduccion>? _prdOrdenesProduccion;
+        private ObservableCollection<OrdenProduccion>? _prdOrdenesProduccion;
+
+
         public string? NombreUsuario
         {
             get => _nombreUsuario;
@@ -21,11 +30,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
-
-        private readonly RestService _restService;
-
-
-        public ObservableCollection<PrdOrdenProduccion>? OrdenesProduccion
+        public ObservableCollection<OrdenProduccion>? OrdenesProduccion
         {
             get => _prdOrdenesProduccion;
             set => SetProperty(ref _prdOrdenesProduccion, value);
@@ -44,49 +49,21 @@ namespace ControYaApp.ViewModels
 
         }
 
-
-
-
         public async Task ObtenerPedidosAsync()
         {
-            //OrdenesProduccion = await _restService.GetAllPrdOrdenesProduccionAsync();
-            OrdenesProduccion = new ObservableCollection<PrdOrdenProduccion>
+            var loadingPopUpp = new LoadingPopUp();
+            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+            var listaOrdenes = await _restService.GetAllPrdOrdenesProduccionAsync(NombreUsuario);
+            if (listaOrdenes.Count == 0)
             {
-                new PrdOrdenProduccion
-                {
-                    CodigoProduccion = "PRDBAL",
-                    Orden = 1,
-                    Ejercicio = 2024,
-                    Periodo = 9,
-                    Fecha = DateTime.Now,
-                    Referencia = "Balanceado",
-                    Detalle = "BALANCEADO ENGORDE - INICIAL",
-                    Estado = "A"
-                },
-                new PrdOrdenProduccion
-                {
-                    CodigoProduccion = "PRDBAL",
-                    Orden = 2,
-                    Ejercicio = 2024,
-                    Periodo = 9,
-                    Fecha = DateTime.Now,
-                    Referencia = "Balanceado",
-                    Detalle = "BALANCEADO INICIAL - CRECIMIENTO - ENGORDE",
-                    Estado = "A"
-                },
-                new PrdOrdenProduccion
-                {
-                    CodigoProduccion = "PRDBAL",
-                    Orden = 3,
-                    Ejercicio = 2024,
-                    Periodo = 9,
-                    Fecha = DateTime.Now,
-                    Referencia = "Balanceado",
-                    Detalle = "BALANCEADO ENGORDE",
-                    Estado = "A"
-                }
-            };
-            int c = OrdenesProduccion.Count;
+                await Toast.Make("No se han cargado órdenes").Show();
+            }
+
+            OrdenesProduccion = listaOrdenes;
+
+            await loadingPopUpp.CloseAsync();
+
         }
     }
 }

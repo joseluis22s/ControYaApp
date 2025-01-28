@@ -46,12 +46,39 @@
 
         <CollectionView Grid.Row="2" ItemsSource="{Binding OrdenesProduccion}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:PrdOrdenProduccion">
-                    <Grid Padding="10">
+                <DataTemplate x:DataType="model:OrdenProduccion">
+                    <SwipeView Padding="10">
+
+                        <SwipeView.LeftItems>
+                            <SwipeItems>
+                                <SwipeItem
+                                    BackgroundColor="#66b396"
+                                    IconImageSource="dotnet_bot.png"
+                                    Text="Por material" />
+                                <SwipeItem
+                                    BackgroundColor="#7eb366"
+                                    IconImageSource="dotnet_bot.png"
+                                    Text="Por producto" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+
                         <Border Style="{StaticResource Border_ColVie_Ordenes}">
-                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+
+                                <Grid RowDefinitions="Auto,Auto">
+                                    <Label
+                                        FontAttributes="Bold"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Centro}" />
+                                    <Label
+                                        Grid.Row="1"
+                                        FontAttributes="Bold"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Fecha, StringFormat='{0:dd-MM-yyyy}'}" />
+                                </Grid>
 
                                 <Grid
+                                    Grid.Row="1"
                                     ColumnDefinitions="*,*"
                                     RowDefinitions="Auto,Auto"
                                     Style="{StaticResource Grid_DatosOrdenes}">
@@ -69,27 +96,6 @@
                                         Grid.Column="1"
                                         Style="{StaticResource Label_ValorPropiedadOrden}"
                                         Text="{Binding Orden}" />
-                                </Grid>
-
-                                <Grid
-                                    Grid.Row="1"
-                                    ColumnDefinitions="*,*"
-                                    RowDefinitions="Auto,Auto"
-                                    Style="{StaticResource Grid_DatosOrdenes}">
-                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Ejercicio" />
-                                    <Label
-                                        Grid.Row="1"
-                                        Style="{StaticResource Label_ValorPropiedadOrden}"
-                                        Text="{Binding Ejercicio}" />
-                                    <Label
-                                        Grid.Column="1"
-                                        Style="{StaticResource Label_PropiedadOrden}"
-                                        Text="Periodo" />
-                                    <Label
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Style="{StaticResource Label_ValorPropiedadOrden}"
-                                        Text="{Binding Periodo}" />
                                 </Grid>
 
                                 <Grid
@@ -116,17 +122,62 @@
 
                                 <Grid
                                     Grid.Row="4"
+                                    ColumnDefinitions="*,*"
                                     RowDefinitions="Auto,Auto"
                                     Style="{StaticResource Grid_DatosOrdenes}">
-                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="pppgjEstado" />
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Código Material" />
                                     <Label
                                         Grid.Row="1"
                                         Style="{StaticResource Label_ValorPropiedadOrden}"
-                                        Text="{Binding Estado}" />
+                                        Text="{Binding CodigoMaterial}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Código Producto" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding CodigoProducto}" />
                                 </Grid>
+
+                                <Label
+                                    Grid.Row="5"
+                                    Style="{StaticResource Label_ValorPropiedadOrden}"
+                                    Text="{Binding Producto}" />
+
+                                <Grid
+                                    Grid.Row="6"
+                                    RowDefinitions="2"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Código Unidad" />
+                                    <Label Style="{StaticResource Label_ValorPropiedadOrden}" Text="{Binding CodigoUnidad}" />
+                                </Grid>
+
+                                <Grid
+                                    Grid.Row="7"
+                                    ColumnDefinitions="*,*"
+                                    RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Cantidad" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Cantidad}" />
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Notificado" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Notificado}" />
+                                </Grid>
+
                             </Grid>
                         </Border>
-                    </Grid>
+                    </SwipeView>
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -140,18 +191,19 @@
                 <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='10'}" />
                 <Setter Property="BackgroundColor" Value="#c7d1e1" />
                 <Setter Property="Padding" Value="20,12" />
-                <Setter Property="Shadow" Value="{Shadow}" />
+                <Setter Property="Shadow" Value="{Shadow Opacity='0.125'}" />
             </Style>
 
             <Style x:Key="Label_ValorPropiedadOrden" TargetType="Label">
                 <Setter Property="FontSize" Value="20" />
                 <Setter Property="VerticalTextAlignment" Value="Center" />
+                <Setter Property="LineHeight" Value="0.75" />
             </Style>
             <Style x:Key="Label_PropiedadOrden" TargetType="Label">
                 <Setter Property="VerticalTextAlignment" Value="Center" />
             </Style>
             <Style x:Key="Grid_DatosOrdenes" TargetType="Grid">
-                <Setter Property="RowSpacing" Value="-4" />
+                <Setter Property="RowSpacing" Value="-3" />
                 <Setter Property="ColumnSpacing" Value="3" />
             </Style>
         </ResourceDictionary>

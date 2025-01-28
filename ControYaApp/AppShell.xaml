@@ -21,7 +21,7 @@
     <ShellContent
         Title="Inicio"
         ContentTemplate="{DataTemplate views:HomePage}"
-        Route="home"
+        Route="Ordenes de Producción"
         Shell.NavBarIsVisible="False" />
 
     <Shell.FlyoutHeader>

@@ -1,8 +1,7 @@
-﻿using ControYaApp.ViewModels;
-#nullable disable
+﻿#nullable disable
 namespace ControYaApp.Models
 {
-    public partial class Usuario : ViewModelBase
+    public partial class Usuario
     {
         public string NombreUsuario { get; set; }
 

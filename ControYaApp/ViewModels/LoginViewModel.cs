@@ -4,17 +4,20 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Database;
+using ControYaApp.Services.RestService;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
     public partial class LoginViewModel : ViewModelBase
     {
-        private Usuario? _usuario = new();
 
+        private readonly RestService _restService;
 
         private readonly DatabaseConnection _databaseConnection;
 
+
+        private Usuario? _usuario = new();
 
         private bool _esVisibleContrasena;
 
@@ -48,7 +51,7 @@ namespace ControYaApp.ViewModels
         public ICommand? ProbarConexionCommand { get; }
 
 
-        public LoginViewModel(DatabaseConnection databaseConnection)
+        public LoginViewModel(DatabaseConnection databaseConnection, RestService restService)
         {
             EsVisibleContrasena = true;
             NoEsVisibleContrasena = false;
@@ -56,6 +59,7 @@ namespace ControYaApp.ViewModels
             ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
             ProbarConexionCommand = new AsyncRelayCommand(ProbarConexionAsync);
 
+            _restService = restService;
             _databaseConnection = databaseConnection;
         }
 
@@ -67,11 +71,25 @@ namespace ControYaApp.ViewModels
             }
             else
             {
-                var navParameter = new ShellNavigationQueryParameters
+
+                var loadingPopUpp = new LoadingPopUp();
+                _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+                bool res = await _restService.VerificarCredencialesUsuario(Usuario);
+                if (res)
                 {
-                    {"NombreUsuario", Usuario.NombreUsuario}
-                };
-                await Shell.Current.GoToAsync("//home", navParameter);
+                    var navParameter = new ShellNavigationQueryParameters
+                    {
+                        {"NombreUsuario", Usuario.NombreUsuario}
+                    };
+                    await Shell.Current.GoToAsync("//home", navParameter);
+                }
+                else
+                {
+                    await Toast.Make("Error al iniciar sesión").Show();
+                }
+
+                await loadingPopUpp.CloseAsync();
             }
         }
 
