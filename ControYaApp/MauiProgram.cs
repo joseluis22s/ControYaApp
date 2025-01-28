@@ -41,7 +41,7 @@ namespace ControYaApp
 
             mauiAppBuilder.Services.AddTransient<LoadingPopUpViewModel>();
             mauiAppBuilder.Services.AddTransient<LoginViewModel>();
-            mauiAppBuilder.Services.AddTransient<HomeViewModel>();
+            mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
 
             return mauiAppBuilder;
         }
@@ -53,7 +53,7 @@ namespace ControYaApp
 
             mauiAppBuilder.Services.AddTransient<LoadingPopUp>();
             mauiAppBuilder.Services.AddTransient<LoginPage>();
-            mauiAppBuilder.Services.AddTransient<HomePage>();
+            mauiAppBuilder.Services.AddTransient<OrdenesPage>();
 
             return mauiAppBuilder;
         }

@@ -2,9 +2,9 @@ using ControYaApp.ViewModels;
 
 namespace ControYaApp.Views;
 
-public partial class HomePage : ContentPage
+public partial class OrdenesPage : ContentPage
 {
-    public HomePage(HomeViewModel vm, AppShellViewModel appShellvm)
+    public OrdenesPage(OrdenesViewModel vm, AppShellViewModel appShellvm)
     {
         InitializeComponent();
 

@@ -10,7 +10,7 @@ using ControYaApp.Views.Controls;
 namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(NombreUsuario), "NombreUsuario")]
-    public partial class HomeViewModel : ViewModelBase
+    public partial class OrdenesViewModel : ViewModelBase
     {
 
         private readonly RestService _restService;
@@ -40,7 +40,7 @@ namespace ControYaApp.ViewModels
 
         public ICommand ObtenerPedidosCommand { get; }
 
-        public HomeViewModel(RestService restService)
+        public OrdenesViewModel(RestService restService)
         {
             var fecha = DateTime.Now;
             ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
