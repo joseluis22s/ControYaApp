@@ -6,8 +6,7 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     xmlns:views="clr-namespace:ControYaApp.Views"
     Title="ControYaApp"
-    x:DataType="viewModel:AppShellViewModel"
-    Shell.FlyoutBehavior="Flyout">
+    x:DataType="viewModel:AppShellViewModel">
 
 
 
@@ -15,8 +14,7 @@
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
         Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False"
-        Shell.NavBarIsVisible="False" />
+        Shell.FlyoutItemIsVisible="False" />
 
     <ShellContent
         Title="Ordenes de Producción"

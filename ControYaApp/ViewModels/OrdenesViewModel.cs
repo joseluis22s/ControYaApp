@@ -40,7 +40,6 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _ordenesProduccion, value);
         }
 
-        public OrdenProduccionDetalle? SelectedOrdenDetalle { get; set; }
 
 
 
@@ -51,7 +50,6 @@ namespace ControYaApp.ViewModels
 
         public OrdenesViewModel(RestService restService, OrdenRepo ordenRepo)
         {
-            var fecha = DateTime.Now;
             ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionDetalle>(NotificarPtAsync);
 
@@ -115,16 +113,21 @@ namespace ControYaApp.ViewModels
                     op.Referencia,
                 });
 
-            // Mapea cada grupo a una cabecera
-            var cabeceras = agrupaciones.Select(grupo => new OrdenProduccionCabecera
+            var cabeceras = agrupaciones.Select(grupo =>
             {
-                Centro = grupo.Key.Centro,
-                CodigoProduccion = grupo.Key.CodigoProduccion,
-                Orden = grupo.Key.Orden,
-                Fecha = grupo.Key.Fecha,
-                Referencia = grupo.Key.Referencia,
-                Detalles = new ObservableCollection<OrdenProduccionDetalle>(
-                    grupo.Select(op => new OrdenProduccionDetalle
+                var cabecera = new OrdenProduccionCabecera
+                {
+                    Centro = grupo.Key.Centro,
+                    CodigoProduccion = grupo.Key.CodigoProduccion,
+                    Orden = grupo.Key.Orden,
+                    Fecha = grupo.Key.Fecha,
+                    Referencia = grupo.Key.Referencia,
+                    Detalles = new ObservableCollection<OrdenProduccionDetalle>()
+                };
+
+                foreach (var op in grupo)
+                {
+                    var detalle = new OrdenProduccionDetalle
                     {
                         Detalle = op.Detalle,
                         CodigoMaterial = op.CodigoMaterial,
@@ -133,21 +136,45 @@ namespace ControYaApp.ViewModels
                         CodigoUnidad = op.CodigoUnidad,
                         Cantidad = op.Cantidad,
                         Notificado = op.Notificado,
-                    }))
+                        Cabecera = cabecera // Asignar la cabecera aquí
+                    };
+                    cabecera.Detalles.Add(detalle);
+                }
+
+                return cabecera;
             });
 
-            // Convierte la lista a ObservableCollection
             return new ObservableCollection<OrdenProduccionCabecera>(cabeceras);
         }
 
-        public async Task NotificarPtAsync(OrdenProduccionDetalle? detalles)
+        public async Task NotificarPtAsync(OrdenProduccionDetalle? detalle)
         {
-
+            var orden = MapOrdenProduccion(detalle);
             var navParameter = new ShellNavigationQueryParameters
             {
-                { "detalles", detalles }
+                { "orden", orden}
             };
             await Shell.Current.GoToAsync("notificarPt", navParameter);
+        }
+
+        private OrdenProduccion MapOrdenProduccion(OrdenProduccionDetalle detalle)
+        {
+            return new OrdenProduccion
+            {
+                Centro = detalle.Cabecera.Centro,
+                CodigoProduccion = detalle.Cabecera.CodigoProduccion,
+                Orden = detalle.Cabecera.Orden,
+                CodigoUsuario = NombreUsuario,
+                Fecha = detalle.Cabecera.Fecha,
+                Referencia = detalle.Cabecera.Referencia,
+                Detalle = detalle.Detalle,
+                CodigoMaterial = detalle.CodigoMaterial,
+                CodigoProducto = detalle.CodigoProducto,
+                Producto = detalle.Producto,
+                CodigoUnidad = detalle.CodigoUnidad,
+                Cantidad = detalle.Cantidad,
+                Notificado = detalle.Saldo
+            };
         }
     }
 }

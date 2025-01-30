@@ -4,6 +4,7 @@ namespace ControYaApp.Models
     public class OrdenProduccionDetalle
     {
         public string Detalle { get; set; }
+
         public string CodigoMaterial { get; set; }
 
         public string CodigoProducto { get; set; }
@@ -17,5 +18,7 @@ namespace ControYaApp.Models
         public decimal? Notificado { get; set; }
 
         public decimal? Saldo => ((decimal)Cantidad) - Notificado;
+
+        public OrdenProduccionCabecera Cabecera { get; set; }
     }
 }
