@@ -10,6 +10,7 @@
     Shell.FlyoutBehavior="Flyout">
 
 
+
     <ShellContent
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
@@ -22,6 +23,11 @@
         ContentTemplate="{DataTemplate views:OrdenesPage}"
         Route="ordenes"
         Shell.NavBarIsVisible="False" />
+
+    <!--
+        "NOtificarPtPage" Agregada como 'ruta global' y se llama/navega como 'ruta relativa'.
+        INFO:https://learn.microsoft.com/es-es/dotnet/maui/fundamentals/shell/navigation?view=net-maui-9.0#relative-routes
+    -->
 
     <Shell.FlyoutHeader>
         <HorizontalStackLayout BackgroundColor="Blue">

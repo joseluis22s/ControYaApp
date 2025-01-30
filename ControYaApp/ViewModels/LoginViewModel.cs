@@ -44,7 +44,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ICommand? GoToHomeCommand { get; }
+        public ICommand? GoToOrdenesCommand { get; }
 
         public ICommand? ContrasenaVisibleCommand { get; }
 
@@ -55,7 +55,7 @@ namespace ControYaApp.ViewModels
         {
             EsVisibleContrasena = true;
             NoEsVisibleContrasena = false;
-            GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
+            GoToOrdenesCommand = new AsyncRelayCommand(GoToOrdenesAsync);
             ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
             ProbarConexionCommand = new AsyncRelayCommand(ProbarConexionAsync);
 
@@ -63,7 +63,7 @@ namespace ControYaApp.ViewModels
             _databaseConnection = databaseConnection;
         }
 
-        private async Task GoToHomeAsync()
+        private async Task GoToOrdenesAsync()
         {
             if (string.IsNullOrEmpty(Usuario?.NombreUsuario) || string.IsNullOrEmpty(Usuario?.Contrasena))
             {
@@ -107,6 +107,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
+        // TODO: Eliminar
         private async Task ProbarConexionAsync()
         {
             var loadingPopUpp = new LoadingPopUp();

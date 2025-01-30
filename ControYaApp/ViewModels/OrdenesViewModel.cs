@@ -18,9 +18,11 @@ namespace ControYaApp.ViewModels
         private readonly RestService _restService;
 
 
+
         private string? _nombreUsuario;
 
         private ObservableCollection<OrdenProduccionCabecera>? _ordenesProduccion;
+
 
 
         public string? NombreUsuario
@@ -38,18 +40,25 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _ordenesProduccion, value);
         }
 
+        public OrdenProduccionDetalle? SelectedOrdenDetalle { get; set; }
+
 
 
         public ICommand ObtenerPedidosCommand { get; }
+
+        public ICommand NotificarPtCommand { get; }
+
 
         public OrdenesViewModel(RestService restService, OrdenRepo ordenRepo)
         {
             var fecha = DateTime.Now;
             ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
+            NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionDetalle>(NotificarPtAsync);
 
             _restService = restService;
             _ordenRepo = ordenRepo;
         }
+
 
         public async Task ObtenerPedidosAsync()
         {
@@ -129,6 +138,16 @@ namespace ControYaApp.ViewModels
 
             // Convierte la lista a ObservableCollection
             return new ObservableCollection<OrdenProduccionCabecera>(cabeceras);
+        }
+
+        public async Task NotificarPtAsync(OrdenProduccionDetalle? detalles)
+        {
+
+            var navParameter = new ShellNavigationQueryParameters
+            {
+                { "detalles", detalles }
+            };
+            await Shell.Current.GoToAsync("notificarPt", navParameter);
         }
     }
 }

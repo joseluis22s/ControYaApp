@@ -1,4 +1,5 @@
 ﻿using ControYaApp.ViewModels;
+using ControYaApp.Views;
 
 namespace ControYaApp
 {
@@ -9,6 +10,7 @@ namespace ControYaApp
         {
             InitializeComponent();
             BindingContext = _vm = new AppShellViewModel();
+            Routing.RegisterRoute("notificarPt", typeof(NotificarPtPage));
         }
     }
 }

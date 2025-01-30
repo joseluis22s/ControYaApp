@@ -36,25 +36,25 @@ namespace ControYaApp
         // AddTransient: Cada vez que se solicita una instancia, se crea una nueva. Generalmente a Views y ViewModels
         public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
         {
-            // TODO: Cambiar HomeViewModel a Transient cuadno se agregue un Viewmodel a AppShell
-            //mauiAppBuilder.Services.AddSingleton<HomeViewModel>();
             mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+            //mauiAppBuilder.Services.AddSingleton<OrdenesViewModel>();
 
             mauiAppBuilder.Services.AddTransient<LoadingPopUpViewModel>();
             mauiAppBuilder.Services.AddTransient<LoginViewModel>();
             mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
+            mauiAppBuilder.Services.AddTransient<NotificarPtViewModel>();
 
             return mauiAppBuilder;
         }
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
         {
-            // TODO: Cambiar HomePage a Transient cuadno se agregue un Viewmodel a AppShell
-            //mauiAppBuilder.Services.AddSingleton<HomePage>();
             mauiAppBuilder.Services.AddSingleton<AppShell>();
+            //mauiAppBuilder.Services.AddSingleton<OrdenesPage>();
 
             mauiAppBuilder.Services.AddTransient<LoadingPopUp>();
             mauiAppBuilder.Services.AddTransient<LoginPage>();
             mauiAppBuilder.Services.AddTransient<OrdenesPage>();
+            mauiAppBuilder.Services.AddTransient<NotificarPtPage>();
 
             return mauiAppBuilder;
         }

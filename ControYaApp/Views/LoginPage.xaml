@@ -56,7 +56,7 @@
             </Border>
             <Button
                 Grid.Row="4"
-                Command="{Binding GoToHomeCommand}"
+                Command="{Binding GoToOrdenesCommand}"
                 FontAttributes="Bold"
                 FontSize="15"
                 HeightRequest="37"

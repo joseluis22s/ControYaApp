@@ -1,19 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using ControYaApp.Models;
-using ControYaApp.Services.WebService;
 using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
 {
     public class OrdenRepo
     {
-
-        private readonly RestService _restService;
         private SQLiteAsyncConnection? _database;
 
-        public OrdenRepo(RestService restService)
+        public OrdenRepo()
         {
-            _restService = restService;
         }
 
         async Task InitAsync()

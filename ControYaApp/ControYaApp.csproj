@@ -88,6 +88,9 @@
 	  <MauiXaml Update="Views\Controls\LoadingPopUp.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\NotificarPtPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\OrdenesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
