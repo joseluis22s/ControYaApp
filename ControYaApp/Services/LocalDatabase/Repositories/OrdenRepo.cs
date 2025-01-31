@@ -27,7 +27,31 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             {
                 await InitAsync();
 
-                await _database.InsertAllAsync(ordenes);
+                var UnSavedOrdenes = new ObservableCollection<OrdenProduccion>();
+
+                foreach (var orden in ordenes)
+                {
+                    var count = await _database.Table<OrdenProduccion>().CountAsync(tbu =>
+                        tbu.Centro == orden.Centro &&
+                        tbu.CodigoProduccion == orden.CodigoProduccion &&
+                        tbu.Orden == orden.Orden &&
+                        tbu.CodigoUsuario == orden.CodigoUsuario &&
+                        tbu.Fecha == orden.Fecha &&
+                        tbu.Referencia == orden.Referencia &&
+                        tbu.Detalle == orden.Detalle &&
+                        tbu.CodigoMaterial == orden.CodigoMaterial &&
+                        tbu.CodigoProducto == orden.CodigoProducto &&
+                        tbu.Producto == orden.Producto &&
+                        tbu.CodigoUnidad == orden.CodigoUnidad &&
+                        tbu.Cantidad == orden.Cantidad &&
+                        tbu.Notificado == orden.Notificado);
+                    if (count == 0)
+                    {
+                        UnSavedOrdenes.Add(orden);
+                    }
+                }
+
+                await _database.InsertAllAsync(UnSavedOrdenes);
             }
             catch (Exception)
             {

@@ -12,12 +12,8 @@ namespace ControYaApp.Services.WebService
         private readonly HttpClient _client = new();
 
 
-        public ObservableCollection<OrdenProduccion> OrdenesProduccion { get; private set; }
-
-
         public RestService()
         {
-            OrdenesProduccion = [];
         }
 
 
@@ -49,27 +45,22 @@ namespace ControYaApp.Services.WebService
                             { "usuarioSistema", usuarioSistema }
                         };
                     }
-                    else
-                    {
-                        return [];
-                    }
 
                 }
-                return [];
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                return [];
             }
+            return [];
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionAsync(string? nombreUsuario)
+        public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionByUsuarioAsync(string? usuarioSistema)
         {
             string uri = _uri + $"/ordenes/by-usuario";
             Usuario usuario = new Usuario()
             {
-                NombreUsuario = nombreUsuario,
+                NombreUsuario = usuarioSistema,
                 Contrasena = ""
             };
             try

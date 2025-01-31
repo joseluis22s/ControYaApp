@@ -23,27 +23,34 @@
                 HeightRequest="10"
                 Source="menu_icon.png"
                 WidthRequest="10" />
-            <Label Text="{Binding NombreUsuario, StringFormat='Usuario: {0}'}" VerticalOptions="Center">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span
-                            FontAttributes="Bold"
-                            FontSize="Medium"
-                            Text="Usuario: " />
-                        <Span FontSize="Title" Text="{Binding NombreUsuario}" />
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-        </HorizontalStackLayout>
-        <VerticalStackLayout Grid.Row="1">
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="20"
+                RowDefinitions="Auto,Auto">
+                <Label Text="Login" />
+                <Label Grid.Column="1" Text="Usuario" />
 
+                <Label
+                    Grid.Row="1"
+                    FontSize="Large"
+                    Text="{Binding Usuario.NombreUsuario}" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontSize="Large"
+                    Text="{Binding Usuario.UsuarioSistema}" />
+            </Grid>
+
+        </HorizontalStackLayout>
+        <Grid Grid.Row="1">
             <Button
+                Grid.Column="1"
                 Command="{Binding ObtenerPedidosCommand}"
                 FontAttributes="Bold"
                 FontSize="Body"
                 MaximumWidthRequest="200"
                 Text="Obtener ordenes" />
-        </VerticalStackLayout>
+        </Grid>
 
         <CollectionView Grid.Row="2" ItemsSource="{Binding OrdenesProduccion}">
             <CollectionView.ItemTemplate>
@@ -214,118 +221,6 @@
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </StackLayout>
-
-                            <!--<CollectionView Grid.Row="4" ItemsSource="{Binding Detalles}">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="model:OrdenProduccionDetalle">
-
-                                        <SwipeView Padding="10">
-
-                                            <SwipeView.LeftItems>
-                                                <SwipeItems>
-                                                    <SwipeItem
-                                                        BackgroundColor="#66b396"
-                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPtCommand}"
-                                                        CommandParameter="{Binding}"
-                                                        IconImageSource="dotnet_bot.png"
-                                                        Text="Notificar PT" />
-                                                </SwipeItems>
-                                            </SwipeView.LeftItems>
-
-                                            <Border Style="{StaticResource Border_ColVie_OrdenesDetalle}">
-                                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-
-                                                    <Grid RowDefinitions="Auto,Auto" Style="{StaticResource Grid_DatosOrdenes}">
-                                                        <Label Style="{StaticResource Label_PropiedadOrden}" Text="Producto" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding Producto}" />
-                                                    </Grid>
-
-                                                    <Grid
-                                                        Grid.Row="1"
-                                                        ColumnDefinitions="*,*"
-                                                        RowDefinitions="Auto,Auto"
-                                                        Style="{StaticResource Grid_DatosOrdenes}">
-                                                        <Label Style="{StaticResource Label_PropiedadOrden}" Text="Codigo material" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding CodigoMaterial}" />
-                                                        <Label
-                                                            Grid.Column="1"
-                                                            Style="{StaticResource Label_PropiedadOrden}"
-                                                            Text="Codigo producto" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Grid.Column="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding CodigoProducto}" />
-                                                    </Grid>
-
-                                                    <Grid
-                                                        Grid.Row="2"
-                                                        RowDefinitions="Auto,Auto"
-                                                        Style="{StaticResource Grid_DatosOrdenes}">
-                                                        <Label Style="{StaticResource Label_PropiedadOrden}" Text="Detalle" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding Detalle}" />
-                                                    </Grid>
-
-                                                    <Grid
-                                                        Grid.Row="3"
-                                                        ColumnDefinitions="*,*"
-                                                        RowDefinitions="Auto,Auto"
-                                                        Style="{StaticResource Grid_DatosOrdenes}">
-                                                        <Label Style="{StaticResource Label_PropiedadOrden}" Text="Codigo unidad" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding CodigoUnidad}" />
-                                                        <Label
-                                                            Grid.Column="1"
-                                                            Style="{StaticResource Label_PropiedadOrden}"
-                                                            Text="Cantidad" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Grid.Column="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding Cantidad}" />
-                                                    </Grid>
-
-                                                    <Grid
-                                                        Grid.Row="4"
-                                                        ColumnDefinitions="*,*"
-                                                        RowDefinitions="Auto,Auto"
-                                                        Style="{StaticResource Grid_DatosOrdenes}">
-                                                        <Label Style="{StaticResource Label_PropiedadOrden}" Text="Notificado" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding Notificado}" />
-                                                        <Label
-                                                            Grid.Column="1"
-                                                            Style="{StaticResource Label_PropiedadOrden}"
-                                                            Text="Saldo" />
-                                                        <Label
-                                                            Grid.Row="1"
-                                                            Grid.Column="1"
-                                                            Style="{StaticResource Label_ValorPropiedadOrden}"
-                                                            Text="{Binding Saldo}" />
-                                                    </Grid>
-
-
-                                                </Grid>
-                                            </Border>
-
-                                        </SwipeView>
-
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>-->
 
                         </Grid>
                     </Border>

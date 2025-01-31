@@ -83,52 +83,40 @@ namespace ControYaApp.ViewModels
 
                 try
                 {
-                    if (accessType == NetworkAccess.Internet)
+                    var result = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
+
+                    if (result.TryGetValue("usuarioSistema", out object? usuarioSistema) &&
+                        result.TryGetValue("estaResgitrado", out object? estaResgitrado))
                     {
-                        var res = await _restService.CheckUsuarioCredentialsAsync(Usuario);
-
-
-                        if (res.TryGetValue("estaResgitrado", out object? estaResgitrado) &&
-                            res.TryGetValue("usuarioSistema", out object? usuarioSistema))
-                        {
-
-                            usuario.UsuarioSistema = usuarioSistema.ToString();
-
-                            await _usuarioRepo.SaveUsuarioAsync(usuario);
-                            // TODO: Extraer toda la info aqui tal como 'SaveUsuarioAsync'
-
-                            var navParameter = new ShellNavigationQueryParameters
-                        {
-                            {"usuario", usuario }
-                        };
-                            await Shell.Current.GoToAsync("//ordenes", navParameter);
-                        }
-                        else
-                        {
-                            await Toast.Make("Error de datos").Show();
-                        }
-                    }
-                    else
-                    {
-                        await Toast.Make("Trabajando sin conexión").Show();
-
-                        var usuarioSistema = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
-
-                        if (!string.IsNullOrEmpty(usuarioSistema))
+                        var estado = bool.Parse(estaResgitrado.ToString());
+                        if (estado)
                         {
                             usuario.UsuarioSistema = usuarioSistema.ToString();
 
-                            var navParameter = new ShellNavigationQueryParameters
-                        {
-                            {"usuario", usuario }
-                        };
+                            var navParameter = new ShellNavigationQueryParameters { { "usuario", usuario } };
+
                             await Shell.Current.GoToAsync("//ordenes", navParameter);
                         }
-                        else
+                        else if (accessType == NetworkAccess.Internet)
                         {
-                            await Toast.Make("Datos erróneos").Show();
-                        }
+                            var res = await _restService.CheckUsuarioCredentialsAsync(Usuario);
 
+                            if (res.TryGetValue("estaResgitrado", out object? estaResgitrado1) &&
+                                res.TryGetValue("usuarioSistema", out object? usuarioSistema1))
+                            {
+
+                                var estado1 = bool.Parse(estaResgitrado.ToString());
+                                if (estado1)
+                                {
+                                    usuario.UsuarioSistema = usuarioSistema.ToString();
+
+                                    var navParameter = new ShellNavigationQueryParameters { { "usuario", usuario } };
+
+                                    await Shell.Current.GoToAsync("//ordenes", navParameter);
+                                }
+                            }
+                        }
+                        await Toast.Make("Usuario no encontrado").Show();
                     }
                 }
                 catch (Exception ex)

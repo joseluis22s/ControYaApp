@@ -24,16 +24,20 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
         // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
         public async Task<bool> SaveUsuarioAsync(Usuario usuario)
         {
+            // TODO: Eliminar el retorno bool del método.
             try
             {
                 await InitAsync();
-                if (_database.Table<Usuario>().Equals(usuario))
+                var count = await _database.Table<Usuario>().CountAsync(tbu =>
+                    tbu.UsuarioSistema == usuario.UsuarioSistema &&
+                    tbu.NombreUsuario == usuario.NombreUsuario &&
+                    tbu.Contrasena == usuario.Contrasena);
+                if (count == 0)
                 {
-                    return false;
+                    await _database.InsertAsync(usuario);
+                    return true;
                 }
-
-                await _database.InsertAsync(usuario);
-                return true;
+                return false;
             }
             catch (Exception)
             {
@@ -43,7 +47,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
 
         // Retorna TRUE si credenciales son correctas. FALSE no son correctas.
-        public async Task<string> CheckUsuarioCredentialsAsync(Usuario usuario)
+        public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
             try
             {
@@ -53,17 +57,25 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                     u.NombreUsuario == usuario.NombreUsuario &&
                     u.Contrasena == usuario.Contrasena).FirstAsync();
 
-
                 if (usuarioDb != null)
                 {
-                    return usuarioDb.UsuarioSistema;
+                    return new Dictionary<string, object>
+                    {
+                        {"usuarioSistema" , usuarioDb.UsuarioSistema},
+                        {"estaResgitrado" , true }
+                    };
                 }
-                return "";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return ex.Message;
+                throw;
             }
+
+            return new Dictionary<string, object>
+                    {
+                        {"usuarioSistema" , ""},
+                        {"estaResgitrado" , false }
+                    };
         }
 
 

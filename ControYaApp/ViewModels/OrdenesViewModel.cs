@@ -10,7 +10,7 @@ using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
-    [QueryProperty(nameof(NombreUsuario), "NombreUsuario")]
+    [QueryProperty(nameof(Usuario), "usuario")]
     public partial class OrdenesViewModel : ViewModelBase
     {
         private readonly OrdenRepo _ordenRepo;
@@ -19,18 +19,18 @@ namespace ControYaApp.ViewModels
 
 
 
-        private string? _nombreUsuario;
+        private Usuario? _usuario;
 
         private ObservableCollection<OrdenProduccionCabecera>? _ordenesProduccion;
 
 
 
-        public string? NombreUsuario
+        public Usuario? Usuario
         {
-            get => _nombreUsuario;
+            get => _usuario;
             set
             {
-                SetProperty(ref _nombreUsuario, value);
+                SetProperty(ref _usuario, value);
             }
         }
 
@@ -58,6 +58,7 @@ namespace ControYaApp.ViewModels
         }
 
 
+
         public async Task ObtenerPedidosAsync()
         {
             var loadingPopUpp = new LoadingPopUp();
@@ -65,35 +66,40 @@ namespace ControYaApp.ViewModels
 
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
 
-            if (accessType == NetworkAccess.Internet)
+            try
             {
-                ObservableCollection<OrdenProduccion> listaOrdenes = await _restService.GetAllOrdenesProduccionAsync(NombreUsuario);
-
-                if (listaOrdenes.Count == 0)
+                if (accessType == NetworkAccess.Internet)
                 {
-                    await Toast.Make("No se han cargado órdenes").Show();
-                    return;
+                    ObservableCollection<OrdenProduccion> listaOrdenes = await _restService.GetAllOrdenesProduccionByUsuarioAsync(Usuario.UsuarioSistema);
+
+                    if (listaOrdenes.Count == 0)
+                    {
+                        await Toast.Make("No se han cargado órdenes").Show();
+                    }
+                    else
+                    {
+                        OrdenesProduccion = MapOrdenesCabeceras(listaOrdenes);
+                        await _ordenRepo.SaveOrdenesAsync(listaOrdenes);
+                    }
                 }
                 else
                 {
-                    // TODO: Verificar si se ncesita limpiar la base antes de "sincronizar"
-                    OrdenesProduccion = MapOrdenesCabeceras(listaOrdenes);
-                    await _ordenRepo.SaveOrdenesAsync(listaOrdenes);
+                    await Toast.Make("Trabajando sin conexión").Show();
+
+                    var listaOrdenes = await _ordenRepo.GetOrdenesByUsuario(Usuario.UsuarioSistema);
+                    if (listaOrdenes.Count == 0)
+                    {
+                        await Toast.Make("No se han cargado órdenes").Show();
+                    }
+                    else
+                    {
+                        OrdenesProduccion = MapOrdenesCabeceras(listaOrdenes);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                await Toast.Make("Trabajando sin red").Show();
-
-                var listaOrdenes = await _ordenRepo.GetOrdenesByUsuario(NombreUsuario);
-                if (listaOrdenes.Count == 0)
-                {
-                    await Toast.Make("No se han cargado órdenes").Show();
-                }
-                else
-                {
-                    OrdenesProduccion = MapOrdenesCabeceras(listaOrdenes);
-                }
+                await Toast.Make(ex.Message).Show();
             }
 
             await loadingPopUpp.CloseAsync();
@@ -164,7 +170,7 @@ namespace ControYaApp.ViewModels
                 Centro = detalle.Cabecera.Centro,
                 CodigoProduccion = detalle.Cabecera.CodigoProduccion,
                 Orden = detalle.Cabecera.Orden,
-                CodigoUsuario = NombreUsuario,
+                CodigoUsuario = Usuario.UsuarioSistema,
                 Fecha = detalle.Cabecera.Fecha,
                 Referencia = detalle.Cabecera.Referencia,
                 Detalle = detalle.Detalle,

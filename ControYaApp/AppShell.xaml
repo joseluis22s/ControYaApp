@@ -28,14 +28,26 @@
     -->
 
     <Shell.FlyoutHeader>
-        <HorizontalStackLayout BackgroundColor="Blue">
+        <Grid ColumnDefinitions="*,Auto">
             <Button
-                BackgroundColor="Red"
+                BackgroundColor="#cacccf"
+                BorderColor="#a0a5ad"
                 Command="{Binding GoToLoginCommand}"
                 HorizontalOptions="Center"
-                Text="Cerrar sesiòn"
-                VerticalOptions="Center" />
-        </HorizontalStackLayout>
+                Text="Cerrar sesiòn" />
+            <Button
+                BackgroundColor="Transparent"
+                BorderColor="Transparent"
+                Command="{Binding FlyoutShellCommand}" />
+        </Grid>
     </Shell.FlyoutHeader>
+    <Shell.FlyoutContent>
+        <Button
+            Command="{Binding}"
+            FontAttributes="Bold"
+            FontSize="Body"
+            IsEnabled="{Binding IsConected}"
+            IsVisible="{Binding IsConected}" />
+    </Shell.FlyoutContent>
 
 </Shell>
