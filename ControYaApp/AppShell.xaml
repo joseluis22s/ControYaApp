@@ -29,25 +29,39 @@
 
     <Shell.FlyoutHeader>
         <Grid ColumnDefinitions="*,Auto">
+            <Label
+                FontAttributes="Bold"
+                FontSize="20"
+                HorizontalOptions="CenterAndExpand"
+                Text="CBMóvil"
+                VerticalOptions="Center" />
             <Button
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                BorderColor="Transparent"
+                Command="{Binding FlyoutShellCommand}"
+                FontSize="25"
+                HorizontalOptions="End"
+                Text="×"
+                TextColor="Black" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <Grid
+            Padding="10"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="5">
+            <Button Command="{Binding ExtraerDatosCommand}" Text="Extaer datos" />
+            <Button
+                Grid.Column="1"
                 BackgroundColor="#cacccf"
                 BorderColor="#a0a5ad"
                 Command="{Binding GoToLoginCommand}"
                 HorizontalOptions="Center"
-                Text="Cerrar sesiòn" />
-            <Button
-                BackgroundColor="Transparent"
-                BorderColor="Transparent"
-                Command="{Binding FlyoutShellCommand}" />
+                Text="Cerrar sesión" />
         </Grid>
-    </Shell.FlyoutHeader>
-    <Shell.FlyoutContent>
-        <Button
-            Command="{Binding}"
-            FontAttributes="Bold"
-            FontSize="Body"
-            IsEnabled="{Binding IsConected}"
-            IsVisible="{Binding IsConected}" />
-    </Shell.FlyoutContent>
+    </Shell.FlyoutFooter>
+
 
 </Shell>

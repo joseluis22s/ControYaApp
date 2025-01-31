@@ -114,9 +114,13 @@ namespace ControYaApp.ViewModels
 
                                     await Shell.Current.GoToAsync("//ordenes", navParameter);
                                 }
+                                else
+                                {
+
+                                    await Toast.Make("Usuario no encontrado").Show();
+                                }
                             }
                         }
-                        await Toast.Make("Usuario no encontrado").Show();
                     }
                 }
                 catch (Exception ex)

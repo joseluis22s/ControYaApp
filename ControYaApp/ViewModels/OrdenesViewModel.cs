@@ -61,41 +61,20 @@ namespace ControYaApp.ViewModels
 
         public async Task ObtenerPedidosAsync()
         {
+            // TODO: Verificar si se debe cambiar loadingPopUpp dentro de la condición.
+
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
-            NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-
             try
             {
-                if (accessType == NetworkAccess.Internet)
-                {
-                    ObservableCollection<OrdenProduccion> listaOrdenes = await _restService.GetAllOrdenesProduccionByUsuarioAsync(Usuario.UsuarioSistema);
+                var ordenesDb = await _ordenRepo.GetOrdenesByUsuario(Usuario.UsuarioSistema);
 
-                    if (listaOrdenes.Count == 0)
-                    {
-                        await Toast.Make("No se han cargado órdenes").Show();
-                    }
-                    else
-                    {
-                        OrdenesProduccion = MapOrdenesCabeceras(listaOrdenes);
-                        await _ordenRepo.SaveOrdenesAsync(listaOrdenes);
-                    }
-                }
-                else
+                if (ordenesDb.Count != 0)
                 {
-                    await Toast.Make("Trabajando sin conexión").Show();
-
-                    var listaOrdenes = await _ordenRepo.GetOrdenesByUsuario(Usuario.UsuarioSistema);
-                    if (listaOrdenes.Count == 0)
-                    {
-                        await Toast.Make("No se han cargado órdenes").Show();
-                    }
-                    else
-                    {
-                        OrdenesProduccion = MapOrdenesCabeceras(listaOrdenes);
-                    }
+                    OrdenesProduccion = MapOrdenesCabeceras(ordenesDb);
                 }
+                await Toast.Make("No se han extraido datos").Show();
             }
             catch (Exception ex)
             {

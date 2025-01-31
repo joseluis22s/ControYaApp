@@ -5,11 +5,11 @@ namespace ControYaApp
 {
     public partial class AppShell : Shell
     {
-        private AppShellViewModel _vm;
-        public AppShell()
+
+        public AppShell(AppShellViewModel vm)
         {
             InitializeComponent();
-            BindingContext = _vm = new AppShellViewModel();
+            BindingContext = vm;
             Routing.RegisterRoute("notificarPt", typeof(NotificarPtPage));
         }
     }

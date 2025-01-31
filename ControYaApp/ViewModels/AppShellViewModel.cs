@@ -25,13 +25,13 @@ namespace ControYaApp.ViewModels
 
         public ICommand FlyoutShellCommand { get; }
 
-        public ICommand SincronizarCommand { get; }
+        public ICommand ExtraerDatosCommand { get; }
 
         public AppShellViewModel(RestService restService)
         {
             GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
-            SincronizarCommand = new AsyncRelayCommand(SincronizarAsync);
+            ExtraerDatosCommand = new AsyncRelayCommand(ExtraerDatosAsync);
 
             _restService = restService;
         }
@@ -52,11 +52,11 @@ namespace ControYaApp.ViewModels
             IsConected = false;
         }
 
-        public async Task SincronizarAsync()
+        public async Task ExtraerDatosAsync()
         {
-            await Shell.Current.DisplayAlert("¡Alerta!", "¿Seguro que desea extraer datos? Se sobreescribiran los actualmente guardaos", "Aceptar", "Cancelar");
+            await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
-            var usuarios = _restService
+            // TODO: Extraer todos los datos aquí.
         }
     }
 }

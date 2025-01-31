@@ -59,12 +59,12 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuario(string? nombreUsuario)
+        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuario(string usuarioSistema)
         {
             try
             {
                 await InitAsync();
-                var ordenes = await _database.Table<OrdenProduccion>().Where(t => t.CodigoUsuario.Equals(nombreUsuario)).ToListAsync();
+                var ordenes = await _database.Table<OrdenProduccion>().Where(t => t.CodigoUsuario.Equals(usuarioSistema)).ToListAsync();
                 return new ObservableCollection<OrdenProduccion>(ordenes);
             }
             catch (Exception)
