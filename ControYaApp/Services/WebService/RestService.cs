@@ -21,7 +21,7 @@ namespace ControYaApp.Services.WebService
         }
 
 
-        public async Task<bool> VerificarCredencialesUsuario(Usuario usuario)
+        public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
             string uri = _uri + "/usuarios/login-usuario";
             try
@@ -34,25 +34,33 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     var resContent = await response.Content.ReadAsStringAsync();
-                    var valor = JsonSerializer.Deserialize<Dictionary<string, bool>>(resContent);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, object>>(resContent);
 
+                    //var estaResgitrado = (bool?)values?["estaResgitrado"];
+                    //var usuarioSistema = (Usuario?)values?["usuarioSistema"];
 
-                    if (valor != null && valor.TryGetValue("estaResgitrado", out bool estaResgitrado))
+                    if (values != null &&
+                        values.TryGetValue("estaResgitrado", out object? estaResgitrado) &&
+                        values.TryGetValue("usuarioSistema", out object? usuarioSistema))
                     {
-                        return estaResgitrado;
+                        return new Dictionary<string, object>
+                        {
+                            { "estaResgitrado", estaResgitrado },
+                            { "usuarioSistema", usuarioSistema }
+                        };
                     }
                     else
                     {
-                        return false;
+                        return [];
                     }
 
                 }
-                return false;
+                return [];
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                return false;
+                return [];
             }
         }
 

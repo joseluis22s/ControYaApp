@@ -13,7 +13,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(NombreUsuario), "NombreUsuario")]
     public partial class OrdenesViewModel : ViewModelBase
     {
-        private OrdenRepo _ordenRepo;
+        private readonly OrdenRepo _ordenRepo;
 
         private readonly RestService _restService;
 

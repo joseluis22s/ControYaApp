@@ -63,6 +63,7 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<DatabaseConnection>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddSingleton<OrdenRepo>();
+            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
 
             return mauiAppBuilder;
         }

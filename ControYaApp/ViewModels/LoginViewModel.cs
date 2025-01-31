@@ -3,7 +3,7 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
-using ControYaApp.Services.Database;
+using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.WebService;
 using ControYaApp.Views.Controls;
 
@@ -14,7 +14,7 @@ namespace ControYaApp.ViewModels
 
         private readonly RestService _restService;
 
-        private readonly DatabaseConnection _databaseConnection;
+        private readonly UsuarioRepo _usuarioRepo;
 
 
         private Usuario? _usuario = new();
@@ -51,16 +51,15 @@ namespace ControYaApp.ViewModels
         public ICommand? ProbarConexionCommand { get; }
 
 
-        public LoginViewModel(DatabaseConnection databaseConnection, RestService restService)
+        public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService)
         {
             EsVisibleContrasena = true;
             NoEsVisibleContrasena = false;
             GoToOrdenesCommand = new AsyncRelayCommand(GoToOrdenesAsync);
             ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
-            ProbarConexionCommand = new AsyncRelayCommand(ProbarConexionAsync);
 
             _restService = restService;
-            _databaseConnection = databaseConnection;
+            _usuarioRepo = usuarioRepo;
         }
 
         private async Task GoToOrdenesAsync()
@@ -71,24 +70,71 @@ namespace ControYaApp.ViewModels
             }
             else
             {
+                var usuario = new Usuario
+                {
+                    NombreUsuario = Usuario.NombreUsuario,
+                    Contrasena = Usuario?.Contrasena
+                };
 
                 var loadingPopUpp = new LoadingPopUp();
                 _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
-                bool res = await _restService.VerificarCredencialesUsuario(Usuario);
-                if (res)
-                {
-                    var navParameter = new ShellNavigationQueryParameters
-                    {
-                        {"NombreUsuario", Usuario.NombreUsuario}
-                    };
-                    await Shell.Current.GoToAsync("//ordenes", navParameter);
-                }
-                else
-                {
-                    await Toast.Make("Error al iniciar sesión").Show();
-                }
+                NetworkAccess accessType = Connectivity.Current.NetworkAccess;
 
+                try
+                {
+                    if (accessType == NetworkAccess.Internet)
+                    {
+                        var res = await _restService.CheckUsuarioCredentialsAsync(Usuario);
+
+
+                        if (res.TryGetValue("estaResgitrado", out object? estaResgitrado) &&
+                            res.TryGetValue("usuarioSistema", out object? usuarioSistema))
+                        {
+
+                            usuario.UsuarioSistema = usuarioSistema.ToString();
+
+                            await _usuarioRepo.SaveUsuarioAsync(usuario);
+                            // TODO: Extraer toda la info aqui tal como 'SaveUsuarioAsync'
+
+                            var navParameter = new ShellNavigationQueryParameters
+                        {
+                            {"usuario", usuario }
+                        };
+                            await Shell.Current.GoToAsync("//ordenes", navParameter);
+                        }
+                        else
+                        {
+                            await Toast.Make("Error de datos").Show();
+                        }
+                    }
+                    else
+                    {
+                        await Toast.Make("Trabajando sin conexión").Show();
+
+                        var usuarioSistema = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
+
+                        if (!string.IsNullOrEmpty(usuarioSistema))
+                        {
+                            usuario.UsuarioSistema = usuarioSistema.ToString();
+
+                            var navParameter = new ShellNavigationQueryParameters
+                        {
+                            {"usuario", usuario }
+                        };
+                            await Shell.Current.GoToAsync("//ordenes", navParameter);
+                        }
+                        else
+                        {
+                            await Toast.Make("Datos erróneos").Show();
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await Toast.Make(ex.Message).Show();
+                }
                 await loadingPopUpp.CloseAsync();
             }
         }
@@ -107,23 +153,6 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        // TODO: Eliminar
-        private async Task ProbarConexionAsync()
-        {
-            var loadingPopUpp = new LoadingPopUp();
-            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
-            bool estaConectado = await _databaseConnection.ConectarDatabase();
-
-            if (estaConectado)
-            {
-                await Toast.Make("Se ha conectado").Show();
-            }
-            else
-            {
-                await Toast.Make("Error al conectar").Show();
-            }
-            await loadingPopUpp.CloseAsync();
-        }
     }
 }
