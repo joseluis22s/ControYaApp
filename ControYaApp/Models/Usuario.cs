@@ -1,6 +1,4 @@
 ﻿#nullable disable
-using Newtonsoft.Json;
-
 namespace ControYaApp.Models
 {
     public partial class Usuario
@@ -11,7 +9,6 @@ namespace ControYaApp.Models
 
         public string UsuarioSistema { get; set; }
 
-        [JsonIgnore]
         public string Bloqueado { get; set; }
 
     }

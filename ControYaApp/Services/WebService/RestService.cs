@@ -81,10 +81,35 @@ namespace ControYaApp.Services.WebService
                 {
                     string content = await response.Content.ReadAsStringAsync();
                     var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<Usuario>>>(content, _jsonSerializerSettings);
-                    if (values.IsNullOrEmpty() &&
+                    if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("usuarios", out ObservableCollection<Usuario>? usuarios))
                     {
                         return new ObservableCollection<Usuario>(usuarios);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return [];
+        }
+
+        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesProduccionAsync()
+        {
+            string uri = _uri + "/ordenes/getall";
+
+            try
+            {
+                var response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, _jsonSerializerSettings);
+                    if (!values.IsNullOrEmpty() &&
+                        values.TryGetValue("ordenes", out ObservableCollection<OrdenProduccion>? ordenes))
+                    {
+                        return new ObservableCollection<OrdenProduccion>(ordenes);
                     }
                 }
             }
@@ -124,6 +149,107 @@ namespace ControYaApp.Services.WebService
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+            return [];
+        }
+
+        public async Task<ObservableCollection<Periodos>> GetAllPeriodosAsync()
+        {
+            string uri = _uri + "/periodos/getall";
+
+            try
+            {
+                var response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<Periodos>>>(content, _jsonSerializerSettings);
+                    if (!values.IsNullOrEmpty() &&
+                        values.TryGetValue("periodos", out ObservableCollection<Periodos>? periodos))
+                    {
+                        return new ObservableCollection<Periodos>(periodos);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return [];
+        }
+
+        public async Task<ObservableCollection<NotificarPt>> GetAllPt()
+        {
+            string uri = _uri + "/productos/getall";
+
+            try
+            {
+                var response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<NotificarPt>>>(content, _jsonSerializerSettings);
+                    if (!values.IsNullOrEmpty() &&
+                        values.TryGetValue("notificarPt", out ObservableCollection<NotificarPt>? productos))
+                    {
+                        return new ObservableCollection<NotificarPt>(productos);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return [];
+        }
+
+        public async Task<ObservableCollection<NotificarEm>> GetAllEm()
+        {
+            string uri = _uri + "/materiales/getall";
+
+            try
+            {
+                var response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<NotificarEm>>>(content, _jsonSerializerSettings);
+                    if (!values.IsNullOrEmpty() &&
+                        values.TryGetValue("notificarMaterial", out ObservableCollection<NotificarEm>? materiales))
+                    {
+                        return new ObservableCollection<NotificarEm>(materiales);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return [];
+        }
+
+
+        public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleados()
+        {
+            string uri = _uri + "/empleados/getall";
+
+            try
+            {
+                var response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<EmpleadoSistema>>>(content, _jsonSerializerSettings);
+                    if (!values.IsNullOrEmpty() &&
+                        values.TryGetValue("empleados", out ObservableCollection<EmpleadoSistema>? empleados))
+                    {
+                        return new ObservableCollection<EmpleadoSistema>(empleados);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
             return [];
         }

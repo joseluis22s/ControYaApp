@@ -108,7 +108,7 @@ namespace ControYaApp.ViewModels
                                 var estado2 = bool.Parse(estaRegistrado1.ToString());
                                 if (estado2)
                                 {
-                                    usuario.UsuarioSistema = usuarioSistema.ToString();
+                                    usuario.UsuarioSistema = usuarioSistema1.ToString();
 
                                     var navParameter = new ShellNavigationQueryParameters { { "usuario", usuario } };
 

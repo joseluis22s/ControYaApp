@@ -57,8 +57,11 @@ namespace ControYaApp.ViewModels
             await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
             var usuarios = await _restService.GetAllUsuariosAsync();
-
-
+            var ordenes = await _restService.GetOrdenesProduccionAsync();
+            var periodos = await _restService.GetAllPeriodosAsync();
+            var productos = await _restService.GetAllPt();
+            var materiales = await _restService.GetAllEm();
+            var empleados = await _restService.GetAllEmpleados();
 
             // TODO: Extraer todos los datos aquí.
         }
