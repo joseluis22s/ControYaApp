@@ -17,5 +17,7 @@
         public float Cantidad { get; set; }
 
         public decimal? Notificado { get; set; }
+
+        public DateTime Fecha { get; set; } = DateTime.Now;
     }
 }

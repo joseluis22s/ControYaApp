@@ -20,16 +20,22 @@ namespace ControYaApp.ViewModels
 
         public ICommand GoBackCommand { get; }
 
+        public ICommand NotificarPtCommand { get; }
 
         public NotificarPtViewModel()
         {
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
+            NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
         }
 
 
         private async Task GoBackAsync()
         {
             await Shell.Current.GoToAsync("..");
+        }
+        private async Task NotificarPtAsync()
+        {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using ControYaApp.Services.Database;
+using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels;
@@ -63,7 +64,14 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<DatabaseConnection>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddSingleton<OrdenRepo>();
+            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
+            mauiAppBuilder.Services.AddSingleton<MaterialEgresadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<ProductoTerminadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
+
+
+            mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
 
             return mauiAppBuilder;
         }

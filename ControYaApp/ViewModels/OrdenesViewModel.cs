@@ -68,7 +68,7 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                var ordenesDb = await _ordenRepo.GetOrdenesByUsuario(Usuario.UsuarioSistema);
+                var ordenesDb = await _ordenRepo.GetOrdenesByUsuarioSistema(Usuario.UsuarioSistema);
 
                 if (ordenesDb.Count != 0)
                 {

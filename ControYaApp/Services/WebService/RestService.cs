@@ -69,7 +69,6 @@ namespace ControYaApp.Services.WebService
                         };
         }
 
-
         public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
         {
             string uri = _uri + "/usuarios/getall";
@@ -228,7 +227,6 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-
         public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleados()
         {
             string uri = _uri + "/empleados/getall";
@@ -252,6 +250,25 @@ namespace ControYaApp.Services.WebService
                 throw;
             }
             return [];
+        }
+
+        public async Task NotificarPtAsync(NotificarPt notificarPt)
+        {
+            string uri = _uri + "/productos/sp-notificarpt";
+            try
+            {
+                string json = JsonConvert.SerializeObject(notificarPt, _jsonSerializerSettings);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine("Procedimiento ejecutado");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
         }
 
     }

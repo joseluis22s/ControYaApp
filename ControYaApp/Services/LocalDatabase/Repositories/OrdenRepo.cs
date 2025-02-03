@@ -8,9 +8,8 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
     {
         private SQLiteAsyncConnection? _database;
 
-        public OrdenRepo()
-        {
-        }
+
+        // TODO: Eliminar todo lo que no se use.
 
         async Task InitAsync()
         {
@@ -59,7 +58,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuario(string usuarioSistema)
+        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuarioSistema(string usuarioSistema)
         {
             try
             {
@@ -84,6 +83,22 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception)
             {
                 return;
+            }
+        }
+
+        public async Task SaveAllOrdenesAsync(ObservableCollection<OrdenProduccion> ordenes)
+        {
+            try
+            {
+                await InitAsync();
+
+                await _database.DeleteAllAsync<OrdenProduccion>();
+
+                await _database.InsertAllAsync(ordenes);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

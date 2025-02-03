@@ -1,4 +1,5 @@
-﻿using ControYaApp.Models;
+﻿using System.Collections.ObjectModel;
+using ControYaApp.Models;
 using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
@@ -79,7 +80,21 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                     };
         }
 
+        public async Task SaveAllUsuariosAsync(ObservableCollection<Usuario> usuarios)
+        {
+            try
+            {
+                await InitAsync();
 
+                await _database.DeleteAllAsync<Usuario>();
+
+                await _database.InsertAllAsync(usuarios);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
     }
 }
