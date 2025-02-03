@@ -56,6 +56,10 @@ namespace ControYaApp.ViewModels
         {
             await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
+            var usuarios = await _restService.GetAllUsuariosAsync();
+
+
+
             // TODO: Extraer todos los datos aquí.
         }
     }

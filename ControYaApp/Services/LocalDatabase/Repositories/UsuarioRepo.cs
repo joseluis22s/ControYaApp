@@ -51,18 +51,19 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
         {
             try
             {
+                // TODO: Verificar si 'usuarioDb' puede ser 'null'. En ese caso el return cambio
                 await InitAsync();
 
                 var usuarioDb = await _database.Table<Usuario>().Where(u =>
                     u.NombreUsuario == usuario.NombreUsuario &&
-                    u.Contrasena == usuario.Contrasena).FirstAsync();
+                    u.Contrasena == usuario.Contrasena).FirstOrDefaultAsync();
 
                 if (usuarioDb != null)
                 {
                     return new Dictionary<string, object>
                     {
                         {"usuarioSistema" , usuarioDb.UsuarioSistema},
-                        {"estaResgitrado" , true }
+                        {"estaRegistrado" , true }
                     };
                 }
             }
@@ -74,7 +75,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             return new Dictionary<string, object>
                     {
                         {"usuarioSistema" , ""},
-                        {"estaResgitrado" , false }
+                        {"estaRegistrado" , false }
                     };
         }
 

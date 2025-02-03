@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
-using System.Text.Json;
 using ControYaApp.Models;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ControYaApp.Services.WebService
 {
@@ -11,18 +13,29 @@ namespace ControYaApp.Services.WebService
         private readonly string _uri = "http://192.168.47.4:100";
         private readonly HttpClient _client = new();
 
+        private JsonSerializerSettings _jsonSerializerSettings;
 
         public RestService()
         {
+            _jsonSerializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            };
         }
 
 
         public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
-            string uri = _uri + "/usuarios/login-usuario";
+            string uri = _uri + "/usuarios/loginusuario";
             try
             {
-                string json = JsonSerializer.Serialize<Usuario>(usuario, SerializerOptions());
+                var usuarioLogin = new
+                {
+                    NombreUsuario = usuario.NombreUsuario,
+                    UsuarioSistema = "",
+                    Contrasena = usuario.Contrasena
+                };
+                string json = JsonConvert.SerializeObject(usuarioLogin, _jsonSerializerSettings);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _client.PostAsync(uri, content);
@@ -30,18 +43,15 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     var resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, object>>(resContent);
-
-                    //var estaResgitrado = (bool?)values?["estaResgitrado"];
-                    //var usuarioSistema = (Usuario?)values?["usuarioSistema"];
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(resContent);
 
                     if (values != null &&
-                        values.TryGetValue("estaResgitrado", out object? estaResgitrado) &&
+                        values.TryGetValue("estaRegistrado", out object? estaRegistrado) &&
                         values.TryGetValue("usuarioSistema", out object? usuarioSistema))
                     {
                         return new Dictionary<string, object>
                         {
-                            { "estaResgitrado", estaResgitrado },
+                            { "estaRegistrado", estaRegistrado },
                             { "usuarioSistema", usuarioSistema }
                         };
                     }
@@ -51,6 +61,36 @@ namespace ControYaApp.Services.WebService
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+            return new Dictionary<string, object>
+                        {
+                            { "estaRegistrado", false },
+                            { "usuarioSistema", "" }
+                        };
+        }
+
+
+        public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
+        {
+            string uri = _uri + "/usuarios/getall";
+
+            try
+            {
+                var response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<Usuario>>>(content, _jsonSerializerSettings);
+                    if (values.IsNullOrEmpty() &&
+                        values.TryGetValue("usuarios", out ObservableCollection<Usuario>? usuarios))
+                    {
+                        return new ObservableCollection<Usuario>(usuarios);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
             return [];
         }
@@ -65,7 +105,7 @@ namespace ControYaApp.Services.WebService
             };
             try
             {
-                string json = JsonSerializer.Serialize<Usuario>(usuario, SerializerOptions());
+                string json = JsonConvert.SerializeObject(usuario, _jsonSerializerSettings);
                 StringContent request = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _client.PostAsync(uri, request);
@@ -73,7 +113,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var deserialized = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, SerializerOptions());
+                    var deserialized = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, _jsonSerializerSettings);
 
                     if (deserialized != null && deserialized.TryGetValue("ordenes", out ObservableCollection<OrdenProduccion>? ordenesProduccion))
                     {
@@ -88,12 +128,5 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        private JsonSerializerOptions SerializerOptions()
-        {
-            return new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-        }
     }
 }

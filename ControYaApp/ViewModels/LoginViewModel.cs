@@ -80,16 +80,16 @@ namespace ControYaApp.ViewModels
                 _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
                 NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-
+                // TODO: Agregar que cuando no haya conexión, decir que se conecte en caso de que no se haya importado el usaurio.
                 try
                 {
                     var result = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
 
                     if (result.TryGetValue("usuarioSistema", out object? usuarioSistema) &&
-                        result.TryGetValue("estaResgitrado", out object? estaResgitrado))
+                        result.TryGetValue("estaRegistrado", out object? estaRegistrado))
                     {
-                        var estado = bool.Parse(estaResgitrado.ToString());
-                        if (estado)
+                        var estado1 = bool.Parse(estaRegistrado.ToString());
+                        if (estado1)
                         {
                             usuario.UsuarioSistema = usuarioSistema.ToString();
 
@@ -101,12 +101,12 @@ namespace ControYaApp.ViewModels
                         {
                             var res = await _restService.CheckUsuarioCredentialsAsync(Usuario);
 
-                            if (res.TryGetValue("estaResgitrado", out object? estaResgitrado1) &&
+                            if (res.TryGetValue("estaRegistrado", out object? estaRegistrado1) &&
                                 res.TryGetValue("usuarioSistema", out object? usuarioSistema1))
                             {
 
-                                var estado1 = bool.Parse(estaResgitrado.ToString());
-                                if (estado1)
+                                var estado2 = bool.Parse(estaRegistrado1.ToString());
+                                if (estado2)
                                 {
                                     usuario.UsuarioSistema = usuarioSistema.ToString();
 
@@ -116,11 +116,22 @@ namespace ControYaApp.ViewModels
                                 }
                                 else
                                 {
-
-                                    await Toast.Make("Usuario no encontrado").Show();
+                                    await Toast.Make("Credenciales incorrectas").Show();
                                 }
                             }
+                            else
+                            {
+                                await Toast.Make("Error de sistema").Show();
+                            }
                         }
+                        else
+                        {
+                            await Toast.Make("Usuario no encontrado").Show();
+                        }
+                    }
+                    else
+                    {
+                        await Toast.Make("Error de sistema").Show();
                     }
                 }
                 catch (Exception ex)

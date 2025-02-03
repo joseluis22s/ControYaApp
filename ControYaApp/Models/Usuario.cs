@@ -1,5 +1,5 @@
 ﻿#nullable disable
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace ControYaApp.Models
 {
@@ -9,8 +9,10 @@ namespace ControYaApp.Models
 
         public string Contrasena { get; set; }
 
-        [JsonIgnore]
         public string UsuarioSistema { get; set; }
+
+        [JsonIgnore]
+        public string Bloqueado { get; set; }
 
     }
 }
