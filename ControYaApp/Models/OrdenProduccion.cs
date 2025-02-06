@@ -1,4 +1,7 @@
 ﻿#nullable disable
+using Newtonsoft.Json;
+using SQLite;
+
 namespace ControYaApp.Models
 {
     public class OrdenProduccion
@@ -10,6 +13,7 @@ namespace ControYaApp.Models
 
         public int Orden { get; set; }
 
+        [JsonProperty(PropertyName = "codigoUsuarioAprobar")]
         public string CodigoUsuario { get; set; }
 
         public DateTime Fecha { get; set; }
@@ -29,5 +33,9 @@ namespace ControYaApp.Models
         public float Cantidad { get; set; }
 
         public decimal? Notificado { get; set; }
+
+        [JsonIgnore]
+        [PrimaryKey, AutoIncrement]
+        public int? Id { get; set; }
     }
 }

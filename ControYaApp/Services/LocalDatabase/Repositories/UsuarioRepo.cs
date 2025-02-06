@@ -55,9 +55,10 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 // TODO: Verificar si 'usuarioDb' puede ser 'null'. En ese caso el return cambio
                 await InitAsync();
 
+
                 var usuarioDb = await _database.Table<Usuario>().Where(u =>
-                    u.NombreUsuario == usuario.NombreUsuario &&
-                    u.Contrasena == usuario.Contrasena).FirstOrDefaultAsync();
+                    u.NombreUsuario.Equals(usuario.NombreUsuario) &&
+                    u.Contrasena.Equals(usuario.Contrasena)).FirstOrDefaultAsync();
 
                 if (usuarioDb != null)
                 {
@@ -95,6 +96,23 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 throw;
             }
         }
+
+        public async Task<ObservableCollection<Usuario>> GetAllUsuarios()
+        {
+            try
+            {
+                await InitAsync();
+
+                var usuarios = await _database.Table<Usuario>().ToListAsync();
+                if (usuarios.Count != 0)
+                {
+                    return new ObservableCollection<Usuario>(usuarios);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
+
 
     }
 }

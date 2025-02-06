@@ -72,8 +72,8 @@ namespace ControYaApp.ViewModels
             {
                 var usuario = new Usuario
                 {
-                    NombreUsuario = Usuario.NombreUsuario,
-                    Contrasena = Usuario?.Contrasena
+                    NombreUsuario = Usuario.NombreUsuario.Trim(),
+                    Contrasena = Usuario?.Contrasena.Trim()
                 };
 
                 var loadingPopUpp = new LoadingPopUp();
@@ -83,6 +83,7 @@ namespace ControYaApp.ViewModels
                 // TODO: Agregar que cuando no haya conexión, decir que se conecte en caso de que no se haya importado el usaurio.
                 try
                 {
+                    // TODO: VER MENSAJE de db
                     var result = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
 
                     if (result.TryGetValue("usuarioSistema", out object? usuarioSistema) &&
@@ -99,10 +100,11 @@ namespace ControYaApp.ViewModels
                         }
                         else if (accessType == NetworkAccess.Internet)
                         {
-                            var res = await _restService.CheckUsuarioCredentialsAsync(Usuario);
+                            var res = await _restService.CheckUsuarioCredentialsAsync(Usuario!);
 
                             if (res.TryGetValue("estaRegistrado", out object? estaRegistrado1) &&
-                                res.TryGetValue("usuarioSistema", out object? usuarioSistema1))
+                                res.TryGetValue("usuarioSistema", out object? usuarioSistema1) &&
+                                    estaRegistrado1 != null)
                             {
 
                                 var estado2 = bool.Parse(estaRegistrado1.ToString());

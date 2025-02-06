@@ -1,7 +1,9 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.WebService;
+using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -30,6 +32,7 @@ namespace ControYaApp.ViewModels
 
         public ICommand ExtraerDatosCommand { get; }
 
+
         public AppShellViewModel(RestService restService, LocalRepoService localRepoService
             )
         {
@@ -50,15 +53,20 @@ namespace ControYaApp.ViewModels
             Shell.Current.FlyoutIsPresented = !Shell.Current.FlyoutIsPresented;
 
             NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+
+            IsConected = false;
             if (accessType == NetworkAccess.Internet)
             {
                 IsConected = true;
             }
-            IsConected = false;
         }
 
         public async Task ExtraerDatosAsync()
         {
+
+            var loadingPopUpp = new LoadingPopUp();
+            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
             await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
             var usuarios = await _restService.GetAllUsuariosAsync();
@@ -68,6 +76,7 @@ namespace ControYaApp.ViewModels
             var materiales = await _restService.GetAllEm();
             var empleados = await _restService.GetAllEmpleados();
 
+
             await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
             await _localRepoService.MaterialEgresadoRepo.SaveAllEmAsync(materiales);
             await _localRepoService.ProductoTerminadoRepo.SaveAllPtAsync(productos);
@@ -75,8 +84,9 @@ namespace ControYaApp.ViewModels
             await _localRepoService.OrdenRepo.SaveAllOrdenesAsync(ordenes);
             await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
 
+            Shell.Current.FlyoutIsPresented = false;
 
-            // TODO: Extraer todos los datos aquí.
+            await loadingPopUpp.CloseAsync();
         }
     }
 }

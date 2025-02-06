@@ -1,4 +1,7 @@
 ﻿#nullable disable
+using Newtonsoft.Json;
+using SQLite;
+
 namespace ControYaApp.Models
 {
     public partial class Usuario
@@ -11,5 +14,8 @@ namespace ControYaApp.Models
 
         public string Bloqueado { get; set; }
 
+        [JsonIgnore]
+        [PrimaryKey, AutoIncrement]
+        public int? Id { get; set; }
     }
 }

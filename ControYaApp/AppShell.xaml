@@ -52,7 +52,11 @@
             Padding="10"
             ColumnDefinitions="*,Auto"
             ColumnSpacing="5">
-            <Button Command="{Binding ExtraerDatosCommand}" Text="Extaer datos" />
+            <Button
+                Command="{Binding ExtraerDatosCommand}"
+                IsEnabled="{Binding IsConected}"
+                IsVisible="{Binding IsConected}"
+                Text="Extaer datos" />
             <Button
                 Grid.Column="1"
                 BackgroundColor="#cacccf"

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using ControYaApp.Models;
+using ControYaApp.Services.WebService.ModelReq;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -10,7 +11,7 @@ namespace ControYaApp.Services.WebService
 {
     public class RestService
     {
-        private readonly string _uri = "http://192.168.47.4:100";
+        private string _uri = "http://192.168.47.4:100";
         private readonly HttpClient _client = new();
 
         private JsonSerializerSettings _jsonSerializerSettings;
@@ -119,38 +120,6 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionByUsuarioAsync(string? usuarioSistema)
-        {
-            string uri = _uri + $"/ordenes/by-usuario";
-            Usuario usuario = new Usuario()
-            {
-                NombreUsuario = usuarioSistema,
-                Contrasena = ""
-            };
-            try
-            {
-                string json = JsonConvert.SerializeObject(usuario, _jsonSerializerSettings);
-                StringContent request = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _client.PostAsync(uri, request);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var deserialized = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, _jsonSerializerSettings);
-
-                    if (deserialized != null && deserialized.TryGetValue("ordenes", out ObservableCollection<OrdenProduccion>? ordenesProduccion))
-                    {
-                        return ordenesProduccion;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-            }
-            return [];
-        }
 
         public async Task<ObservableCollection<Periodos>> GetAllPeriodosAsync()
         {
@@ -252,12 +221,12 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task NotificarPtAsync(NotificarPt notificarPt)
+        public async Task NotificarPtAsync(PtNotificado producto)
         {
             string uri = _uri + "/productos/sp-notificarpt";
             try
             {
-                string json = JsonConvert.SerializeObject(notificarPt, _jsonSerializerSettings);
+                string json = JsonConvert.SerializeObject(producto, _jsonSerializerSettings);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
@@ -270,6 +239,7 @@ namespace ControYaApp.Services.WebService
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
             }
         }
+
 
     }
 }

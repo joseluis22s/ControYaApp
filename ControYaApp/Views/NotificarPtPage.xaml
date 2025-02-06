@@ -7,72 +7,140 @@
     x:DataType="viewModel:NotificarPtViewModel"
     Shell.PresentationMode="Modal">
 
-    <Grid Padding="10" RowDefinitions="Auto,Auto">
-        <Button
-            Command="{Binding GoBackCommand}"
-            CornerRadius="50"
-            HorizontalOptions="End"
-            Text="✖" />
-        <Grid Grid.Row="1">
-            <Grid ColumnDefinitions="100,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+    <ScrollView>
 
-                <Border Style="{StaticResource Border_Label}">
-                    <Label Text="Código producción: " />
-                </Border>
-                <Label Grid.Row="1" Text="Orden: " />
-                <Label Grid.Row="2" Text="Código material: " />
-                <Label Grid.Row="3" Text="Fecha: " />
-                <Label Grid.Row="4" Text="Notificado: " />
-                <Label Grid.Row="5" Text="C ódigo empleado: " />
-                <Label Grid.Row="6" Text="Código usuario: " />
-                <Label Grid.Row="7" Text="Serie: " />
-
-                <Border Grid.Column="1" Style="{StaticResource Border_Disable}">
-                    <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoProduccion}" />
-                </Border>
-
-                <Border
-                    Grid.Row="1"
+        <Grid
+            Padding="10"
+            RowDefinitions="Auto,Auto"
+            RowSpacing="10">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Margin="0,10,0,0"
+                    FontSize="26"
+                    HorizontalTextAlignment="Center"
+                    Text="Notificar Producto Terminado"
+                    TextColor="#0f2b57" />
+                <Button
                     Grid.Column="1"
-                    Style="{StaticResource Border_Disable}">
-                    <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.Orden}" />
-                </Border>
+                    Margin="0,-5"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding GoBackCommand}"
+                    CornerRadius="50"
+                    FontSize="28"
+                    HeightRequest="0"
+                    Text="×"
+                    TextColor="#0f2b57"
+                    VerticalOptions="Start" />
 
-                <Border
-                    Grid.Row="2"
-                    Grid.Column="2"
-                    Style="{StaticResource Border_Disable}">
-                    <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoMaterial}" />
-                </Border>
-
-                <Border Grid.Row="3" Grid.Column="3">
-                    <DatePicker />
-                </Border>
-
-                <Border Grid.Row="4" Grid.Column="4">
-                    <Entry Text="{Binding OrdenProduccion.Notificado}" />
-                </Border>
-
-                <Border Grid.Row="5" Grid.Column="5">
-                    <Picker Title="Empleado" />
-                </Border>
-
-                <Border
-                    Grid.Row="6"
-                    Grid.Column="6"
-                    Style="{StaticResource Border_Disable}">
-                    <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoUsuario}" />
-                </Border>
-
-                <Border Grid.Row="7" Grid.Column="7">
-                    <Entry Placeholder="Ingresar serie" />
-                </Border>
 
             </Grid>
 
-        </Grid>
+            <Grid
+                Grid.Row="1"
+                RowDefinitions="Auto,Auto"
+                RowSpacing="20">
+                <Grid
+                    ColumnDefinitions="Auto,*"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                    RowSpacing="4">
 
-    </Grid>
+                    <Border Style="{StaticResource Border_Label}">
+                        <Label Style="{StaticResource Label_Text}" Text="Código producción" />
+                    </Border>
+
+                    <Border Grid.Row="1" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Orden" />
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Código material" />
+                    </Border>
+
+                    <Border Grid.Row="3" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Fecha" />
+                    </Border>
+
+                    <Border Grid.Row="4" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Notificado" />
+                    </Border>
+
+                    <Border Grid.Row="5" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Código empleado" />
+                    </Border>
+
+                    <Border Grid.Row="6" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Código usuario" />
+                    </Border>
+
+                    <Border Grid.Row="7" Style="{StaticResource Border_Label}">
+
+                        <Label Style="{StaticResource Label_Text}" Text="Serie" />
+                    </Border>
+
+
+
+                    <Border Grid.Column="1" Style="{StaticResource Border_Disable}">
+                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoProduccion}" />
+                    </Border>
+
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource Border_Disable}">
+                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.Orden}" />
+                    </Border>
+
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Style="{StaticResource Border_Disable}">
+                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoMaterial}" />
+                    </Border>
+
+                    <Border Grid.Row="3" Grid.Column="3">
+                        <DatePicker Date="" />
+                    </Border>
+
+                    <Border Grid.Row="4" Grid.Column="4">
+                        <Entry Text="{Binding OrdenProduccion.Notificado}" />
+                    </Border>
+
+                    <Border Grid.Row="5" Grid.Column="5">
+                        <Picker
+                            Title="Empleado"
+                            ItemsSource="{Binding Empleados}"
+                            SelectedItem="{Binding Empleado}" />
+                    </Border>
+
+                    <Border
+                        Grid.Row="6"
+                        Grid.Column="6"
+                        Style="{StaticResource Border_Disable}">
+                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoUsuario}" />
+                    </Border>
+
+                    <Border Grid.Row="7" Grid.Column="7">
+                        <Entry Placeholder="Ingresar serie" Text="{Binding Serie}" />
+                    </Border>
+
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Button
+                        Command="{Binding NotificarPtCommand}"
+                        HorizontalOptions="Center"
+                        Text="Notificar" />
+                </Grid>
+            </Grid>
+
+        </Grid>
+    </ScrollView>
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -84,25 +152,51 @@
             </Style>
             <Style x:Key="Border_Label" TargetType="Border">
                 <Setter Property="Stroke" Value="#455d85" />
-                <Setter Property="BackgroundColor" Value="#65758f" />
+                <Setter Property="BackgroundColor" Value="#8096bd" />
+                <Setter Property="Margin" Value="0" />
+                <!--<Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="Portrait">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Portrait" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="WidthRequest" Value="30" />
+                                    <Setter Property="HeightRequest" Value="150" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Landscape">
+                                <VisualState.StateTriggers>
+                                    <OrientationStateTrigger Orientation="Landscape" />
+                                </VisualState.StateTriggers>
+                                <VisualState.Setters>
+                                    <Setter Property="WidthRequest" Value="150" />
+                                    <Setter Property="HeightRequest" Value="30" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>-->
             </Style>
             <Style TargetType="Border">
                 <Setter Property="BackgroundColor" Value="#f1f1f1" />
                 <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='15'}" />
                 <Setter Property="Padding" Value="10,0" />
                 <Setter Property="Margin" Value="15,1" />
-                <Setter Property="MaximumWidthRequest" Value="310" />
             </Style>
             <Style x:Key="Entry_Disable" TargetType="Entry">
                 <Setter Property="IsEnabled" Value="False" />
                 <Setter Property="TextColor" Value="#999b9e" />
             </Style>
-            <Style TargetType="Label">
-                <Setter Property="BackgroundColor" Value="Transparent" />
+            <Style x:Key="Label_Text" TargetType="Label">
                 <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="FontSize" Value="17" />
                 <Setter Property="VerticalOptions" Value="Center" />
+
             </Style>
+
+
         </ResourceDictionary>
     </ContentPage.Resources>
 

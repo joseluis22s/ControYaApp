@@ -5,8 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:model="clr-namespace:ControYaApp.Models"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
-    x:DataType="viewModel:OrdenesViewModel">
+    x:DataType="viewModel:OrdenesViewModel"
+    Appearing="ContentPage_Appearing">
 
+    <!--<ContentPage.Behaviors
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+        <toolkit:EventToCommandBehavior Command="{Binding AppearingCommand}" EventName="Appearing" />
+    </ContentPage.Behaviors>-->
 
     <Grid
         Padding="10,10"

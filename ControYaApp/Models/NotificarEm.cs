@@ -1,4 +1,7 @@
-﻿namespace ControYaApp.Models
+﻿using Newtonsoft.Json;
+using SQLite;
+
+namespace ControYaApp.Models
 {
     public class NotificarEm
     {
@@ -21,5 +24,9 @@
         public float Cantidad { get; set; }
 
         public decimal? Notificado { get; set; }
+
+        [JsonIgnore]
+        [PrimaryKey, AutoIncrement]
+        public int? Id { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using ControYaApp.Models;
+using ControYaApp.Services.WebService.ModelReq;
 using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
@@ -17,7 +18,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            var result = await _database.CreateTableAsync<OrdenProduccion>();
+            await _database.CreateTableAsync<OrdenProduccion>();
         }
 
         public async Task SaveOrdenesAsync(ObservableCollection<OrdenProduccion> ordenes)
@@ -101,5 +102,48 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 throw;
             }
         }
+
+        public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenes()
+        {
+            try
+            {
+                await InitAsync();
+
+                var ordenes = await _database.Table<OrdenProduccion>().ToListAsync();
+                if (ordenes.Count != 0)
+                {
+                    return new ObservableCollection<OrdenProduccion>(ordenes);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
+
+        public async Task UpdateOrdenNotificado(PtNotificado ptnotificado)
+        {
+            try
+            {
+                await InitAsync();
+
+                var producto = await _database.Table<OrdenProduccion>().Where(pt =>
+                    pt.CodigoProduccion == ptnotificado.CodigoProduccion &&
+                    pt.Orden == ptnotificado.Orden &&
+                    pt.CodigoMaterial == ptnotificado.CodigoMaterial &&
+                    pt.CodigoUsuario == ptnotificado.Usuario
+                ).FirstOrDefaultAsync();
+
+                producto.Notificado = ptnotificado.Notificado;
+
+                await _database.UpdateAsync(producto);
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

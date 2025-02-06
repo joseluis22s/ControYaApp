@@ -33,5 +33,22 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 throw;
             }
         }
+
+        public async Task<ObservableCollection<Periodos>> GetAllPeriodos()
+        {
+            try
+            {
+                await InitAsync();
+
+                var periodos = await _database.Table<Periodos>().ToListAsync();
+                if (periodos.Count != 0)
+                {
+                    return new ObservableCollection<Periodos>(periodos);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
+
     }
 }

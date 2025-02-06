@@ -69,6 +69,7 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<ProductoTerminadoRepo>();
             mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
+            mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
 
 
             mauiAppBuilder.Services.AddSingleton<LocalRepoService>();

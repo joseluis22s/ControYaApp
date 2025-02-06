@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Views;
@@ -6,22 +7,30 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.WebService;
+using ControYaApp.Services.WebService.ModelReq;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(Usuario), "usuario")]
+    [QueryProperty(nameof(EsNotificado), "esNotificado")]
+    [QueryProperty(nameof(Productot), "productoT")]
     public partial class OrdenesViewModel : ViewModelBase
     {
         private readonly OrdenRepo _ordenRepo;
 
-        private readonly RestService _restService;
+        private readonly EmpleadosRepo _empleadosRepo;
 
 
 
         private Usuario? _usuario;
 
         private ObservableCollection<OrdenProduccionCabecera>? _ordenesProduccion;
+
+
+
+        public bool EsNotificado { get; set; }
+        public PtNotificado Productot { get; set; }
 
 
 
@@ -47,22 +56,41 @@ namespace ControYaApp.ViewModels
 
         public ICommand NotificarPtCommand { get; }
 
+        //public ICommand AppearingCommand { get; }
 
-        public OrdenesViewModel(RestService restService, OrdenRepo ordenRepo)
+
+        public OrdenesViewModel(RestService restService, OrdenRepo ordenRepo, EmpleadosRepo empleadosRepo)
         {
             ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionDetalle>(NotificarPtAsync);
+            //AppearingCommand = new RelayCommand(Appearing);
 
-            _restService = restService;
+
             _ordenRepo = ordenRepo;
+            _empleadosRepo = empleadosRepo;
         }
 
-
+        internal void Appearing()
+        {
+            try
+            {
+                if (EsNotificado)
+                {
+                    OrdenesProduccion.Where(o =>
+                        Productot.CodigoProduccion == o.CodigoProduccion &&
+                        Productot.Orden == o.Orden
+                        ).FirstOrDefault().Detalles.Where(d =>
+                                Productot.CodigoMaterial == d.CodigoMaterial).FirstOrDefault().Notificado += Productot.Notificado;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+            }
+        }
 
         public async Task ObtenerPedidosAsync()
         {
-            // TODO: Verificar si se debe cambiar loadingPopUpp dentro de la condición.
-
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
@@ -74,7 +102,10 @@ namespace ControYaApp.ViewModels
                 {
                     OrdenesProduccion = MapOrdenesCabeceras(ordenesDb);
                 }
-                await Toast.Make("No se han extraido datos").Show();
+                else
+                {
+                    await Toast.Make("No se han extraido datos").Show();
+                }
             }
             catch (Exception ex)
             {
@@ -134,12 +165,22 @@ namespace ControYaApp.ViewModels
 
         public async Task NotificarPtAsync(OrdenProduccionDetalle? detalle)
         {
-            var orden = MapOrdenProduccion(detalle);
-            var navParameter = new ShellNavigationQueryParameters
+            try
             {
-                { "orden", orden}
+                var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+
+                var orden = MapOrdenProduccion(detalle);
+                var navParameter = new ShellNavigationQueryParameters
+            {
+                { "orden", orden},
+                { "empleados", empleados}
             };
-            await Shell.Current.GoToAsync("notificarPt", navParameter);
+                await Shell.Current.GoToAsync("notificarPt", navParameter);
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
+            }
         }
 
         private OrdenProduccion MapOrdenProduccion(OrdenProduccionDetalle detalle)

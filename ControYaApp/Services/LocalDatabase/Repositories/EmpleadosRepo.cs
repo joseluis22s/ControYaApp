@@ -34,5 +34,22 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 throw;
             }
         }
+
+        public async Task<ObservableCollection<string>> GetAllEmpleadosAsync()
+        {
+            try
+            {
+                await InitAsync();
+
+                var empleadosSistema = await _database.Table<EmpleadoSistema>().ToListAsync();
+                if (empleadosSistema.Count != 0)
+                {
+                    var nombresEmpleados = empleadosSistema.Select(e => e.Empleado).ToList();
+                    return new ObservableCollection<string>(nombresEmpleados);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
     }
 }

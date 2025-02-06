@@ -33,5 +33,21 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 throw;
             }
         }
+
+        public async Task<ObservableCollection<NotificarEm>> GetAllMaterialEgresado()
+        {
+            try
+            {
+                await InitAsync();
+
+                var materiales = await _database.Table<NotificarEm>().ToListAsync();
+                if (materiales.Count != 0)
+                {
+                    return new ObservableCollection<NotificarEm>(materiales);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
     }
 }

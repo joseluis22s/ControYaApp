@@ -1,4 +1,7 @@
-﻿namespace ControYaApp.Models
+﻿using Newtonsoft.Json;
+using SQLite;
+
+namespace ControYaApp.Models
 {
     public class Periodos
     {
@@ -11,5 +14,9 @@
         public DateTime FechaFin { get; set; }
 
         public bool Estado { get; set; }
+
+        [JsonIgnore]
+        [PrimaryKey, AutoIncrement]
+        public int? Id { get; set; }
     }
 }

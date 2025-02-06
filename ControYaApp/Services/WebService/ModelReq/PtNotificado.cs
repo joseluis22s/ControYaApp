@@ -1,25 +1,21 @@
 ﻿using Newtonsoft.Json;
 using SQLite;
 
-namespace ControYaApp.Models
+namespace ControYaApp.Services.WebService.ModelReq
 {
-    public class NotificarPt
+    public class PtNotificado
     {
         public string CodigoProduccion { get; set; }
-
         public int Orden { get; set; }
-
         public string CodigoMaterial { get; set; }
-
-        public string CodigoBodega { get; set; }
-
-        public string CodigoProducto { get; set; }
-
-        public string Producto { get; set; }
-
-        public float Cantidad { get; set; }
-
+        public DateTime Fecha { get; set; }
         public decimal? Notificado { get; set; }
+        public string CodigoEmpleado { get; set; }
+        public string Serie { get; set; }
+        public string Usuario { get; set; }
+
+        [JsonIgnore]
+        public bool Sincronizado { get; set; }
 
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]

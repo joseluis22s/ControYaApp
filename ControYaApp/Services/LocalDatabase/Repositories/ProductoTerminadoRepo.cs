@@ -33,5 +33,23 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 throw;
             }
         }
+
+        public async Task<ObservableCollection<NotificarPt>> GetAllProductosT()
+        {
+            try
+            {
+                await InitAsync();
+
+                var productos = await _database.Table<NotificarPt>().ToListAsync();
+                if (productos.Count != 0)
+                {
+                    return new ObservableCollection<NotificarPt>(productos);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
+
+
     }
 }
