@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using ControYaApp.Models;
-using ControYaApp.Services.WebService.ModelReq;
 using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
@@ -119,7 +118,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task UpdateOrdenNotificado(PtNotificado ptnotificado)
+        public async Task UpdateOrdenNotificado(PtNotificadoReq ptnotificado)
         {
             try
             {

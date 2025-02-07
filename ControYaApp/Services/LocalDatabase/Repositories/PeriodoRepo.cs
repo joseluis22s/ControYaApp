@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using ControYaApp.Models;
+﻿using ControYaApp.Models;
 using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
@@ -18,7 +17,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
         }
 
         // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
-        public async Task SaveAllPeriodosAsync(ObservableCollection<Periodos> periodos)
+        public async Task SaveRangosPeriodosAsync(Periodos periodos)
         {
             try
             {
@@ -26,7 +25,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
                 await _database.DeleteAllAsync<Periodos>();
 
-                await _database.InsertAllAsync(periodos);
+                await _database.InsertAsync(periodos);
             }
             catch (Exception)
             {
@@ -34,21 +33,22 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<Periodos>> GetAllPeriodos()
+        public async Task<Periodos?> GetRangosPeriodosAsync()
         {
+            Periodos periodos = new Periodos();
             try
             {
                 await InitAsync();
-
-                var periodos = await _database.Table<Periodos>().ToListAsync();
-                if (periodos.Count != 0)
+                periodos = await _database.Table<Periodos>().FirstOrDefaultAsync();
+                if (periodos is not null)
                 {
-                    return new ObservableCollection<Periodos>(periodos);
+                    return periodos;
                 }
-                return [];
             }
             catch (Exception) { throw; }
+            return periodos;
         }
+
 
     }
 }

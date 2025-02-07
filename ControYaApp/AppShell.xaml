@@ -15,7 +15,6 @@
         Route="login"
         Shell.FlyoutBehavior="Disabled"
         Shell.FlyoutItemIsVisible="False" />
-
     <ShellContent
         Title="Ordenes de Producción"
         ContentTemplate="{DataTemplate views:OrdenesPage}"
@@ -23,7 +22,10 @@
         Shell.NavBarIsVisible="False" />
 
     <!--
-        "NOtificarPtPage" Agregada como 'ruta global' y se llama/navega como 'ruta relativa'.
+        "NotificarPtPage"
+        "ConfigPage"
+        
+        Agregadas como 'ruta global' y se llama/navega como 'ruta relativa'.
         INFO:https://learn.microsoft.com/es-es/dotnet/maui/fundamentals/shell/navigation?view=net-maui-9.0#relative-routes
     -->
 
@@ -60,7 +62,7 @@
             <Button
                 Grid.Column="1"
                 BackgroundColor="#cacccf"
-                BorderColor="#a0a5ad"
+                BorderColor="#779bba"
                 Command="{Binding GoToLoginCommand}"
                 HorizontalOptions="Center"
                 Text="Cerrar sesión" />

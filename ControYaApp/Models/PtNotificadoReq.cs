@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using SQLite;
 
-namespace ControYaApp.Services.WebService.ModelReq
+namespace ControYaApp.Models
 {
-    public class PtNotificado
+    public class PtNotificadoReq
     {
         public string CodigoProduccion { get; set; }
         public int Orden { get; set; }

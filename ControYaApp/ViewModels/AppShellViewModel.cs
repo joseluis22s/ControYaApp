@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.WebService;
 using ControYaApp.Views.Controls;
@@ -64,6 +65,8 @@ namespace ControYaApp.ViewModels
         public async Task ExtraerDatosAsync()
         {
 
+            WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
+
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
@@ -71,7 +74,7 @@ namespace ControYaApp.ViewModels
 
             var usuarios = await _restService.GetAllUsuariosAsync();
             var ordenes = await _restService.GetOrdenesProduccionAsync();
-            var periodos = await _restService.GetAllPeriodosAsync();
+            var periodos = await _restService.GetRangosPeriodos();
             var productos = await _restService.GetAllPt();
             var materiales = await _restService.GetAllEm();
             var empleados = await _restService.GetAllEmpleados();
@@ -80,7 +83,7 @@ namespace ControYaApp.ViewModels
             await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
             await _localRepoService.MaterialEgresadoRepo.SaveAllEmAsync(materiales);
             await _localRepoService.ProductoTerminadoRepo.SaveAllPtAsync(productos);
-            await _localRepoService.PeriodoRepo.SaveAllPeriodosAsync(periodos);
+            await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(periodos);
             await _localRepoService.OrdenRepo.SaveAllOrdenesAsync(ordenes);
             await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
 

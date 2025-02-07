@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.WebService;
-using ControYaApp.Services.WebService.ModelReq;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
@@ -30,7 +31,7 @@ namespace ControYaApp.ViewModels
 
 
         public bool EsNotificado { get; set; }
-        public PtNotificado Productot { get; set; }
+        public PtNotificadoReq Productot { get; set; }
 
 
 
@@ -63,8 +64,16 @@ namespace ControYaApp.ViewModels
         {
             ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionDetalle>(NotificarPtAsync);
-            //AppearingCommand = new RelayCommand(Appearing);
 
+            IsActive = true;
+
+            WeakReferenceMessenger.Default.Register<ClearDataMessage>(this, (r, m) =>
+            {
+                if (m.Value == "Vaciar")
+                {
+                    OrdenesProduccion?.Clear();
+                }
+            });
 
             _ordenRepo = ordenRepo;
             _empleadosRepo = empleadosRepo;
@@ -168,6 +177,8 @@ namespace ControYaApp.ViewModels
             try
             {
                 var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+
+                empleados = empleados.Order().ToObservableCollection();
 
                 var orden = MapOrdenProduccion(detalle);
                 var navParameter = new ShellNavigationQueryParameters

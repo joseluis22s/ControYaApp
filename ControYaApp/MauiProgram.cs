@@ -44,6 +44,7 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<LoginViewModel>();
             mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
             mauiAppBuilder.Services.AddTransient<NotificarPtViewModel>();
+            mauiAppBuilder.Services.AddTransient<ConfigViewModel>();
 
             return mauiAppBuilder;
         }
@@ -56,6 +57,7 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<LoginPage>();
             mauiAppBuilder.Services.AddTransient<OrdenesPage>();
             mauiAppBuilder.Services.AddTransient<NotificarPtPage>();
+            mauiAppBuilder.Services.AddTransient<ConfigPage>();
 
             return mauiAppBuilder;
         }
@@ -70,9 +72,8 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
             mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
-
-
             mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
+            mauiAppBuilder.Services.AddSingleton<IpServidorRepo>();
 
             return mauiAppBuilder;
         }

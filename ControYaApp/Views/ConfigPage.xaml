@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ControYaApp.Views.ConfigPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
+    x:DataType="viewModel:ConfigViewModel"
+    Shell.PresentationMode="Modal">
+
+    <VerticalStackLayout Padding="10,20" Spacing="10">
+
+        <Label
+            FontAttributes="Bold"
+            FontSize="27"
+            HorizontalOptions="Center"
+            Text="Configuración"
+            TextColor="#0f2b57" />
+
+        <Grid
+            Grid.Row="1"
+            Padding="10"
+            RowDefinitions="Auto,Auto,Auto"
+            RowSpacing="15">
+
+
+            <Border>
+                <Entry
+                    FontSize="18"
+                    Placeholder="IP servidor"
+                    Text="{Binding IpServidor}" />
+            </Border>
+
+
+            <Border Grid.Row="2" Margin="0,10,0,0">
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+
+                        <Label
+                            Margin="5"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="Administrar permisos"
+                            TextColor="#0f2b57" />
+                    </toolkit:Expander.Header>
+
+                    <Grid
+                        Padding="10,5"
+                        RowDefinitions="Auto,Auto,Auto,Auto"
+                        RowSpacing="5">
+
+                        <Border Grid.Row="1">
+                            <Entry Placeholder="USUARIO" Text="{Binding Usuario}" />
+                        </Border>
+
+                        <Border Grid.Row="2">
+                            <Entry Placeholder="CONTRASEÑA" Text="{Binding Contrasena}" />
+                        </Border>
+
+                        <Button
+                            Grid.Row="3"
+                            Margin="0,5,0,7"
+                            BackgroundColor="#779bba"
+                            Command="{Binding ContinuarConfigCommand}"
+                            Text="Continuar"
+                            WidthRequest="100" />
+                    </Grid>
+                </toolkit:Expander>
+            </Border>
+
+            <Button
+                Grid.Row="1"
+                Command="{Binding SaveIpServidorCommand}"
+                Text="Guardar"
+                WidthRequest="140" />
+        </Grid>
+    </VerticalStackLayout>
+
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Border">
+                <Setter Property="BackgroundColor" Value="#f1f1f1" />
+                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='10'}" />
+                <Setter Property="Stroke" Value="#a6a6a6" />
+                <Setter Property="StrokeThickness" Value="2" />
+                <Setter Property="Padding" Value="10,0" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+</ContentPage>

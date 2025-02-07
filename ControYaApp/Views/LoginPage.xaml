@@ -9,60 +9,70 @@
 
     <ScrollView>
 
+        <Grid RowDefinitions="Auto,*" RowSpacing="-60">
+            <ImageButton
+                Margin="10"
+                Command="{Binding GoToConfigCommand}"
+                HeightRequest="40"
+                HorizontalOptions="End"
+                Source="config_icon.png"
+                WidthRequest="40" />
 
-        <Grid
-            RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-            RowSpacing="13"
-            VerticalOptions="Center">
-
-            <Image
-                Opacity="50"
-                Source="logo_desoteem.png"
-                WidthRequest="140" />
-            <Label
+            <Grid
                 Grid.Row="1"
-                Margin="0,0,0,3"
-                FontAttributes="Bold"
-                FontSize="29"
-                HorizontalOptions="Center"
-                Text="Iniciar Sesión"
-                TextColor="#0f2b57" />
-            <Border Grid.Row="2">
-                <Entry
-                    IsTextPredictionEnabled="False"
-                    Placeholder="USUARIO"
-                    Text="{Binding Usuario.NombreUsuario}" />
-            </Border>
-            <Border Grid.Row="3">
-                <Grid ColumnDefinitions="*,Auto">
-                    <Entry
-                        IsPassword="{Binding EsVisibleContrasena}"
-                        IsTextPredictionEnabled="False"
-                        Placeholder="CONTRASEÑA"
-                        Text="{Binding Usuario.Contrasena}" />
-                    <ImageButton
-                        Grid.Column="1"
-                        Command="{Binding ContrasenaVisibleCommand}"
-                        IsEnabled="{Binding EsVisibleContrasena}"
-                        IsVisible="{Binding EsVisibleContrasena}"
-                        Source="eye_on_icon.png" />
-                    <ImageButton
-                        Grid.Column="1"
-                        Command="{Binding ContrasenaVisibleCommand}"
-                        IsEnabled="{Binding NoEsVisibleContrasena}"
-                        IsVisible="{Binding NoEsVisibleContrasena}"
-                        Source="eye_off_icon.png" />
-                </Grid>
-            </Border>
-            <Button
-                Grid.Row="4"
-                Command="{Binding GoToOrdenesCommand}"
-                FontAttributes="Bold"
-                FontSize="15"
-                HeightRequest="37"
-                MaximumWidthRequest="245"
-                Text="Ingresar" />
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="13"
+                VerticalOptions="Center">
 
+                <Image
+                    Opacity="50"
+                    Source="logo_desoteem.png"
+                    WidthRequest="130" />
+                <Label
+                    Grid.Row="1"
+                    Margin="0,0,0,3"
+                    FontAttributes="Bold"
+                    FontSize="29"
+                    HorizontalOptions="Center"
+                    Text="Iniciar Sesión"
+                    TextColor="#0f2b57" />
+                <Border Grid.Row="2">
+                    <Entry
+                        IsTextPredictionEnabled="False"
+                        Placeholder="USUARIO"
+                        Text="{Binding Usuario.NombreUsuario}" />
+                </Border>
+                <Border Grid.Row="3">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Entry
+                            IsPassword="{Binding EsVisibleContrasena}"
+                            IsTextPredictionEnabled="False"
+                            Placeholder="CONTRASEÑA"
+                            Text="{Binding Usuario.Contrasena}" />
+                        <ImageButton
+                            Grid.Column="1"
+                            Command="{Binding ContrasenaVisibleCommand}"
+                            IsEnabled="{Binding EsVisibleContrasena}"
+                            IsVisible="{Binding EsVisibleContrasena}"
+                            Source="eye_on_icon.png" />
+                        <ImageButton
+                            Grid.Column="1"
+                            Command="{Binding ContrasenaVisibleCommand}"
+                            IsEnabled="{Binding NoEsVisibleContrasena}"
+                            IsVisible="{Binding NoEsVisibleContrasena}"
+                            Source="eye_off_icon.png" />
+                    </Grid>
+                </Border>
+                <Button
+                    Grid.Row="4"
+                    Command="{Binding GoToOrdenesCommand}"
+                    FontAttributes="Bold"
+                    FontSize="15"
+                    HeightRequest="37"
+                    MaximumWidthRequest="245"
+                    Text="Ingresar" />
+
+            </Grid>
         </Grid>
     </ScrollView>
 

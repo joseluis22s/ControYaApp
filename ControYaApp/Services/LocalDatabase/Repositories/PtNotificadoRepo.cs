@@ -1,4 +1,5 @@
-﻿using ControYaApp.Services.WebService.ModelReq;
+﻿
+using ControYaApp.Models;
 using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
@@ -13,15 +14,15 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<PtNotificado>();
+            await _database.CreateTableAsync<PtNotificadoReq>();
         }
 
-        public async Task SaveUpdatePtNotificadoAsync(PtNotificado ptNotificado)
+        public async Task SaveUpdatePtNotificadoAsync(PtNotificadoReq ptNotificado)
         {
             try
             {
                 await InitAsync();
-                var producto = await _database.Table<PtNotificado>().Where(pt =>
+                var producto = await _database.Table<PtNotificadoReq>().Where(pt =>
                     pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
                     pt.Orden == ptNotificado.Orden &&
                     pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
@@ -68,7 +69,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             try
             {
                 await InitAsync();
-                var productos = await _database.Table<PtNotificado>().Where(pt => pt.Sincronizado == false).ToListAsync();
+                var productos = await _database.Table<PtNotificadoReq>().Where(pt => pt.Sincronizado == false).ToListAsync();
                 foreach (var producto in productos)
                 {
                     producto.Sincronizado = true;
@@ -81,12 +82,12 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task SetSincPtNotificadoAsync(PtNotificado ptNotificado)
+        public async Task SetSincPtNotificadoAsync(PtNotificadoReq ptNotificado)
         {
             try
             {
                 await InitAsync();
-                var producto = await _database.Table<PtNotificado>().Where(pt =>
+                var producto = await _database.Table<PtNotificadoReq>().Where(pt =>
                     pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
                     pt.Orden == ptNotificado.Orden &&
                     pt.CodigoMaterial == ptNotificado.CodigoMaterial &&

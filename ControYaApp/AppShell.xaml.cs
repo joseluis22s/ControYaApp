@@ -11,6 +11,7 @@ namespace ControYaApp
             InitializeComponent();
             BindingContext = vm;
             Routing.RegisterRoute("notificarPt", typeof(NotificarPtPage));
+            Routing.RegisterRoute("config", typeof(ConfigPage));
         }
     }
 }

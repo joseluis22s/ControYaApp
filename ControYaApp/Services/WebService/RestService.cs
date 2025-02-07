@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using ControYaApp.Models;
-using ControYaApp.Services.WebService.ModelReq;
+using ControYaApp.Services.LocalDatabase.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -11,23 +11,26 @@ namespace ControYaApp.Services.WebService
 {
     public class RestService
     {
-        private string _uri = "http://192.168.47.4:100";
+        private IpServidorRepo _ipServidorRepo;
         private readonly HttpClient _client = new();
 
         private JsonSerializerSettings _jsonSerializerSettings;
 
-        public RestService()
+        public RestService(IpServidorRepo ipServidorRepo)
         {
             _jsonSerializerSettings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
             };
+
+            _ipServidorRepo = ipServidorRepo;
         }
 
 
         public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
-            string uri = _uri + "/usuarios/loginusuario";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/usuarios/loginusuario";
             try
             {
                 var usuarioLogin = new
@@ -56,23 +59,40 @@ namespace ControYaApp.Services.WebService
                             { "usuarioSistema", usuarioSistema }
                         };
                     }
+                    else
+                    {
+                        return new Dictionary<string, object>
+                        {
+                            { "estaRegistrado", false },
+                            { "usuarioSistema", "Error" }
+                        };
+                    }
 
+                }
+                else
+                {
+                    return new Dictionary<string, object>
+                        {
+                            { "estaRegistrado", false },
+                            { "usuarioSistema", response.StatusCode }
+                        };
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-            }
-            return new Dictionary<string, object>
+
+                return new Dictionary<string, object>
                         {
                             { "estaRegistrado", false },
-                            { "usuarioSistema", "" }
+                            { "usuarioSistema", ex.Message }
                         };
+            }
         }
 
         public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
         {
-            string uri = _uri + "/usuarios/getall";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/usuarios/getall";
 
             try
             {
@@ -97,7 +117,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesProduccionAsync()
         {
-            string uri = _uri + "/ordenes/getall";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/ordenes/getall";
 
             try
             {
@@ -121,21 +142,27 @@ namespace ControYaApp.Services.WebService
         }
 
 
-        public async Task<ObservableCollection<Periodos>> GetAllPeriodosAsync()
+        public async Task<Periodos> GetRangosPeriodos()
         {
-            string uri = _uri + "/periodos/getall";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/periodos/getrangos";
 
+            Periodos periodos = new Periodos();
             try
             {
+
                 var response = await _client.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<Periodos>>>(content, _jsonSerializerSettings);
+                    var values = JsonConvert.DeserializeObject<Dictionary<string, DateTime>>(content, _jsonSerializerSettings);
                     if (!values.IsNullOrEmpty() &&
-                        values.TryGetValue("periodos", out ObservableCollection<Periodos>? periodos))
+                        values.TryGetValue("fechaMinima", out DateTime fechaMinima) &&
+                        values.TryGetValue("fechaMaxima", out DateTime fechaMaxima))
                     {
-                        return new ObservableCollection<Periodos>(periodos);
+                        periodos.FechaMax = fechaMaxima;
+                        periodos.FechaMin = fechaMinima;
+                        return periodos;
                     }
                 }
             }
@@ -143,12 +170,13 @@ namespace ControYaApp.Services.WebService
             {
                 throw;
             }
-            return [];
+            return periodos;
         }
 
         public async Task<ObservableCollection<NotificarPt>> GetAllPt()
         {
-            string uri = _uri + "/productos/getall";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/productos/getall";
 
             try
             {
@@ -173,7 +201,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<NotificarEm>> GetAllEm()
         {
-            string uri = _uri + "/materiales/getall";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/materiales/getall";
 
             try
             {
@@ -198,7 +227,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleados()
         {
-            string uri = _uri + "/empleados/getall";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/empleados/getall";
 
             try
             {
@@ -221,9 +251,10 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task NotificarPtAsync(PtNotificado producto)
+        public async Task NotificarPtAsync(PtNotificadoReq producto)
         {
-            string uri = _uri + "/productos/sp-notificarpt";
+            string uri = await _ipServidorRepo.GetIpServidorAsync();
+            uri = uri + "/productos/sp-notificarpt";
             try
             {
                 string json = JsonConvert.SerializeObject(producto, _jsonSerializerSettings);

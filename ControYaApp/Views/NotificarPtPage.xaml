@@ -105,11 +105,14 @@
                     </Border>
 
                     <Border Grid.Row="3" Grid.Column="3">
-                        <DatePicker Date="" />
+                        <DatePicker
+                            Date="{Binding OrdenProduccion.Fecha}"
+                            MaximumDate="{Binding RangoPeriodos.FechaMax}"
+                            MinimumDate="{Binding RangoPeriodos.FechaMin}" />
                     </Border>
 
                     <Border Grid.Row="4" Grid.Column="4">
-                        <Entry Text="{Binding OrdenProduccion.Notificado}" />
+                        <Entry Keyboard="Numeric" Text="{Binding OrdenProduccion.Notificado}" />
                     </Border>
 
                     <Border Grid.Row="5" Grid.Column="5">

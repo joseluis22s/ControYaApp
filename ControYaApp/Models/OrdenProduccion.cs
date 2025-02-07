@@ -1,11 +1,14 @@
 ﻿#nullable disable
+using ControYaApp.ViewModels;
 using Newtonsoft.Json;
 using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class OrdenProduccion
+    public class OrdenProduccion : ViewModelBase
     {
+
+        private DateTime _fecha;
 
         public string Centro { get; set; }
 
@@ -16,7 +19,11 @@ namespace ControYaApp.Models
         [JsonProperty(PropertyName = "codigoUsuarioAprobar")]
         public string CodigoUsuario { get; set; }
 
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha
+        {
+            get => _fecha;
+            set => SetProperty(ref _fecha, value);
+        }
 
         public string Referencia { get; set; }
 

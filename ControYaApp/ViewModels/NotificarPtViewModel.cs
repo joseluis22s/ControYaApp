@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.WebService;
-using ControYaApp.Services.WebService.ModelReq;
 
 namespace ControYaApp.ViewModels
 {
@@ -13,12 +12,16 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(Empleados), "empleados")]
     public class NotificarPtViewModel : ViewModelBase
     {
+        private readonly PeriodoRepo _periodoRepo;
+
         private readonly OrdenRepo _ordenRepo;
 
         private readonly PtNotificadoRepo _ptNotificadoRepo;
 
         private readonly RestService _restService;
 
+
+        private Periodos _rangoPeriodos;
 
         private string? _serie;
 
@@ -32,6 +35,13 @@ namespace ControYaApp.ViewModels
 
         private bool IsNotified { get; set; } = false;
 
+
+
+        public Periodos RangoPeriodos
+        {
+            get => _rangoPeriodos;
+            set => SetProperty(ref _rangoPeriodos, value);
+        }
 
         public string? Serie
         {
@@ -63,16 +73,24 @@ namespace ControYaApp.ViewModels
         public ICommand NotificarPtCommand { get; }
 
 
-        public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo, OrdenRepo ordenRepo)
+        public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
+            OrdenRepo ordenRepo, PeriodoRepo periodoRepo)
         {
-
             GoBackCommand = new AsyncRelayCommand(() => GoBackAsync(IsNotified));
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
-
 
             _restService = restService;
             _ptNotificadoRepo = ptNotificadoRepo;
             _ordenRepo = ordenRepo;
+            _periodoRepo = periodoRepo;
+
+            InitializeRangoPeriodosAsync();
+        }
+
+        private async void InitializeRangoPeriodosAsync()
+        {
+            RangoPeriodos = await GetRangosPeriodosAsync();
+            OrdenProduccion.Fecha = DateTime.Now;
         }
 
         private async Task GoBackAsync(bool isNotified)
@@ -84,7 +102,7 @@ namespace ControYaApp.ViewModels
             await Shell.Current.GoToAsync("..", navParameter);
         }
 
-        private async Task GoBackAsync(bool isNotified, PtNotificado producto)
+        private async Task GoBackAsync(bool isNotified, PtNotificadoReq producto)
         {
             var navParameter = new ShellNavigationQueryParameters
             {
@@ -99,6 +117,20 @@ namespace ControYaApp.ViewModels
             {
                 var notificarProducto = MapPtNotificado(OrdenProduccion, Empleado, Serie);
 
+                if (notificarProducto.Notificado <= 0)
+                {
+                    await Toast.Make($"Valor de notificado: \'{notificarProducto.Notificado}\' no válido").Show();
+                    return;
+                }
+                else if (string.IsNullOrEmpty(notificarProducto.CodigoEmpleado))
+                {
+                    await Toast.Make($"Debe elegir un empleado").Show();
+                    return;
+                }
+                else if (string.IsNullOrWhiteSpace(notificarProducto.Serie))
+                {
+                    notificarProducto.Serie = "";
+                }
 
                 await _ordenRepo.UpdateOrdenNotificado(notificarProducto);
                 await _ptNotificadoRepo.SaveUpdatePtNotificadoAsync(notificarProducto);
@@ -121,9 +153,9 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private PtNotificado MapPtNotificado(OrdenProduccion? orden, string? empleado, string? serie)
+        private PtNotificadoReq MapPtNotificado(OrdenProduccion? orden, string? empleado, string? serie)
         {
-            return new PtNotificado
+            return new PtNotificadoReq
             {
                 CodigoProduccion = orden.CodigoProduccion,
                 Orden = orden.Orden,
@@ -139,6 +171,11 @@ namespace ControYaApp.ViewModels
                 Serie = serie,
                 Usuario = orden.CodigoUsuario
             };
+        }
+
+        private async Task<Periodos> GetRangosPeriodosAsync()
+        {
+            return await _periodoRepo.GetRangosPeriodosAsync();
         }
     }
 }
