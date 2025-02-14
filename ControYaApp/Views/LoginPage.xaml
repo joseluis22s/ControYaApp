@@ -3,8 +3,9 @@
     x:Class="ControYaApp.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    xmlns:ur="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:LoginViewModel">
 
@@ -16,19 +17,20 @@
                 Command="{Binding GoToConfigCommand}"
                 HeightRequest="40"
                 HorizontalOptions="End"
-                Source="config_icon.png"
+                Source="{FontImageSource FontFamily=MaterialSharp,
+                                         Glyph={x:Static m:MaterialSharp.Settings},
+                                         Color=#091a36}"
                 WidthRequest="40" />
 
             <Grid
                 Grid.Row="1"
+                Padding="30,0"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                 RowSpacing="13"
                 VerticalOptions="Center">
 
-                <Image
-                    Opacity="50"
-                    Source="logo_desoteem.png"
-                    WidthRequest="130" />
+                <Image Source="logo_desoteem.png" WidthRequest="130" />
+
                 <Label
                     Grid.Row="1"
                     Margin="0,0,0,3"
@@ -37,47 +39,34 @@
                     HorizontalOptions="Center"
                     Text="Iniciar Sesión"
                     TextColor="#0f2b57" />
-                <Border Grid.Row="2">
-                    <!--<Entry
-                        IsTextPredictionEnabled="False"
-                        Placeholder="USUARIO"
-                        Text="{Binding Usuario.NombreUsuario}" />-->
-                    <!--<ur:InputField Title="USUARIO" HasValue="True">
-                        <Entry
-                            IsTextPredictionEnabled="False"
-                            Placeholder="USUARIO"
-                            Text="{Binding Usuario.NombreUsuario}" />
-                    </ur:InputField>-->
-                    <ur:TextField Title="USUARIO" />
-                </Border>
-                <Border Grid.Row="3">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Entry
-                            IsPassword="{Binding EsVisibleContrasena}"
-                            IsTextPredictionEnabled="False"
-                            Placeholder="CONTRASEÑA"
-                            Text="{Binding Usuario.Contrasena}" />
-                        <ImageButton
-                            Grid.Column="1"
-                            Command="{Binding ContrasenaVisibleCommand}"
-                            IsEnabled="{Binding EsVisibleContrasena}"
-                            IsVisible="{Binding EsVisibleContrasena}"
-                            Source="eye_on_icon.png" />
-                        <ImageButton
-                            Grid.Column="1"
-                            Command="{Binding ContrasenaVisibleCommand}"
-                            IsEnabled="{Binding NoEsVisibleContrasena}"
-                            IsVisible="{Binding NoEsVisibleContrasena}"
-                            Source="eye_off_icon.png" />
-                    </Grid>
-                </Border>
+
+                <urui:TextField
+                    Title="Usuario"
+                    Grid.Row="2"
+                    Icon="{FontImageSource FontFamily=MaterialSharp,
+                                           Glyph={x:Static m:MaterialSharp.Account_circle}}"
+                    IsTextPredictionEnabled="False"
+                    Text="{Binding Usuario.NombreUsuario}" />
+
+                <urui:TextField
+                    Title="Contraseña"
+                    Grid.Row="3"
+                    Icon="{FontImageSource FontFamily=MaterialSharp,
+                                           Glyph={x:Static m:MaterialSharp.Password}}"
+                    IsTextPredictionEnabled="False"
+                    Text="{Binding Usuario.Contrasena}">
+                    <urui:TextField.Attachments>
+                        <urui:TextFieldPasswordShowHideAttachment />
+                    </urui:TextField.Attachments>
+                </urui:TextField>
+
                 <Button
                     Grid.Row="4"
                     Command="{Binding GoToOrdenesCommand}"
                     FontAttributes="Bold"
                     FontSize="15"
                     HeightRequest="37"
-                    MaximumWidthRequest="245"
+                    MaximumWidthRequest="200"
                     Text="Ingresar" />
 
             </Grid>
@@ -87,18 +76,9 @@
     <ContentPage.Resources>
         <ResourceDictionary>
 
-            <Style TargetType="Border">
-                <Setter Property="BackgroundColor" Value="#f1f1f1" />
-                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='15'}" />
-                <Setter Property="Padding" Value="13,3" />
-                <Setter Property="Margin" Value="15,3" />
-                <Setter Property="MaximumWidthRequest" Value="310" />
-            </Style>
-
-            <Style TargetType="Entry">
-                <Setter Property="BackgroundColor" Value="Transparent" />
-                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
-                <Setter Property="TextColor" Value="Black" />
+            <Style TargetType="urui:TextField">
+                <Setter Property="InputBackground" Value="AliceBlue" />
+                <Setter Property="AccentColor" Value="#0f2b57" />
             </Style>
 
             <Style TargetType="Button">
@@ -106,6 +86,7 @@
                 <Setter Property="CornerRadius" Value="6" />
                 <Setter Property="FontAutoScalingEnabled" Value="False" />
             </Style>
+
             <Style TargetType="ImageButton">
                 <Setter Property="HeightRequest" Value="35" />
                 <Setter Property="WidthRequest" Value="35" />

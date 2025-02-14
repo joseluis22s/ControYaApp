@@ -3,12 +3,17 @@
     x:Class="ControYaApp.Views.ConfigPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:validation="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:ConfigViewModel"
+    Shell.BackButtonBehavior="{Binding BackButtonPressedCommand}"
     Shell.PresentationMode="Modal">
 
-    <VerticalStackLayout Padding="10,20" Spacing="10">
+
+        <VerticalStackLayout Padding="10,20" Spacing="10">
 
         <Label
             FontAttributes="Bold"
@@ -24,12 +29,26 @@
             RowSpacing="15">
 
 
-            <Border>
-                <Entry
+            <Grid ColumnDefinitions="*,2*">
+
+                <urui:PickerField
+                    Title="Protocolo"
+                    AllowClear="False"
                     FontSize="18"
-                    Placeholder="IP servidor"
-                    Text="{Binding IpServidor}" />
-            </Border>
+                    SelectedItem="{Binding IpServidor.Protocolo}">
+                    <urui:PickerField.Items>
+                        <x:String>http://</x:String>
+                        <x:String>https://</x:String>
+                    </urui:PickerField.Items>
+                </urui:PickerField>
+
+
+                <urui:TextField
+                    Title="IP Servidor"
+                    Grid.Column="1"
+                    FontSize="18"
+                    Text="{Binding IpServidor.Ip}" />
+            </Grid>
 
 
             <Border Grid.Row="2" Margin="0,10,0,0">

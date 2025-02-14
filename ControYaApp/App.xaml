@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ControYaApp"
-    xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material">
+    xmlns:m="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material">
     <Application.Resources>
         <ResourceDictionary>
             <!--<ResourceDictionary.MergedDictionaries>
@@ -14,12 +14,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary x:Name="appColors" Source="Resources/Styles/Colors.xaml" />
-
-                <material:StyleResource ColorsOverride="{x:Reference appColors}">
-                    <material:StyleResource.Overrides>
-                        <ResourceDictionary x:Name="appStyles" Source="Resources/Styles/Styles.xaml" />
-                    </material:StyleResource.Overrides>
-                </material:StyleResource>
+                <m:StyleResource ColorsOverride="{x:Reference appColors}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

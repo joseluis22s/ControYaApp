@@ -21,10 +21,6 @@ namespace ControYaApp.ViewModels
 
         private Usuario? _usuario = new();
 
-        private bool _esVisibleContrasena;
-
-        private bool _noEsVisibleContrasena;
-
 
         public Usuario? Usuario
         {
@@ -32,23 +28,9 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _usuario, value);
         }
 
-        public bool EsVisibleContrasena
-        {
-            get => _esVisibleContrasena;
-            set => SetProperty(ref _esVisibleContrasena, value);
-        }
-
-        public bool NoEsVisibleContrasena
-        {
-            get => _noEsVisibleContrasena;
-            set => SetProperty(ref _noEsVisibleContrasena, value);
-        }
-
-
 
         public ICommand? GoToOrdenesCommand { get; }
 
-        public ICommand? ContrasenaVisibleCommand { get; }
 
         public ICommand? ProbarConexionCommand { get; }
 
@@ -57,10 +39,7 @@ namespace ControYaApp.ViewModels
 
         public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService, IpServidorRepo ipServidorRepo)
         {
-            EsVisibleContrasena = true;
-            NoEsVisibleContrasena = false;
             GoToOrdenesCommand = new AsyncRelayCommand(GoToOrdenesAsync);
-            ContrasenaVisibleCommand = new RelayCommand(EstadoEsVisibleContrasena);
             GoToConfigCommand = new AsyncRelayCommand(GoToConfigAsync);
 
             _restService = restService;
@@ -81,7 +60,7 @@ namespace ControYaApp.ViewModels
             else
             {
                 var ip = await _ipServidorRepo.GetIpServidorAsync();
-                if (string.IsNullOrEmpty(ip))
+                if (ip is null)
                 {
 
                     var res = await Shell.Current.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
@@ -167,19 +146,6 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private void EstadoEsVisibleContrasena()
-        {
-            if (EsVisibleContrasena)
-            {
-                EsVisibleContrasena = false;
-                NoEsVisibleContrasena = true;
-            }
-            else
-            {
-                EsVisibleContrasena = true;
-                NoEsVisibleContrasena = false;
-            }
-        }
 
 
     }

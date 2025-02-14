@@ -8,15 +8,14 @@ namespace ControYaApp.ViewModels
 {
     public class ConfigViewModel : ViewModelBase
     {
+        private bool _isSaved;
+
         private readonly IpServidorRepo _ipServidorRepo;
 
 
+        private IpServidor _ipServidor;
 
-        private string? _ipServidor;
-
-
-
-        public string? IpServidor
+        public IpServidor IpServidor
         {
             get => _ipServidor;
             set => SetProperty(ref _ipServidor, value);
@@ -26,13 +25,14 @@ namespace ControYaApp.ViewModels
 
         public ICommand SaveIpServidorCommand { get; }
 
+        public ICommand BackButtonPressedCommand { get; }
+
 
 
         public ConfigViewModel(IpServidorRepo ipServidorRepo)
         {
-
-
             SaveIpServidorCommand = new AsyncRelayCommand(SaveIpServidorAsync);
+            BackButtonPressedCommand = new AsyncRelayCommand(BackButtonPressed);
 
             _ipServidorRepo = ipServidorRepo;
 
@@ -44,12 +44,12 @@ namespace ControYaApp.ViewModels
             IpServidor = await GetIpServidorAsync();
         }
 
-        private async Task<string> GetIpServidorAsync()
+        private async Task<IpServidor> GetIpServidorAsync()
         {
             try
             {
                 var ip = await _ipServidorRepo.GetIpServidorAsync();
-                if (!string.IsNullOrEmpty(ip))
+                if (ip is not null)
                 {
                     return ip;
                 }
@@ -58,28 +58,32 @@ namespace ControYaApp.ViewModels
             {
                 await Toast.Make(ex.Message).Show();
             }
-            return "";
+            return new IpServidor { Protocolo = "http://", Ip = "" };
         }
 
         private async Task SaveIpServidorAsync()
         {
+
             try
             {
-                if (string.IsNullOrWhiteSpace(IpServidor))
+                if (string.IsNullOrWhiteSpace(IpServidor.Ip))
                 {
-                    await Toast.Make("El campo no debe estar vacío").Show();
+                    await Toast.Make("El campo 'IP' no debe estar vacío").Show();
                     return;
                 }
 
-                var res = await Shell.Current.DisplayAlert("Nueva conexión", "¿Está seguro que desea guardar una nueva dirección IP?", "Aceptar", "Cancelar");
+                string ip = IpServidor.Protocolo + IpServidor.Ip;
+
+                var res = await Shell.Current.DisplayAlert("Nueva conexión", $"¿Está seguro que desea guardar la: {ip}?", "Aceptar", "Cancelar");
 
                 if (res)
                 {
-                    IpServidor ipServidor = new IpServidor { Ip = IpServidor };
-                    await _ipServidorRepo.SaveIpServidor(ipServidor);
+                    await _ipServidorRepo.SaveIpServidor(IpServidor);
+                    _isSaved = true;
                 }
 
                 await Shell.Current.GoToAsync("..");
+
             }
             catch (Exception ex)
             {
@@ -87,6 +91,21 @@ namespace ControYaApp.ViewModels
             }
         }
 
+        public async Task BackButtonPressed()
+        {
+            if (_isSaved)
+            {
+                await Shell.Current.GoToAsync("..");
+            }
+            else
+            {
+                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
+                if (res)
+                {
+                    await Shell.Current.GoToAsync("..");
+                }
+            }
 
+        }
     }
 }

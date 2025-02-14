@@ -22,7 +22,7 @@
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
-    <Color x:Key="Magenta">#D600AA</Color>
+    <Color x:Key="Magenta">#0039d6</Color>
     <Color x:Key="MidnightBlue">#061849</Color>
     <Color x:Key="OffBlack">#1f1f1f</Color>
 

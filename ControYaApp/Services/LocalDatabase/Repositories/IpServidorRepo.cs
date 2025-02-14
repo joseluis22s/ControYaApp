@@ -30,20 +30,15 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
         }
 
 
-        public async Task<string> GetIpServidorAsync()
+        public async Task<IpServidor?> GetIpServidorAsync()
         {
             try
             {
                 await InitAsync();
-                var ip = await _database.Table<IpServidor>().FirstOrDefaultAsync();
-                if (ip is not null)
-                {
-                    return ip.Ip;
-                }
+                return await _database.Table<IpServidor>().FirstOrDefaultAsync();
 
             }
             catch (Exception) { throw; }
-            return "";
         }
     }
 }

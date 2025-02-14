@@ -29,8 +29,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/usuarios/loginusuario";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/usuarios/loginusuario";
             try
             {
                 var usuarioLogin = new
@@ -91,8 +91,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/usuarios/getall";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/usuarios/getall";
 
             try
             {
@@ -117,8 +117,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesProduccionAsync()
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/ordenes/getall";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/ordenes/getall";
 
             try
             {
@@ -144,8 +144,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<Periodos> GetRangosPeriodos()
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/periodos/getrangos";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/periodos/getrangos";
 
             Periodos periodos = new Periodos();
             try
@@ -175,8 +175,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<NotificarPt>> GetAllPt()
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/productos/getall";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/productos/getall";
 
             try
             {
@@ -201,8 +201,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<NotificarEm>> GetAllEm()
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/materiales/getall";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/materiales/getall";
 
             try
             {
@@ -227,8 +227,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleados()
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/empleados/getall";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/empleados/getall";
 
             try
             {
@@ -253,8 +253,8 @@ namespace ControYaApp.Services.WebService
 
         public async Task NotificarPtAsync(PtNotificadoReq producto)
         {
-            string uri = await _ipServidorRepo.GetIpServidorAsync();
-            uri = uri + "/productos/sp-notificarpt";
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            string uri = ip.Protocolo + ip.Ip + "/productos/sp-notificarpt";
             try
             {
                 string json = JsonConvert.SerializeObject(producto, _jsonSerializerSettings);
