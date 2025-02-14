@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:ur="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:LoginViewModel">
 
@@ -37,10 +38,17 @@
                     Text="Iniciar Sesión"
                     TextColor="#0f2b57" />
                 <Border Grid.Row="2">
-                    <Entry
+                    <!--<Entry
                         IsTextPredictionEnabled="False"
                         Placeholder="USUARIO"
-                        Text="{Binding Usuario.NombreUsuario}" />
+                        Text="{Binding Usuario.NombreUsuario}" />-->
+                    <!--<ur:InputField Title="USUARIO" HasValue="True">
+                        <Entry
+                            IsTextPredictionEnabled="False"
+                            Placeholder="USUARIO"
+                            Text="{Binding Usuario.NombreUsuario}" />
+                    </ur:InputField>-->
+                    <ur:TextField Title="USUARIO" />
                 </Border>
                 <Border Grid.Row="3">
                     <Grid ColumnDefinitions="*,Auto">

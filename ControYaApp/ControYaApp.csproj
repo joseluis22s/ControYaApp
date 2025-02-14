@@ -64,15 +64,10 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\AppIcon\ic_launcher.png" />
-	  <None Remove="Resources\Splash\cbmobilss.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiIcon Include="Resources\AppIcon\ic_launcher.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiSplashScreen Include="Resources\Splash\cbmobilss.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

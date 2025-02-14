@@ -8,6 +8,7 @@ using ControYaApp.ViewModels.Controls;
 using ControYaApp.Views;
 using ControYaApp.Views.Controls;
 using Microsoft.Extensions.Logging;
+using UraniumUI;
 
 namespace ControYaApp
 {
@@ -17,7 +18,8 @@ namespace ControYaApp
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>()
+                .UseMauiApp<App>().UseUraniumUI()
+                .UseUraniumUIMaterial()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("Aileron-Regular", "AileronRegular");
