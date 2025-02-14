@@ -3,9 +3,11 @@
     x:Class="ControYaApp.Views.LoginPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:v="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:LoginViewModel">
 
@@ -40,34 +42,44 @@
                     Text="Iniciar Sesión"
                     TextColor="#0f2b57" />
 
-                <urui:TextField
-                    Title="Usuario"
+                <input:FormView
                     Grid.Row="2"
-                    Icon="{FontImageSource FontFamily=MaterialSharp,
-                                           Glyph={x:Static m:MaterialSharp.Account_circle}}"
-                    IsTextPredictionEnabled="False"
-                    Text="{Binding Usuario.NombreUsuario}" />
+                    Spacing="10"
+                    SubmitCommand="{Binding GoToOrdenesCommand}">
+                    <urui:TextField
+                        Title="Usuario"
+                        Grid.Row="2"
+                        Icon="{FontImageSource FontFamily=MaterialSharp,
+                                               Glyph={x:Static m:MaterialSharp.Account_circle}}"
+                        IsTextPredictionEnabled="False"
+                        Text="{Binding Usuario.NombreUsuario}">
+                        <v:RequiredValidation Message="El campo no debe estar vacío." />
+                    </urui:TextField>
 
-                <urui:TextField
-                    Title="Contraseña"
-                    Grid.Row="3"
-                    Icon="{FontImageSource FontFamily=MaterialSharp,
-                                           Glyph={x:Static m:MaterialSharp.Password}}"
-                    IsTextPredictionEnabled="False"
-                    Text="{Binding Usuario.Contrasena}">
-                    <urui:TextField.Attachments>
-                        <urui:TextFieldPasswordShowHideAttachment />
-                    </urui:TextField.Attachments>
-                </urui:TextField>
+                    <urui:TextField
+                        Title="Contraseña"
+                        Grid.Row="3"
+                        Icon="{FontImageSource FontFamily=MaterialSharp,
+                                               Glyph={x:Static m:MaterialSharp.Password}}"
+                        IsTextPredictionEnabled="False"
+                        Text="{Binding Usuario.Contrasena}">
+                        <urui:TextField.Attachments>
+                            <urui:TextFieldPasswordShowHideAttachment />
+                        </urui:TextField.Attachments>
+                        <v:RequiredValidation Message="El campo no debe estar vacío." />
+                    </urui:TextField>
 
-                <Button
-                    Grid.Row="4"
-                    Command="{Binding GoToOrdenesCommand}"
-                    FontAttributes="Bold"
-                    FontSize="15"
-                    HeightRequest="37"
-                    MaximumWidthRequest="200"
-                    Text="Ingresar" />
+                    <Button
+                        Grid.Row="4"
+                        input:FormView.IsSubmitButton="True"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        HeightRequest="37"
+                        MaximumWidthRequest="200"
+                        Text="Ingresar" />
+                </input:FormView>
+
+
 
             </Grid>
         </Grid>

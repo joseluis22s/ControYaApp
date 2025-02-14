@@ -3,17 +3,18 @@
     x:Class="ControYaApp.Views.ConfigPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+    xmlns:myval="clr-namespace:ControYaApp.Services.Validation"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-    xmlns:validation="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
+    xmlns:v="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:ConfigViewModel"
-    Shell.BackButtonBehavior="{Binding BackButtonPressedCommand}"
     Shell.PresentationMode="Modal">
 
 
-        <VerticalStackLayout Padding="10,20" Spacing="10">
+    <VerticalStackLayout Padding="10,20" Spacing="10">
 
         <Label
             FontAttributes="Bold"
@@ -28,27 +29,46 @@
             RowDefinitions="Auto,Auto,Auto"
             RowSpacing="15">
 
+            <input:FormView SubmitCommand="{Binding SaveIpServidorCommand}">
 
-            <Grid ColumnDefinitions="*,2*">
+                <Grid
+                    ColumnDefinitions="*,2*"
+                    ColumnSpacing="7"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="10">
 
-                <urui:PickerField
-                    Title="Protocolo"
-                    AllowClear="False"
-                    FontSize="18"
-                    SelectedItem="{Binding IpServidor.Protocolo}">
-                    <urui:PickerField.Items>
-                        <x:String>http://</x:String>
-                        <x:String>https://</x:String>
-                    </urui:PickerField.Items>
-                </urui:PickerField>
+                    <urui:DropdownField
+                        Title="Protocolo"
+                        FontSize="18"
+                        SelectedItem="{Binding IpServidor.Protocolo}">
+                        <urui:DropdownField.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>http://</x:String>
+                                <x:String>https://</x:String>
+                            </x:Array>
+                        </urui:DropdownField.ItemsSource>
+                    </urui:DropdownField>
 
 
-                <urui:TextField
-                    Title="IP Servidor"
-                    Grid.Column="1"
-                    FontSize="18"
-                    Text="{Binding IpServidor.Ip}" />
-            </Grid>
+                    <urui:TextField
+                        Title="IP Servidor"
+                        Grid.Column="1"
+                        FontSize="18"
+                        Text="{Binding IpServidor.Ip}">
+                        <v:RequiredValidation Message="El campo no debe estar vacío." />
+                        <!--<v:RegexValidation Message="Dirección IP no válida." Pattern="^(([a-z0-9-]+\\.)+[a-z]{2,6}|((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9]))(:(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3}))?(/[\\w/.]*)?$" />-->
+                        <myval:IpAdressValidation />
+                    </urui:TextField>
+
+                    <Button
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        input:FormView.IsSubmitButton="True"
+                        Text="Guardar"
+                        WidthRequest="140" />
+
+                </Grid>
+            </input:FormView>
 
 
             <Border Grid.Row="2" Margin="0,10,0,0">
@@ -87,11 +107,7 @@
                 </toolkit:Expander>
             </Border>
 
-            <Button
-                Grid.Row="1"
-                Command="{Binding SaveIpServidorCommand}"
-                Text="Guardar"
-                WidthRequest="140" />
+
         </Grid>
     </VerticalStackLayout>
 
