@@ -91,6 +91,7 @@
             <Style TargetType="urui:TextField">
                 <Setter Property="InputBackground" Value="AliceBlue" />
                 <Setter Property="AccentColor" Value="#0f2b57" />
+                <Setter Property="TextColor" Value="#0f2b57" />
             </Style>
 
             <Style TargetType="Button">

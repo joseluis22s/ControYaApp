@@ -74,7 +74,7 @@ namespace ControYaApp.ViewModels
 
                 string ip = IpServidor.Protocolo + IpServidor.Ip;
 
-                var res = await Shell.Current.DisplayAlert("Nueva conexión", $"¿Está seguro que desea guardar la: {ip}?", "Aceptar", "Cancelar");
+                var res = await Shell.Current.DisplayAlert("Nueva conexión", $"¿Está seguro que desea guardar la siguiente ip?:\n{ip}", "Aceptar", "Cancelar");
 
                 if (res)
                 {

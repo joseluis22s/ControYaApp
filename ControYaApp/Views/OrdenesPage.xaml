@@ -25,9 +25,9 @@
                 BackgroundColor="AliceBlue"
                 BorderColor="AliceBlue"
                 CornerRadius="10"
-                HeightRequest="10"
+                HeightRequest="50"
                 Source="menu_icon.png"
-                WidthRequest="10" />
+                WidthRequest="50" />
             <Grid
                 ColumnDefinitions="*,*"
                 ColumnSpacing="20"

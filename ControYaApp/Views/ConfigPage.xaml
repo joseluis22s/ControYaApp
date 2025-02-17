@@ -6,15 +6,15 @@
     xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:myval="clr-namespace:ControYaApp.Services.Validation"
-    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:urui2="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
     xmlns:v="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:ConfigViewModel"
     Shell.PresentationMode="Modal">
 
 
-    <VerticalStackLayout Padding="10,20" Spacing="10">
+    <VerticalStackLayout Padding="10,20">
 
         <Label
             FontAttributes="Bold"
@@ -26,8 +26,8 @@
         <Grid
             Grid.Row="1"
             Padding="10"
-            RowDefinitions="Auto,Auto,Auto"
-            RowSpacing="15">
+            RowDefinitions="Auto,Auto"
+            RowSpacing="20">
 
             <input:FormView SubmitCommand="{Binding SaveIpServidorCommand}">
 
@@ -35,7 +35,7 @@
                     ColumnDefinitions="*,2*"
                     ColumnSpacing="7"
                     RowDefinitions="Auto,Auto"
-                    RowSpacing="10">
+                    RowSpacing="15">
 
                     <urui:DropdownField
                         Title="Protocolo"
@@ -56,7 +56,6 @@
                         FontSize="18"
                         Text="{Binding IpServidor.Ip}">
                         <v:RequiredValidation Message="El campo no debe estar vacío." />
-                        <!--<v:RegexValidation Message="Dirección IP no válida." Pattern="^(([a-z0-9-]+\\.)+[a-z]{2,6}|((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9]))(:(6553[0-5]|655[0-2]\\d|65[0-4]\\d{2}|6[0-4]\\d{3}|[1-5]\\d{4}|[1-9]\\d{0,3}))?(/[\\w/.]*)?$" />-->
                         <myval:IpAdressValidation />
                     </urui:TextField>
 
@@ -68,43 +67,71 @@
                         WidthRequest="140" />
 
                 </Grid>
+
             </input:FormView>
 
 
-            <Border Grid.Row="2" Margin="0,10,0,0">
-                <toolkit:Expander>
-                    <toolkit:Expander.Header>
+            <Border
+                Grid.Row="1"
+                Padding="10,0"
+                BackgroundColor="#f1f1f1"
+                Stroke="#a6a6a6"
+                StrokeShape="{RoundRectangle CornerRadius='10'}">
+                <urui2:ExpanderView>
+                    <urui2:ExpanderView.Header>
 
                         <Label
-                            Margin="5"
+                            Margin="5,10"
                             FontAttributes="Bold"
                             FontSize="16"
                             Text="Administrar permisos"
                             TextColor="#0f2b57" />
-                    </toolkit:Expander.Header>
+                    </urui2:ExpanderView.Header>
 
-                    <Grid
-                        Padding="10,5"
-                        RowDefinitions="Auto,Auto,Auto,Auto"
-                        RowSpacing="5">
+                    <input:FormView SubmitCommand="{Binding ContinuarConfigCommand}">
 
-                        <Border Grid.Row="1">
-                            <Entry Placeholder="USUARIO" Text="{Binding Usuario}" />
-                        </Border>
+                        <Grid
+                            Padding="15,0"
+                            RowDefinitions="Auto,Auto,Auto,Auto"
+                            RowSpacing="3">
 
-                        <Border Grid.Row="2">
-                            <Entry Placeholder="CONTRASEÑA" Text="{Binding Contrasena}" />
-                        </Border>
+                            <urui:TextField
+                                Title="Usuario"
+                                Grid.Row="1"
+                                Icon="{FontImageSource FontFamily=MaterialSharp,
+                                                       Glyph={x:Static m:MaterialSharp.Account_circle}}"
+                                IsTextPredictionEnabled="False"
+                                Text="{Binding Usuario}">
+                                <v:RequiredValidation Message="El campo no debe estar vacío." />
+                            </urui:TextField>
 
-                        <Button
-                            Grid.Row="3"
-                            Margin="0,5,0,7"
-                            BackgroundColor="#779bba"
-                            Command="{Binding ContinuarConfigCommand}"
-                            Text="Continuar"
-                            WidthRequest="100" />
-                    </Grid>
-                </toolkit:Expander>
+
+                            <urui:TextField
+                                Title="Contraseña"
+                                Grid.Row="2"
+                                Icon="{FontImageSource FontFamily=MaterialSharp,
+                                                       Glyph={x:Static m:MaterialSharp.Password}}"
+                                IsTextPredictionEnabled="False"
+                                Text="{Binding Contrasena}">
+                                <urui:TextField.Attachments>
+                                    <urui:TextFieldPasswordShowHideAttachment />
+                                </urui:TextField.Attachments>
+                                <v:RequiredValidation Message="El campo no debe estar vacío." />
+                            </urui:TextField>
+
+                            <Button
+                                Grid.Row="3"
+                                Margin="0,10"
+                                input:FormView.IsSubmitButton="True"
+                                BackgroundColor="#779bba"
+                                HorizontalOptions="Center"
+                                Text="Continuar" />
+                        </Grid>
+                    </input:FormView>
+
+
+
+                </urui2:ExpanderView>
             </Border>
 
 
@@ -112,16 +139,5 @@
     </VerticalStackLayout>
 
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Style TargetType="Border">
-                <Setter Property="BackgroundColor" Value="#f1f1f1" />
-                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='10'}" />
-                <Setter Property="Stroke" Value="#a6a6a6" />
-                <Setter Property="StrokeThickness" Value="2" />
-                <Setter Property="Padding" Value="10,0" />
-            </Style>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
 </ContentPage>
