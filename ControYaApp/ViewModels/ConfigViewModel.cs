@@ -8,6 +8,8 @@ namespace ControYaApp.ViewModels
 {
     public class ConfigViewModel : ViewModelBase
     {
+        private string _ip;
+
         private bool _isSaved;
 
         private readonly IpServidorRepo _ipServidorRepo;
@@ -31,6 +33,7 @@ namespace ControYaApp.ViewModels
 
         public ConfigViewModel(IpServidorRepo ipServidorRepo)
         {
+
             SaveIpServidorCommand = new AsyncRelayCommand(SaveIpServidorAsync);
             BackButtonPressedCommand = new AsyncRelayCommand(BackButtonPressed);
 
@@ -42,6 +45,8 @@ namespace ControYaApp.ViewModels
         private async void InitializeIpServidor()
         {
             IpServidor = await GetIpServidorAsync();
+
+            _ip = IpServidor.Ip;
         }
 
         private async Task<IpServidor> GetIpServidorAsync()
@@ -66,12 +71,6 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                if (string.IsNullOrWhiteSpace(IpServidor.Ip))
-                {
-                    await Toast.Make("El campo 'IP' no debe estar vacío").Show();
-                    return;
-                }
-
                 string ip = IpServidor.Protocolo + IpServidor.Ip;
 
                 var res = await Shell.Current.DisplayAlert("Nueva conexión", $"¿Está seguro que desea guardar la siguiente ip?:\n{ip}", "Aceptar", "Cancelar");
@@ -99,10 +98,30 @@ namespace ControYaApp.ViewModels
             }
             else
             {
-                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
-                if (res)
+                string? ip = IpServidor.Ip;
+                if (string.IsNullOrEmpty(ip))
                 {
-                    await Shell.Current.GoToAsync("..");
+                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
+                    if (res)
+                    {
+                        await Shell.Current.GoToAsync("..");
+                    }
+                }
+                else if (_ip != ip)
+                {
+                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
+                    if (res)
+                    {
+                        await Shell.Current.GoToAsync("..");
+                    }
+                }
+                else
+                {
+                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir?", "Aceptar", "Cancelar");
+                    if (res)
+                    {
+                        await Shell.Current.GoToAsync("..");
+                    }
                 }
             }
 

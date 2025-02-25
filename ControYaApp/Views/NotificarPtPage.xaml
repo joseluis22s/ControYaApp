@@ -42,7 +42,7 @@
                 RowSpacing="20">
                 <Grid
                     ColumnDefinitions="Auto,*"
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                     RowSpacing="4">
 
                     <Border Style="{StaticResource Border_Label}">
@@ -133,12 +133,18 @@
                         <Entry Placeholder="Ingresar serie" Text="{Binding Serie}" />
                     </Border>
 
-                </Grid>
-                <Grid Grid.Row="1">
                     <Button
-                        Command="{Binding NotificarPtCommand}"
+                        Grid.Row="8"
+                        Grid.ColumnSpan="2"
+                        Margin="0,15,0,0"
+                        BackgroundColor="#779bba"
                         HorizontalOptions="Center"
-                        Text="Notificar" />
+                        Text="Imprimir" />
+
+                </Grid>
+
+                <Grid Grid.Row="1" Padding="50,0">
+                    <Button Command="{Binding NotificarPtCommand}" Text="Notificar" />
                 </Grid>
             </Grid>
 

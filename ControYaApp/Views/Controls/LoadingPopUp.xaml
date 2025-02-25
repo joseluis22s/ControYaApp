@@ -7,12 +7,20 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels.Controls"
     x:DataType="viewModel:LoadingPopUpViewModel"
     CanBeDismissedByTappingOutsideOfPopup="False"
-    Shell.PresentationMode="Modal">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Cargando"
-            VerticalOptions="Center" />
-        <ActivityIndicator IsRunning="True" Color="Red" />
-    </VerticalStackLayout>
+    Shell.PresentationMode="Modal"
+    Color="Transparent">
+
+    <Border
+        Padding="10"
+        BackgroundColor="#c7d1e1"
+        StrokeShape="{RoundRectangle CornerRadius=15}">
+        <VerticalStackLayout Spacing="5">
+            <ActivityIndicator IsRunning="True" Color="#0f2b57" />
+            <Label
+                HorizontalOptions="Center"
+                Text="Cargando"
+                VerticalOptions="Center" />
+        </VerticalStackLayout>
+    </Border>
+
 </toolkit:Popup>
