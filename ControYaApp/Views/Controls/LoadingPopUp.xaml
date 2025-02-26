@@ -11,7 +11,7 @@
     Color="Transparent">
 
     <Border
-        Padding="10"
+        Padding="10,6"
         BackgroundColor="#c7d1e1"
         StrokeShape="{RoundRectangle CornerRadius=15}">
         <VerticalStackLayout Spacing="5">

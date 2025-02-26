@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ControYaApp.Services.WebService
 {
@@ -14,13 +13,13 @@ namespace ControYaApp.Services.WebService
         private IpServidorRepo _ipServidorRepo;
         private readonly HttpClient _client = new();
 
-        private JsonSerializerSettings _jsonSerializerSettings;
+        private JsonSerializerOptions _jsonSerializerOptions;
 
         public RestService(IpServidorRepo ipServidorRepo)
         {
-            _jsonSerializerSettings = new JsonSerializerSettings
+            _jsonSerializerOptions = new JsonSerializerOptions
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
 
             _ipServidorRepo = ipServidorRepo;
@@ -39,7 +38,7 @@ namespace ControYaApp.Services.WebService
                     UsuarioSistema = "",
                     Contrasena = usuario.Contrasena
                 };
-                string json = JsonConvert.SerializeObject(usuarioLogin, _jsonSerializerSettings);
+                string json = JsonSerializer.Serialize(usuarioLogin, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _client.PostAsync(uri, content);
@@ -47,7 +46,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     var resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(resContent);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, object>>(resContent);
 
                     if (values != null &&
                         values.TryGetValue("estaRegistrado", out object? estaRegistrado) &&
@@ -100,7 +99,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<Usuario>>>(content, _jsonSerializerSettings);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<Usuario>>>(content, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("usuarios", out ObservableCollection<Usuario>? usuarios))
                     {
@@ -126,7 +125,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, _jsonSerializerSettings);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("ordenes", out ObservableCollection<OrdenProduccion>? ordenes))
                     {
@@ -155,7 +154,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, DateTime>>(content, _jsonSerializerSettings);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, DateTime>>(content, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("fechaMinima", out DateTime fechaMinima) &&
                         values.TryGetValue("fechaMaxima", out DateTime fechaMaxima))
@@ -184,7 +183,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<NotificarPt>>>(content, _jsonSerializerSettings);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarPt>>>(content, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("notificarPt", out ObservableCollection<NotificarPt>? productos))
                     {
@@ -210,7 +209,7 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<NotificarEm>>>(content, _jsonSerializerSettings);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarEm>>>(content, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("notificarMaterial", out ObservableCollection<NotificarEm>? materiales))
                     {
@@ -232,17 +231,30 @@ namespace ControYaApp.Services.WebService
 
             try
             {
-                var response = await _client.GetAsync(uri);
+                // TODO: Verificar '""'  por que en la documentación pide un JSON.
+                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonConvert.DeserializeObject<Dictionary<string, ObservableCollection<EmpleadoSistema>>>(content, _jsonSerializerSettings);
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<EmpleadoSistema>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("empleados", out ObservableCollection<EmpleadoSistema>? empleados))
                     {
                         return new ObservableCollection<EmpleadoSistema>(empleados);
                     }
                 }
+                //var response = await _client.GetAsync(uri);
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    string content = await response.Content.ReadAsStringAsync();
+                //    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<EmpleadoSistema>>>(content, _jsonSerializerOptions);
+                //    if (!values.IsNullOrEmpty() &&
+                //        values.TryGetValue("empleados", out ObservableCollection<EmpleadoSistema>? empleados))
+                //    {
+                //        return new ObservableCollection<EmpleadoSistema>(empleados);
+                //    }
+                //}
             }
             catch (Exception)
             {
@@ -257,7 +269,7 @@ namespace ControYaApp.Services.WebService
             string uri = ip.Protocolo + ip.Ip + "/productos/sp-notificarpt";
             try
             {
-                string json = JsonConvert.SerializeObject(producto, _jsonSerializerSettings);
+                string json = JsonSerializer.Serialize(producto, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)

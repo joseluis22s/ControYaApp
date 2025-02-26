@@ -63,6 +63,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="C:\Users\Soporte\.nuget\packages\inputkit.maui\4.5.0\contentFiles\any\net9.0-android35.0\icon512.png" />
 	  <None Remove="Resources\AppIcon\ic_launcher.png" />
 	</ItemGroup>
 

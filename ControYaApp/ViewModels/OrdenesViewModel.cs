@@ -18,6 +18,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(Productot), "productoT")]
     public partial class OrdenesViewModel : ViewModelBase
     {
+
         private readonly OrdenRepo _ordenRepo;
 
         private readonly EmpleadosRepo _empleadosRepo;
@@ -27,6 +28,7 @@ namespace ControYaApp.ViewModels
         private Usuario? _usuario;
 
         private ObservableCollection<OrdenProduccionCabecera>? _ordenesProduccion;
+
 
 
 
@@ -79,6 +81,8 @@ namespace ControYaApp.ViewModels
             _empleadosRepo = empleadosRepo;
         }
 
+
+
         internal void Appearing()
         {
             try
@@ -120,8 +124,10 @@ namespace ControYaApp.ViewModels
             {
                 await Toast.Make(ex.Message).Show();
             }
-
-            await loadingPopUpp.CloseAsync();
+            finally
+            {
+                await loadingPopUpp.CloseAsync();
+            }
 
         }
 

@@ -3,10 +3,12 @@
     x:Class="ControYaApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     xmlns:views="clr-namespace:ControYaApp.Views"
     Title="ControYaApp"
-    x:DataType="viewModel:AppShellViewModel">
+    x:DataType="viewModel:AppShellViewModel"
+    Shell.FlyoutBackdrop="#26000000">
 
 
 
@@ -30,7 +32,10 @@
     -->
 
     <Shell.FlyoutHeader>
-        <Grid ColumnDefinitions="*,Auto">
+        <Grid
+            Padding="0,0,15,0"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="-10">
             <Label
                 FontAttributes="Bold"
                 FontSize="20"
@@ -39,6 +44,7 @@
                 VerticalOptions="Center" />
             <Button
                 Grid.Column="1"
+                Padding="0"
                 BackgroundColor="Transparent"
                 BorderColor="Transparent"
                 Command="{Binding FlyoutShellCommand}"
@@ -56,16 +62,24 @@
             ColumnSpacing="5">
             <Button
                 Command="{Binding ExtraerDatosCommand}"
+                CornerRadius="3"
+                FontAttributes="Bold"
+                FontSize="16"
                 IsEnabled="{Binding IsConected}"
                 IsVisible="{Binding IsConected}"
                 Text="Extaer datos" />
             <Button
                 Grid.Column="1"
+                Padding="10,0"
                 BackgroundColor="#cacccf"
-                BorderColor="#779bba"
                 Command="{Binding GoToLoginCommand}"
-                HorizontalOptions="Center"
-                Text="Cerrar sesión" />
+                ContentLayout="0"
+                CornerRadius="3"
+                FontAttributes="Bold"
+                FontSize="16"
+                ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                              Glyph={x:Static m:MaterialSharp.Logout}}"
+                Text="Cerrar sesiòn" />
         </Grid>
     </Shell.FlyoutFooter>
 

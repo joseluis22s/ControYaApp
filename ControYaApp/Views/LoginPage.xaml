@@ -16,105 +16,110 @@
 
     <ScrollView>
 
-        <Grid RowDefinitions="Auto,*" RowSpacing="{orientation:OnOrientation Default=60, Landscape=30}">
+        <Grid RowDefinitions="*">
 
             <Image
-                Grid.RowSpan="2"
+                Aspect="AspectFit"
                 Source="fondo_formas.png"
-                VerticalOptions="Start" />
+                VerticalOptions="StartAndExpand" />
 
-            <Grid RowDefinitions="Auto,Auto" RowSpacing="{orientation:OnOrientation Default=30, Landscape=-15}">
-                <ImageButton
-                    Margin="10"
-                    Command="{Binding GoToConfigCommand}"
-                    HeightRequest="40"
-                    HorizontalOptions="End"
-                    Source="{FontImageSource FontFamily=MaterialSharp,
-                                             Glyph={x:Static m:MaterialSharp.Settings},
-                                             Color=#0f2b57}"
-                    VerticalOptions="Start"
-                    WidthRequest="40" />
-                <Image
-                    Grid.Row="1"
-                    MaximumHeightRequest="35"
-                    Source="desoteem_texto" />
+            <Grid RowDefinitions="Auto,*" RowSpacing="{orientation:OnOrientation Default=60, Landscape=30}">
 
-            </Grid>
-
-            <Border
-                Grid.Row="1"
-                BackgroundColor="#ffffff"
-                StrokeShape="{RoundRectangle CornerRadius='60,0,0,0'}">
-
-                <Grid
-                    Padding="{orientation:OnOrientation Default='0,30,0,0',
-                                                        Landscape=15,
-                                                        TypeConverter={x:Type conv:ThicknessTypeConverter}}"
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                    RowSpacing="{orientation:OnOrientation Default=35,
-                                                           Landscape=20}">
-
-                    <Label FontSize="18" HorizontalOptions="Center">
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="Bienvenido a " TextColor="#696161" />
-                                <Span
-                                    FontAttributes="Bold"
-                                    Text="CBMóvil"
-                                    TextColor="#0f2b57" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-
-                    <Label
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="{orientation:OnOrientation Default=30, Landscape=-15}">
+                    <ImageButton
+                        Margin="10"
+                        Command="{Binding GoToConfigCommand}"
+                        HeightRequest="40"
+                        HorizontalOptions="End"
+                        Source="{FontImageSource FontFamily=MaterialSharp,
+                                                 Glyph={x:Static m:MaterialSharp.Settings},
+                                                 Color=#0f2b57}"
+                        VerticalOptions="Start"
+                        WidthRequest="40" />
+                    <Image
                         Grid.Row="1"
-                        FontAttributes="Bold"
-                        FontSize="32"
-                        HorizontalOptions="Center"
-                        Text="Iniciar Sesión"
-                        TextColor="#0f2b57" />
-
-                    <input:FormView
-                        Grid.Row="2"
-                        Spacing="7"
-                        SubmitCommand="{Binding GoToOrdenesCommand}">
-                        <urui:TextField
-                            Title="Usuario"
-                            Icon="{FontImageSource FontFamily=MaterialSharp,
-                                                   Glyph={x:Static m:MaterialSharp.Account_circle}}"
-                            IsTextPredictionEnabled="False"
-                            Text="{Binding Usuario.NombreUsuario}">
-                            <v:RequiredValidation Message="El campo no debe estar vacío." />
-                        </urui:TextField>
-
-                        <urui:TextField
-                            Title="Contraseña"
-                            Icon="{FontImageSource FontFamily=MaterialSharp,
-                                                   Glyph={x:Static m:MaterialSharp.Password}}"
-                            IsPassword="True"
-                            Text="{Binding Usuario.Contrasena}">
-                            <urui:TextField.Attachments>
-                                <urui:TextFieldPasswordShowHideAttachment />
-                            </urui:TextField.Attachments>
-                            <v:RequiredValidation Message="El campo no debe estar vacío." />
-                        </urui:TextField>
-
-                        <Button
-                            Margin="0,20,0,0"
-                            input:FormView.IsSubmitButton="True"
-                            FontAttributes="Bold"
-                            FontSize="15"
-                            HeightRequest="37"
-                            MaximumWidthRequest="200"
-                            Text="Ingresar" />
-                    </input:FormView>
-
+                        MaximumHeightRequest="35"
+                        Source="desoteem_texto" />
 
                 </Grid>
-            </Border>
+
+                <Border
+                    Grid.Row="1"
+                    BackgroundColor="#ffffff"
+                    StrokeShape="{RoundRectangle CornerRadius='60,0,0,0'}">
+
+                    <Grid
+                        Padding="{orientation:OnOrientation Default='0,30,0,0',
+                                                            Landscape=15,
+                                                            TypeConverter={x:Type conv:ThicknessTypeConverter}}"
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                        RowSpacing="{orientation:OnOrientation Default=35,
+                                                               Landscape=20}">
+
+                        <Label FontSize="18" HorizontalOptions="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Bienvenido a " TextColor="#696161" />
+                                    <Span
+                                        FontAttributes="Bold"
+                                        Text="CBMóvil"
+                                        TextColor="#0f2b57" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label
+                            Grid.Row="1"
+                            FontAttributes="Bold"
+                            FontSize="32"
+                            HorizontalOptions="Center"
+                            Text="Iniciar Sesión"
+                            TextColor="#0f2b57" />
+
+                        <input:FormView
+                            Grid.Row="2"
+                            Spacing="7"
+                            SubmitCommand="{Binding GoToOrdenesCommand}">
+                            <urui:TextField
+                                Title="Usuario"
+                                Icon="{FontImageSource FontFamily=MaterialSharp,
+                                                       Glyph={x:Static m:MaterialSharp.Account_circle}}"
+                                IsTextPredictionEnabled="False"
+                                Text="{Binding Usuario.NombreUsuario}">
+                                <v:RequiredValidation Message="El campo no debe estar vacío." />
+                            </urui:TextField>
+
+                            <urui:TextField
+                                Title="Contraseña"
+                                Icon="{FontImageSource FontFamily=MaterialSharp,
+                                                       Glyph={x:Static m:MaterialSharp.Password}}"
+                                IsPassword="True"
+                                Text="{Binding Usuario.Contrasena}">
+                                <urui:TextField.Attachments>
+                                    <urui:TextFieldPasswordShowHideAttachment />
+                                </urui:TextField.Attachments>
+                                <v:RequiredValidation Message="El campo no debe estar vacío." />
+                            </urui:TextField>
+
+                            <Button
+                                Margin="0,20,0,0"
+                                input:FormView.IsSubmitButton="True"
+                                FontAttributes="Bold"
+                                FontSize="15"
+                                HeightRequest="37"
+                                MaximumWidthRequest="200"
+                                Text="Ingresar" />
+                        </input:FormView>
 
 
+                    </Grid>
+                </Border>
+
+
+            </Grid>
         </Grid>
+
+
     </ScrollView>
 
     <ContentPage.Resources>
