@@ -79,13 +79,14 @@
                         <input:FormView
                             Grid.Row="2"
                             Spacing="7"
-                            SubmitCommand="{Binding GoToOrdenesCommand}">
+                            SubmitCommand="{Binding GoToHomeCommand}">
+
                             <urui:TextField
                                 Title="Usuario"
                                 Icon="{FontImageSource FontFamily=MaterialSharp,
                                                        Glyph={x:Static m:MaterialSharp.Account_circle}}"
                                 IsTextPredictionEnabled="False"
-                                Text="{Binding Usuario.NombreUsuario}">
+                                Text="{Binding SharedData.NombreUsuario}">
                                 <v:RequiredValidation Message="El campo no debe estar vacío." />
                             </urui:TextField>
 
@@ -94,11 +95,13 @@
                                 Icon="{FontImageSource FontFamily=MaterialSharp,
                                                        Glyph={x:Static m:MaterialSharp.Password}}"
                                 IsPassword="True"
-                                Text="{Binding Usuario.Contrasena}">
+                                Text="{Binding Contrasena}">
+
                                 <urui:TextField.Attachments>
                                     <urui:TextFieldPasswordShowHideAttachment />
                                 </urui:TextField.Attachments>
                                 <v:RequiredValidation Message="El campo no debe estar vacío." />
+
                             </urui:TextField>
 
                             <Button
@@ -109,6 +112,7 @@
                                 HeightRequest="37"
                                 MaximumWidthRequest="200"
                                 Text="Ingresar" />
+
                         </input:FormView>
 
 

@@ -8,8 +8,9 @@ using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
-    public partial class AppShellViewModel : ViewModelBase
+    public partial class AppShellViewModel : BaseViewModel
     {
+
         private readonly RestService _restService;
 
         private readonly LocalRepoService _localRepoService;
@@ -17,8 +18,6 @@ namespace ControYaApp.ViewModels
 
 
         private bool _isConected;
-
-
         public bool IsConected
         {
             get => _isConected;
@@ -34,21 +33,30 @@ namespace ControYaApp.ViewModels
         public ICommand ExtraerDatosCommand { get; }
 
 
-        public AppShellViewModel(RestService restService, LocalRepoService localRepoService
-            )
+
+
+        public AppShellViewModel(RestService restService, LocalRepoService localRepoService)
         {
-            GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
-            FlyoutShellCommand = new RelayCommand(FlyoutShell);
-            ExtraerDatosCommand = new AsyncRelayCommand(ExtraerDatosAsync);
 
             _restService = restService;
             _localRepoService = localRepoService;
+
+
+            GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
+            FlyoutShellCommand = new RelayCommand(FlyoutShell);
+            ExtraerDatosCommand = new AsyncRelayCommand(ExtraerDatosAsync);
         }
+
+
+
+
         private async Task GoToLoginAsync()
         {
             await Shell.Current.GoToAsync("//login");
 
         }
+
+
         private void FlyoutShell()
         {
             Shell.Current.FlyoutIsPresented = !Shell.Current.FlyoutIsPresented;
@@ -62,9 +70,9 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        public async Task ExtraerDatosAsync()
-        {
 
+        private async Task ExtraerDatosAsync()
+        {
             WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
 
             var loadingPopUpp = new LoadingPopUp();
@@ -75,8 +83,8 @@ namespace ControYaApp.ViewModels
             var usuarios = await _restService.GetAllUsuariosAsync();
             var ordenes = await _restService.GetOrdenesProduccionAsync();
             var periodos = await _restService.GetRangosPeriodos();
-            var productos = await _restService.GetAllPt();
-            var materiales = await _restService.GetAllEm();
+            var productos = await _restService.GetAllProductosTerminado();
+            var materiales = await _restService.GetAllMaterialesEgreso();
             var empleados = await _restService.GetAllEmpleados();
 
 
@@ -91,5 +99,9 @@ namespace ControYaApp.ViewModels
 
             await loadingPopUpp.CloseAsync();
         }
+
+
+
+
     }
 }

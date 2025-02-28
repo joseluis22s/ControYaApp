@@ -9,9 +9,7 @@ public partial class OrdenesPage : ContentPage
     {
         InitializeComponent();
 
-        _vm = vm;
-
-        BindingContext = vm;
+        BindingContext = _vm = vm;
 
         ImageButton_FlyoutShell.Command = appShellvm.FlyoutShellCommand;
     }

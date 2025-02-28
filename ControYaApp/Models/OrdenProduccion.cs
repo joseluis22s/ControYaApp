@@ -5,7 +5,7 @@ using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class OrdenProduccion : ViewModelBase
+    public class OrdenProduccion : BaseViewModel
     {
 
         private DateTime _fecha;

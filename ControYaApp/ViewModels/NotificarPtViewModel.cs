@@ -10,8 +10,13 @@ namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(OrdenProduccion), "orden")]
     [QueryProperty(nameof(Empleados), "empleados")]
-    public class NotificarPtViewModel : ViewModelBase
+    public class NotificarPtViewModel : BaseViewModel
     {
+
+        private bool _isNotified { get; set; } = false;
+
+
+
         private readonly PeriodoRepo _periodoRepo;
 
         private readonly OrdenRepo _ordenRepo;
@@ -21,46 +26,40 @@ namespace ControYaApp.ViewModels
         private readonly RestService _restService;
 
 
+
         private Periodos _rangoPeriodos;
-
-        private string? _serie;
-
-        private string? _empleado;
-
-        private ObservableCollection<string>? _empleados;
-
-        private OrdenProduccion? _ordenProduccion;
-
-
-
-        private bool IsNotified { get; set; } = false;
-
-
-
         public Periodos RangoPeriodos
         {
             get => _rangoPeriodos;
             set => SetProperty(ref _rangoPeriodos, value);
         }
 
+
+        private string? _serie;
         public string? Serie
         {
             get => _serie;
             set => SetProperty(ref _serie, value);
         }
 
+
+        private string? _empleado;
         public string? Empleado
         {
             get => _empleado;
             set => SetProperty(ref _empleado, value);
         }
 
+
+        private ObservableCollection<string>? _empleados;
         public ObservableCollection<string>? Empleados
         {
             get => _empleados;
             set => SetProperty(ref _empleados, value);
         }
 
+
+        private OrdenProduccion? _ordenProduccion;
         public OrdenProduccion? OrdenProduccion
         {
             get => _ordenProduccion;
@@ -68,30 +67,40 @@ namespace ControYaApp.ViewModels
         }
 
 
+
         public ICommand GoBackCommand { get; }
 
         public ICommand NotificarPtCommand { get; }
 
 
+
+
         public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
-            OrdenRepo ordenRepo, PeriodoRepo periodoRepo)
+                                    OrdenRepo ordenRepo, PeriodoRepo periodoRepo)
         {
-            GoBackCommand = new AsyncRelayCommand(() => GoBackAsync(IsNotified));
-            NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
 
             _restService = restService;
             _ptNotificadoRepo = ptNotificadoRepo;
             _ordenRepo = ordenRepo;
             _periodoRepo = periodoRepo;
 
+
+            GoBackCommand = new AsyncRelayCommand(() => GoBackAsync(_isNotified));
+            NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
+
+
             InitializeRangoPeriodosAsync();
         }
+
+
+
 
         private async void InitializeRangoPeriodosAsync()
         {
             RangoPeriodos = await GetRangosPeriodosAsync();
             OrdenProduccion.Fecha = DateTime.Now;
         }
+
 
         private async Task GoBackAsync(bool isNotified)
         {
@@ -102,6 +111,7 @@ namespace ControYaApp.ViewModels
             await Shell.Current.GoToAsync("..", navParameter);
         }
 
+
         private async Task GoBackAsync(bool isNotified, PtNotificadoReq producto)
         {
             var navParameter = new ShellNavigationQueryParameters
@@ -111,6 +121,8 @@ namespace ControYaApp.ViewModels
             };
             await Shell.Current.GoToAsync("..", navParameter);
         }
+
+
         private async Task NotificarPtAsync()
         {
             try
@@ -139,7 +151,7 @@ namespace ControYaApp.ViewModels
                 if (accessType == NetworkAccess.Internet)
                 {
                     // TODO: Preguntar que criterio deberia no mostrar ordenPt para eliminar los registros de la db.
-                    await _restService.NotificarPtAsync(notificarProducto);
+                    await _restService.NotificarProductoTerminadoAsync(notificarProducto);
                     await _ptNotificadoRepo.SetSincPtNotificadoAsync(notificarProducto);
                 }
                 // TODO: Mostar ventana con los datos que se van a notificar
@@ -173,9 +185,14 @@ namespace ControYaApp.ViewModels
             };
         }
 
+
         private async Task<Periodos> GetRangosPeriodosAsync()
         {
             return await _periodoRepo.GetRangosPeriodosAsync();
         }
+
+
+
+
     }
 }

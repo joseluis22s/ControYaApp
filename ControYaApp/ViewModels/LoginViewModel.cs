@@ -4,13 +4,18 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
-    public partial class LoginViewModel : ViewModelBase
+    public partial class LoginViewModel : BaseViewModel
     {
+
+        public ISharedData SharedData { get; set; }
+
+
 
         private readonly RestService _restService;
 
@@ -19,41 +24,53 @@ namespace ControYaApp.ViewModels
         private readonly IpServidorRepo _ipServidorRepo;
 
 
-        private Usuario? _usuario = new();
 
-
-        public Usuario? Usuario
+        private string? _contrasena;
+        public string? Contrasena
         {
-            get => _usuario;
-            set => SetProperty(ref _usuario, value);
+            get => _contrasena;
+            set => SetProperty(ref _contrasena, value);
         }
 
 
-        public ICommand? GoToOrdenesCommand { get; }
 
+        public ICommand? GoToHomeCommand { get; }
 
         public ICommand? ProbarConexionCommand { get; }
 
         public ICommand GoToConfigCommand { get; }
 
 
-        public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService, IpServidorRepo ipServidorRepo)
+
+
+        public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService, IpServidorRepo ipServidorRepo, ISharedData sharedData)
         {
-            GoToOrdenesCommand = new AsyncRelayCommand(GoToOrdenesAsync);
-            GoToConfigCommand = new AsyncRelayCommand(GoToConfigAsync);
+
+            SharedData = sharedData;
+
 
             _restService = restService;
             _usuarioRepo = usuarioRepo;
             _ipServidorRepo = ipServidorRepo;
+
+
+            GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
+            GoToConfigCommand = new AsyncRelayCommand(GoToConfigAsync);
+
         }
+
+
+
 
         private async Task GoToConfigAsync()
         {
             await Shell.Current.GoToAsync("config");
         }
-        private async Task GoToOrdenesAsync()
+
+
+        private async Task GoToHomeAsync()
         {
-            if (string.IsNullOrEmpty(Usuario?.NombreUsuario) || string.IsNullOrEmpty(Usuario?.Contrasena))
+            if (string.IsNullOrEmpty(SharedData.NombreUsuario) || string.IsNullOrEmpty(Contrasena))
             {
                 await Toast.Make("Los campos no seben estar vacios.").Show();
             }
@@ -73,8 +90,8 @@ namespace ControYaApp.ViewModels
                 {
                     var usuario = new Usuario
                     {
-                        NombreUsuario = Usuario.NombreUsuario.Trim(),
-                        Contrasena = Usuario?.Contrasena.Trim()
+                        NombreUsuario = SharedData.NombreUsuario,
+                        Contrasena = Contrasena
                     };
 
                     var loadingPopUpp = new LoadingPopUp();
@@ -93,11 +110,9 @@ namespace ControYaApp.ViewModels
                             var estado1 = bool.Parse(estaRegistrado.ToString());
                             if (estado1)
                             {
-                                usuario.UsuarioSistema = usuarioSistema.ToString();
+                                SharedData.UsuarioSistema = usuarioSistema.ToString();
 
-                                var navParameter = new ShellNavigationQueryParameters { { "usuario", usuario } };
-
-                                await Shell.Current.GoToAsync("//ordenes", navParameter);
+                                await Shell.Current.GoToAsync("//home");
                             }
                             else if (accessType == NetworkAccess.Internet)
                             {
@@ -111,11 +126,8 @@ namespace ControYaApp.ViewModels
                                     var estado2 = bool.Parse(estaRegistrado1.ToString());
                                     if (estado2)
                                     {
-                                        usuario.UsuarioSistema = usuarioSistema1.ToString();
-
-                                        var navParameter = new ShellNavigationQueryParameters { { "usuario", usuario } };
-
-                                        await Shell.Current.GoToAsync("//ordenes", navParameter);
+                                        SharedData.UsuarioSistema = usuarioSistema.ToString();
+                                        await Shell.Current.GoToAsync("//home");
                                     }
                                     else
                                     {
@@ -145,6 +157,7 @@ namespace ControYaApp.ViewModels
                 }
             }
         }
+
 
 
 

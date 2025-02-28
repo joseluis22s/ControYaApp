@@ -58,7 +58,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuarioSistema(string usuarioSistema)
+        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuarioSistema(string? usuarioSistema)
         {
             try
             {

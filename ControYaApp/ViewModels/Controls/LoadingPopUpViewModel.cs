@@ -2,7 +2,7 @@
 
 namespace ControYaApp.ViewModels.Controls
 {
-    public class LoadingPopUpViewModel : ViewModelBase
+    public class LoadingPopUpViewModel : BaseViewModel
     {
         private readonly IPopupService _popupService;
 

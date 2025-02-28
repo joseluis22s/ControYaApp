@@ -11,17 +11,27 @@
     Shell.FlyoutBackdrop="#26000000">
 
 
-
     <ShellContent
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
         Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False" />
+        Shell.FlyoutItemIsVisible="False">
+        <ShellNavigationQueryParameters />
+    </ShellContent>
+
+    <ShellContent
+        Title="Inicio"
+        ContentTemplate="{DataTemplate views:HomePage}"
+        Route="home"
+        Shell.NavBarIsVisible="False" />
+
     <ShellContent
         Title="Ordenes de Producción"
         ContentTemplate="{DataTemplate views:OrdenesPage}"
         Route="ordenes"
         Shell.NavBarIsVisible="False" />
+
+
 
     <!--
         "NotificarPtPage"

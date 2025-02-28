@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core.Extensions;
@@ -8,16 +7,24 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
-    [QueryProperty(nameof(Usuario), "usuario")]
     [QueryProperty(nameof(EsNotificado), "esNotificado")]
-    [QueryProperty(nameof(Productot), "productoT")]
-    public partial class OrdenesViewModel : ViewModelBase
+    [QueryProperty(nameof(ProductoTerminado), "productoT")]
+    public partial class OrdenesViewModel : BaseViewModel
     {
+
+        public ISharedData SharedData { get; set; }
+
+        public bool EsNotificado { get; set; }
+
+        private PtNotificadoReq ProductoTerminado { get; set; }
+
+
 
         private readonly OrdenRepo _ordenRepo;
 
@@ -25,26 +32,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        private Usuario? _usuario;
-
         private ObservableCollection<OrdenProduccionCabecera>? _ordenesProduccion;
-
-
-
-
-        public bool EsNotificado { get; set; }
-        public PtNotificadoReq Productot { get; set; }
-
-
-
-        public Usuario? Usuario
-        {
-            get => _usuario;
-            set
-            {
-                SetProperty(ref _usuario, value);
-            }
-        }
 
         public ObservableCollection<OrdenProduccionCabecera>? OrdenesProduccion
         {
@@ -54,21 +42,35 @@ namespace ControYaApp.ViewModels
 
 
 
-
         public ICommand ObtenerPedidosCommand { get; }
 
         public ICommand NotificarPtCommand { get; }
 
-        //public ICommand AppearingCommand { get; }
 
 
-        public OrdenesViewModel(RestService restService, OrdenRepo ordenRepo, EmpleadosRepo empleadosRepo)
+
+        public OrdenesViewModel(RestService restService, OrdenRepo ordenRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData)
         {
+
+            SharedData = sharedData;
+
+
+            _ordenRepo = ordenRepo;
+            _empleadosRepo = empleadosRepo;
+
+
             ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionDetalle>(NotificarPtAsync);
+            
+            
+            VaciarOrdenes();
+        }
 
-            IsActive = true;
 
+
+
+        private void VaciarOrdenes()
+        {
             WeakReferenceMessenger.Default.Register<ClearDataMessage>(this, (r, m) =>
             {
                 if (m.Value == "Vaciar")
@@ -76,11 +78,7 @@ namespace ControYaApp.ViewModels
                     OrdenesProduccion?.Clear();
                 }
             });
-
-            _ordenRepo = ordenRepo;
-            _empleadosRepo = empleadosRepo;
         }
-
 
 
         internal void Appearing()
@@ -89,18 +87,25 @@ namespace ControYaApp.ViewModels
             {
                 if (EsNotificado)
                 {
-                    OrdenesProduccion.Where(o =>
-                        Productot.CodigoProduccion == o.CodigoProduccion &&
-                        Productot.Orden == o.Orden
-                        ).FirstOrDefault().Detalles.Where(d =>
-                                Productot.CodigoMaterial == d.CodigoMaterial).FirstOrDefault().Notificado += Productot.Notificado;
+                    OrdenesProduccion.FirstOrDefault(o =>
+                        ProductoTerminado.CodigoProduccion == o.CodigoProduccion &&
+                        ProductoTerminado.Orden == o.Orden)
+                        .Detalles.FirstOrDefault(d =>
+                                ProductoTerminado.CodigoMaterial == d.CodigoMaterial).Notificado += ProductoTerminado.Notificado;
+
+                    //OrdenesProduccion.Where(o =>
+                    //    ProductoTerminado.CodigoProduccion == o.CodigoProduccion &&
+                    //    ProductoTerminado.Orden == o.Orden
+                    //    ).FirstOrDefault().Detalles.Where(d =>
+                    //            ProductoTerminado.CodigoMaterial == d.CodigoMaterial).FirstOrDefault().Notificado += ProductoTerminado.Notificado;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.Write(ex.Message);
+                throw;
             }
         }
+
 
         public async Task ObtenerPedidosAsync()
         {
@@ -109,7 +114,7 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                var ordenesDb = await _ordenRepo.GetOrdenesByUsuarioSistema(Usuario.UsuarioSistema);
+                var ordenesDb = await _ordenRepo.GetOrdenesByUsuarioSistema(SharedData.UsuarioSistema);
 
                 if (ordenesDb.Count != 0)
                 {
@@ -130,6 +135,31 @@ namespace ControYaApp.ViewModels
             }
 
         }
+
+
+        public async Task NotificarPtAsync(OrdenProduccionDetalle? detalle)
+        {
+            try
+            {
+                var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+
+                empleados = empleados.Order().ToObservableCollection();
+
+                var orden = MapOrdenProduccion(detalle);
+
+                var navParameter = new ShellNavigationQueryParameters
+            {
+                { "orden", orden},
+                { "empleados", empleados}
+            };
+                await Shell.Current.GoToAsync("notificarPt", navParameter);
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
+            }
+        }
+
 
         private ObservableCollection<OrdenProduccionCabecera> MapOrdenesCabeceras(ObservableCollection<OrdenProduccion> ordenesProduccion)
         {
@@ -178,27 +208,6 @@ namespace ControYaApp.ViewModels
             return new ObservableCollection<OrdenProduccionCabecera>(cabeceras);
         }
 
-        public async Task NotificarPtAsync(OrdenProduccionDetalle? detalle)
-        {
-            try
-            {
-                var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
-
-                empleados = empleados.Order().ToObservableCollection();
-
-                var orden = MapOrdenProduccion(detalle);
-                var navParameter = new ShellNavigationQueryParameters
-            {
-                { "orden", orden},
-                { "empleados", empleados}
-            };
-                await Shell.Current.GoToAsync("notificarPt", navParameter);
-            }
-            catch (Exception ex)
-            {
-                await Toast.Make(ex.Message).Show();
-            }
-        }
 
         private OrdenProduccion MapOrdenProduccion(OrdenProduccionDetalle detalle)
         {
@@ -207,7 +216,7 @@ namespace ControYaApp.ViewModels
                 Centro = detalle.Cabecera.Centro,
                 CodigoProduccion = detalle.Cabecera.CodigoProduccion,
                 Orden = detalle.Cabecera.Orden,
-                CodigoUsuario = Usuario.UsuarioSistema,
+                CodigoUsuario = SharedData.UsuarioSistema,
                 Fecha = detalle.Cabecera.Fecha,
                 Referencia = detalle.Cabecera.Referencia,
                 Detalle = detalle.Detalle,
@@ -219,5 +228,9 @@ namespace ControYaApp.ViewModels
                 Notificado = detalle.Saldo
             };
         }
+
+
+
+
     }
 }

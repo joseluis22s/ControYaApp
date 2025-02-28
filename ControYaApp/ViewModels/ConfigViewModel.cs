@@ -6,17 +6,19 @@ using ControYaApp.Services.LocalDatabase.Repositories;
 
 namespace ControYaApp.ViewModels
 {
-    public class ConfigViewModel : ViewModelBase
+    public class ConfigViewModel : BaseViewModel
     {
         private string _ip;
 
         private bool _isSaved;
 
+
+
         private readonly IpServidorRepo _ipServidorRepo;
 
 
-        private IpServidor _ipServidor;
 
+        private IpServidor _ipServidor;
         public IpServidor IpServidor
         {
             get => _ipServidor;
@@ -31,16 +33,22 @@ namespace ControYaApp.ViewModels
 
 
 
+
         public ConfigViewModel(IpServidorRepo ipServidorRepo)
         {
+
+            _ipServidorRepo = ipServidorRepo;
+
 
             SaveIpServidorCommand = new AsyncRelayCommand(SaveIpServidorAsync);
             BackButtonPressedCommand = new AsyncRelayCommand(BackButtonPressed);
 
-            _ipServidorRepo = ipServidorRepo;
 
             InitializeIpServidor();
         }
+
+
+
 
         private async void InitializeIpServidor()
         {
@@ -48,6 +56,7 @@ namespace ControYaApp.ViewModels
 
             _ip = IpServidor.Ip;
         }
+
 
         private async Task<IpServidor> GetIpServidorAsync()
         {
@@ -65,6 +74,7 @@ namespace ControYaApp.ViewModels
             }
             return new IpServidor { Protocolo = "http://", Ip = "" };
         }
+
 
         private async Task SaveIpServidorAsync()
         {
@@ -89,6 +99,7 @@ namespace ControYaApp.ViewModels
                 await Toast.Make(ex.Message).Show();
             }
         }
+
 
         public async Task BackButtonPressed()
         {
@@ -126,5 +137,9 @@ namespace ControYaApp.ViewModels
             }
 
         }
+
+
+
+
     }
 }

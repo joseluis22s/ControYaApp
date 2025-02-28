@@ -106,6 +106,9 @@
 	  <MauiXaml Update="Views\Controls\LoadingPopUp.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\NotificarPtPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

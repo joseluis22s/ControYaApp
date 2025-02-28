@@ -95,11 +95,12 @@ namespace ControYaApp.Services.WebService
 
             try
             {
-                var response = await _client.GetAsync(uri);
+                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<Usuario>>>(content, _jsonSerializerOptions);
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<Usuario>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("usuarios", out ObservableCollection<Usuario>? usuarios))
                     {
@@ -121,11 +122,12 @@ namespace ControYaApp.Services.WebService
 
             try
             {
-                var response = await _client.GetAsync(uri);
+                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccion>>>(content, _jsonSerializerOptions);
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccion>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("ordenes", out ObservableCollection<OrdenProduccion>? ordenes))
                     {
@@ -140,7 +142,6 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-
         public async Task<Periodos> GetRangosPeriodos()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
@@ -149,12 +150,12 @@ namespace ControYaApp.Services.WebService
             Periodos periodos = new Periodos();
             try
             {
-
-                var response = await _client.GetAsync(uri);
+                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, DateTime>>(content, _jsonSerializerOptions);
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, DateTime>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("fechaMinima", out DateTime fechaMinima) &&
                         values.TryGetValue("fechaMaxima", out DateTime fechaMaxima))
@@ -172,18 +173,19 @@ namespace ControYaApp.Services.WebService
             return periodos;
         }
 
-        public async Task<ObservableCollection<NotificarPt>> GetAllPt()
+        public async Task<ObservableCollection<NotificarPt>> GetAllProductosTerminado()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
             string uri = ip.Protocolo + ip.Ip + "/productos/getall";
 
             try
             {
-                var response = await _client.GetAsync(uri);
+                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarPt>>>(content, _jsonSerializerOptions);
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarPt>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("notificarPt", out ObservableCollection<NotificarPt>? productos))
                     {
@@ -198,18 +200,19 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<ObservableCollection<NotificarEm>> GetAllEm()
+        public async Task<ObservableCollection<NotificarEm>> GetAllMaterialesEgreso()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
             string uri = ip.Protocolo + ip.Ip + "/materiales/getall";
 
             try
             {
-                var response = await _client.GetAsync(uri);
+                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarEm>>>(content, _jsonSerializerOptions);
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarEm>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
                         values.TryGetValue("notificarMaterial", out ObservableCollection<NotificarEm>? materiales))
                     {
@@ -231,7 +234,6 @@ namespace ControYaApp.Services.WebService
 
             try
             {
-                // TODO: Verificar '""'  por que en la documentación pide un JSON.
                 StringContent content = new StringContent("", Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
@@ -244,17 +246,6 @@ namespace ControYaApp.Services.WebService
                         return new ObservableCollection<EmpleadoSistema>(empleados);
                     }
                 }
-                //var response = await _client.GetAsync(uri);
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    string content = await response.Content.ReadAsStringAsync();
-                //    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<EmpleadoSistema>>>(content, _jsonSerializerOptions);
-                //    if (!values.IsNullOrEmpty() &&
-                //        values.TryGetValue("empleados", out ObservableCollection<EmpleadoSistema>? empleados))
-                //    {
-                //        return new ObservableCollection<EmpleadoSistema>(empleados);
-                //    }
-                //}
             }
             catch (Exception)
             {
@@ -263,7 +254,7 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task NotificarPtAsync(PtNotificadoReq producto)
+        public async Task NotificarProductoTerminadoAsync(PtNotificadoReq producto)
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
             string uri = ip.Protocolo + ip.Ip + "/productos/sp-notificarpt";

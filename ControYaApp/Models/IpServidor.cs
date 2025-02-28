@@ -3,7 +3,7 @@ using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class IpServidor : ViewModelBase
+    public class IpServidor : BaseViewModel
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

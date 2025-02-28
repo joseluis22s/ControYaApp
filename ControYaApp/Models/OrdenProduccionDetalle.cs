@@ -3,7 +3,7 @@ using ControYaApp.ViewModels;
 
 namespace ControYaApp.Models
 {
-    public class OrdenProduccionDetalle : ViewModelBase
+    public class OrdenProduccionDetalle : BaseViewModel
     {
         private decimal? _notificado;
 
