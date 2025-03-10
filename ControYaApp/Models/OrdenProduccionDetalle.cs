@@ -7,6 +7,8 @@ namespace ControYaApp.Models
     {
         private decimal? _notificado;
 
+
+
         public string Detalle { get; set; }
 
         public string CodigoMaterial { get; set; }

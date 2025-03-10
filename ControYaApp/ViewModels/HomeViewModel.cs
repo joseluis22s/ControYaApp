@@ -18,6 +18,17 @@ namespace ControYaApp.ViewModels
 
 
 
+        internal async Task BackButtonPressed()
+        {
+            var res = await Shell.Current.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
+            if (res)
+            {
+                await Shell.Current.GoToAsync("//login");
+            }
+        }
+
+
+
 
     }
 }

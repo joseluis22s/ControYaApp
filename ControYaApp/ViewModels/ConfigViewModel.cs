@@ -101,7 +101,7 @@ namespace ControYaApp.ViewModels
         }
 
 
-        public async Task BackButtonPressed()
+        internal async Task BackButtonPressed()
         {
             if (_isSaved)
             {
@@ -128,7 +128,7 @@ namespace ControYaApp.ViewModels
                 }
                 else
                 {
-                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir?", "Aceptar", "Cancelar");
+                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
                     if (res)
                     {
                         await Shell.Current.GoToAsync("..");

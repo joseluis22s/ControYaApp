@@ -2,6 +2,7 @@
 using ControYaApp.Services.Database;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Pdf;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels;
@@ -44,13 +45,6 @@ namespace ControYaApp
         {
             mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
 
-            //mauiAppBuilder.Services.AddSingleton<LoadingPopUpViewModel>();
-            //mauiAppBuilder.Services.AddSingleton<LoginViewModel>();
-            //mauiAppBuilder.Services.AddSingleton<OrdenesViewModel>();
-            //mauiAppBuilder.Services.AddSingleton<NotificarPtViewModel>();
-            //mauiAppBuilder.Services.AddSingleton<ConfigViewModel>();
-            //mauiAppBuilder.Services.AddTransient<HomeViewModel>();
-
             mauiAppBuilder.Services.AddTransient<LoadingPopUpViewModel>();
             mauiAppBuilder.Services.AddTransient<LoginViewModel>();
             mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
@@ -58,18 +52,14 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<ConfigViewModel>();
             mauiAppBuilder.Services.AddTransient<HomeViewModel>();
 
+
+            mauiAppBuilder.Services.AddSingleton<NotificarPtPdfViewModel>();
+
             return mauiAppBuilder;
         }
         public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<AppShell>();
-
-            //mauiAppBuilder.Services.AddSingleton<LoadingPopUp>();
-            //mauiAppBuilder.Services.AddSingleton<LoginPage>();
-            //mauiAppBuilder.Services.AddSingleton<OrdenesPage>();
-            //mauiAppBuilder.Services.AddSingleton<NotificarPtPage>();
-            //mauiAppBuilder.Services.AddSingleton<ConfigPage>();
-            //mauiAppBuilder.Services.AddSingleton<HomePage>();
 
             mauiAppBuilder.Services.AddTransient<LoadingPopUp>();
             mauiAppBuilder.Services.AddTransient<LoginPage>();
@@ -77,6 +67,7 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<NotificarPtPage>();
             mauiAppBuilder.Services.AddTransient<ConfigPage>();
             mauiAppBuilder.Services.AddTransient<HomePage>();
+            mauiAppBuilder.Services.AddTransient<NotificarPtPdfPage>();
 
             return mauiAppBuilder;
         }
@@ -94,6 +85,8 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
             mauiAppBuilder.Services.AddSingleton<IpServidorRepo>();
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
+
+            mauiAppBuilder.Services.AddTransient<PdfService>();
 
             return mauiAppBuilder;
         }

@@ -17,7 +17,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<PtNotificadoReq>();
         }
 
-        public async Task SaveUpdatePtNotificadoAsync(PtNotificadoReq ptNotificado)
+        public async Task SynchronizedFalsePtNotificadoAsync(PtNotificadoReq ptNotificado)
         {
             try
             {
@@ -28,35 +28,12 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                     pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
                     pt.Usuario == pt.Usuario
                 ).FirstOrDefaultAsync();
-
-                NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-
-                // TODO: Refactorizar. A lo mejor hay que hcaer uqe en en donde se llame
-                //                     a este metodo reescribir el sincronizado.
                 if (producto is not null)
                 {
-                    if (accessType == NetworkAccess.Internet)
-                    {
-                        producto.Sincronizado = true;
-                    }
-                    else
-                    {
-
-                        producto.Sincronizado = false;
-                    }
+                    producto.Sincronizado = false;
                     await _database.UpdateAsync(producto);
                     return;
                 }
-                if (accessType == NetworkAccess.Internet)
-                {
-                    ptNotificado.Sincronizado = true;
-                }
-                else
-                {
-
-                    ptNotificado.Sincronizado = false;
-                }
-                await _database.InsertAsync(ptNotificado);
             }
             catch (Exception)
             {
@@ -82,7 +59,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task SetSincPtNotificadoAsync(PtNotificadoReq ptNotificado)
+        public async Task SynchronizedTruePtNotificadoAsync(PtNotificadoReq ptNotificado)
         {
             try
             {
@@ -96,6 +73,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
                 if (producto is not null)
                 {
+                    producto.Notificado = ptNotificado.Notificado;
                     producto.Sincronizado = true;
 
                     await _database.UpdateAsync(producto);

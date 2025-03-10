@@ -1,6 +1,6 @@
 ﻿#nullable disable
+using System.Text.Json.Serialization;
 using ControYaApp.ViewModels;
-using Newtonsoft.Json;
 using SQLite;
 
 namespace ControYaApp.Models
@@ -16,7 +16,7 @@ namespace ControYaApp.Models
 
         public int Orden { get; set; }
 
-        [JsonProperty(PropertyName = "codigoUsuarioAprobar")]
+        [JsonPropertyName("codigoUsuarioAprobar")]
         public string CodigoUsuario { get; set; }
 
         public DateTime Fecha

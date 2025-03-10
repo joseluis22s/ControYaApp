@@ -20,6 +20,26 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<OrdenProduccion>();
         }
 
+        public async Task<decimal> GetOrdenNotificadaAsync(OrdenProduccion orden)
+        {
+            try
+            {
+                await InitAsync();
+
+                var valorNotificado = await _database.Table<OrdenProduccion>().Where(o =>
+                    o.CodigoProduccion == orden.CodigoProduccion &&
+                    o.Orden == orden.Orden &&
+                    o.CodigoMaterial == orden.CodigoMaterial &&
+                    o.CodigoUsuario == orden.CodigoUsuario
+                ).FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return 0;
+        }
+
         public async Task SaveOrdenesAsync(ObservableCollection<OrdenProduccion> ordenes)
         {
             try
@@ -118,7 +138,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task UpdateOrdenNotificado(PtNotificadoReq ptnotificado)
+        public async Task NotificarProductoTerminadoAsync(PtNotificadoReq ptnotificado)
         {
             try
             {

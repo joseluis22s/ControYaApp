@@ -7,6 +7,5 @@ namespace ControYaApp.Models
         [PrimaryKey]
         public string Empleado { get; set; }
 
-        public bool Bloqueado { get; set; }
     }
 }

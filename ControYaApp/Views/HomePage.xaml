@@ -11,44 +11,67 @@
     x:DataType="viewModel:HomeViewModel"
     HideSoftInputOnTapped="True">
 
-    <Grid
-        Padding="10,10,10,0"
-        RowDefinitions="Auto,Auto"
-        RowSpacing="10">
 
-        <HorizontalStackLayout Spacing="10">
+    <Grid RowDefinitions="Auto,Auto" RowSpacing="10">
+
+        <RoundRectangle BackgroundColor="#091a36" CornerRadius="0,0,50,50" />
+
+        <VerticalStackLayout Padding="10,10,10,25" Spacing="25">
+            <HorizontalStackLayout Spacing="10">
+                <Button
+                    x:Name="ImageButton_FlyoutShell"
+                    Padding="11"
+                    BackgroundColor="Transparent"
+                    BorderColor="#ffffff"
+                    CornerRadius="5"
+                    HeightRequest="50"
+                    ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                                  Glyph={x:Static m:MaterialSharp.Menu},
+                                                  Color=#ffffff}"
+                    WidthRequest="50" />
+
+                <urui:TextField
+                    Title="Login"
+                    BorderColor="#ffffff"
+                    FontSize="21"
+                    IsReadOnly="True"
+                    Text="{Binding SharedData.NombreUsuario}"
+                    TextColor="#ffffff"
+                    TitleColor="#ffffff"
+                    TitleFontSize="10" />
+
+                <urui:TextField
+                    Title="Usuario CB"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    BorderColor="#ffffff"
+                    FontSize="21"
+                    IsReadOnly="True"
+                    Text="{Binding SharedData.UsuarioSistema}"
+                    TextColor="#ffffff"
+                    TitleColor="#ffffff"
+                    TitleFontSize="17" />
+
+            </HorizontalStackLayout>
+            <Label
+                FontAttributes="Bold"
+                FontSize="22"
+                HorizontalOptions="Center"
+                Text="PÁGINA DE INICIO"
+                TextColor="#ffffff" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0">
             <Button
-                x:Name="ImageButton_FlyoutShell"
-                Padding="11"
-                BackgroundColor="Transparent"
-                BorderColor="#0f2b57"
-                CornerRadius="5"
-                HeightRequest="50"
-                ImageSource="{FontImageSource FontFamily=MaterialSharp,
-                                              Glyph={x:Static m:MaterialSharp.Menu},
-                                              Color=#0f2b57}"
-                WidthRequest="50" />
-
-            <urui:TextField
-                Title="Login"
-                FontSize="21"
-                IsReadOnly="True"
-                Text="{Binding SharedData.NombreUsuario}"
-                TitleFontSize="10" />
-
-            <urui:TextField
-                Title="Usuario CB"
-                Grid.Row="1"
-                Grid.Column="1"
-                FontSize="21"
-                IsReadOnly="True"
-                Text="{Binding SharedData.UsuarioSistema}"
-                TitleFontSize="17" />
-
-        </HorizontalStackLayout>
-
-        <VerticalStackLayout>
-            <Label FontSize="20" Text="INICIO" />
+                Padding="50,0"
+                BackgroundColor="#ffffff"
+                CornerRadius="3"
+                FontSize="17"
+                HorizontalOptions="Center"
+                Shadow="{Shadow Opacity=0.18,
+                                Offset='0,10'}"
+                Text="# ordenes pendientes"
+                TextColor="#0f2b57" />
         </VerticalStackLayout>
     </Grid>
 

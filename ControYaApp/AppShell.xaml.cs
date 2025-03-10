@@ -1,5 +1,6 @@
 ﻿using ControYaApp.ViewModels;
 using ControYaApp.Views;
+using ControYaApp.Views.Controls;
 
 namespace ControYaApp
 {
@@ -16,6 +17,7 @@ namespace ControYaApp
 
             Routing.RegisterRoute("notificarPt", typeof(NotificarPtPage));
             Routing.RegisterRoute("config", typeof(ConfigPage));
+            Routing.RegisterRoute("notificarPtPdf", typeof(NotificarPtPdfPage));
         }
 
 

@@ -173,7 +173,7 @@ namespace ControYaApp.Services.WebService
             return periodos;
         }
 
-        public async Task<ObservableCollection<NotificarPt>> GetAllProductosTerminado()
+        public async Task<ObservableCollection<ProductoTerminado>> GetAllProductosTerminado()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
             string uri = ip.Protocolo + ip.Ip + "/productos/getall";
@@ -185,11 +185,11 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarPt>>>(resContent, _jsonSerializerOptions);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<ProductoTerminado>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
-                        values.TryGetValue("notificarPt", out ObservableCollection<NotificarPt>? productos))
+                        values.TryGetValue("notificarPt", out ObservableCollection<ProductoTerminado>? productos))
                     {
-                        return new ObservableCollection<NotificarPt>(productos);
+                        return new ObservableCollection<ProductoTerminado>(productos);
                     }
                 }
             }
@@ -200,7 +200,7 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<ObservableCollection<NotificarEm>> GetAllMaterialesEgreso()
+        public async Task<ObservableCollection<MaterialEgreso>> GetAllMaterialesEgreso()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
             string uri = ip.Protocolo + ip.Ip + "/materiales/getall";
@@ -212,11 +212,11 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<NotificarEm>>>(resContent, _jsonSerializerOptions);
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<MaterialEgreso>>>(resContent, _jsonSerializerOptions);
                     if (!values.IsNullOrEmpty() &&
-                        values.TryGetValue("notificarMaterial", out ObservableCollection<NotificarEm>? materiales))
+                        values.TryGetValue("notificarMaterial", out ObservableCollection<MaterialEgreso>? materiales))
                     {
-                        return new ObservableCollection<NotificarEm>(materiales);
+                        return new ObservableCollection<MaterialEgreso>(materiales);
                     }
                 }
             }
@@ -254,7 +254,7 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task NotificarProductoTerminadoAsync(PtNotificadoReq producto)
+        public async Task<bool> NotificarProductoTerminadoAsync(PtNotificadoReq producto)
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
             string uri = ip.Protocolo + ip.Ip + "/productos/sp-notificarpt";
@@ -266,12 +266,14 @@ namespace ControYaApp.Services.WebService
                 if (response.IsSuccessStatusCode)
                 {
                     Debug.WriteLine("Procedimiento ejecutado");
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
             }
+            return false;
         }
 
 

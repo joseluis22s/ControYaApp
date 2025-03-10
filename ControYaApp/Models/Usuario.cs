@@ -1,11 +1,10 @@
 ﻿#nullable disable
-using ControYaApp.ViewModels;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SQLite;
 
 namespace ControYaApp.Models
 {
-    public partial class Usuario : BaseViewModel
+    public partial class Usuario
     {
         public string NombreUsuario { get; set; }
 

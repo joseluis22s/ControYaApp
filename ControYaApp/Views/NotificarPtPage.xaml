@@ -3,46 +3,51 @@
     x:Class="ControYaApp.Views.NotificarPtPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+    xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
+    xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:NotificarPtViewModel"
-    Shell.PresentationMode="Modal">
+    HideSoftInputOnTapped="True">
 
-    <ScrollView>
+    <Grid
+        Padding="15,25,15,15"
+        RowDefinitions="Auto,*,Auto"
+        RowSpacing="10">
 
-        <Grid
+        <Grid Padding="7,0,15,0" ColumnDefinitions="*,Auto">
+
+            <Label
+                FontAttributes="Bold"
+                FontSize="23"
+                Text="{Binding OrdenProduccion.Producto}"
+                TextColor="#0f2b57" />
+            <Button
+                Grid.Column="1"
+                Padding="0"
+                BackgroundColor="Transparent"
+                Command="{Binding GoBackCommand}"
+                CornerRadius="50"
+                FontSize="28"
+                Text="×"
+                TextColor="#0f2b57"
+                VerticalOptions="Start" />
+
+        </Grid>
+
+        <Border
+            Grid.Row="1"
+            Margin="0"
             Padding="10"
-            RowDefinitions="Auto,Auto"
-            RowSpacing="10">
-            <Grid ColumnDefinitions="*,Auto">
-                <Label
-                    Margin="0,10,0,0"
-                    FontSize="26"
-                    HorizontalTextAlignment="Center"
-                    Text="Notificar Producto Terminado"
-                    TextColor="#0f2b57" />
-                <Button
-                    Grid.Column="1"
-                    Margin="0,-5"
-                    Padding="0"
-                    BackgroundColor="Transparent"
-                    Command="{Binding GoBackCommand}"
-                    CornerRadius="50"
-                    FontSize="28"
-                    HeightRequest="0"
-                    Text="×"
-                    TextColor="#0f2b57"
-                    VerticalOptions="Start" />
+            BackgroundColor="#c7d1e1">
 
+            <ScrollView VerticalScrollBarVisibility="Always">
 
-            </Grid>
-
-            <Grid
-                Grid.Row="1"
-                RowDefinitions="Auto,Auto"
-                RowSpacing="20">
                 <Grid
-                    ColumnDefinitions="Auto,*"
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                    ColumnDefinitions="{orientation:OnOrientation Default='*,2*',
+                                                                  Landscape='*,3*',
+                                                                  TypeConverter={x:Type ColumnDefinitionCollectionTypeConverter}}"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                     RowSpacing="4">
 
                     <Border Style="{StaticResource Border_Label}">
@@ -50,109 +55,124 @@
                     </Border>
 
                     <Border Grid.Row="1" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Orden" />
                     </Border>
 
                     <Border Grid.Row="2" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Código material" />
                     </Border>
 
                     <Border Grid.Row="3" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Fecha" />
                     </Border>
 
                     <Border Grid.Row="4" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Notificado" />
                     </Border>
 
                     <Border Grid.Row="5" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Código empleado" />
                     </Border>
 
                     <Border Grid.Row="6" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Código usuario" />
                     </Border>
 
                     <Border Grid.Row="7" Style="{StaticResource Border_Label}">
-
                         <Label Style="{StaticResource Label_Text}" Text="Serie" />
                     </Border>
 
 
+                    <urui:TextField
+                        Grid.Column="1"
+                        Style="{StaticResource TextField_Disabled}"
+                        Text="{Binding OrdenProduccion.CodigoProduccion}" />
 
-                    <Border Grid.Column="1" Style="{StaticResource Border_Disable}">
-                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoProduccion}" />
-                    </Border>
-
-                    <Border
+                    <urui:TextField
                         Grid.Row="1"
                         Grid.Column="1"
-                        Style="{StaticResource Border_Disable}">
-                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.Orden}" />
-                    </Border>
+                        Style="{StaticResource TextField_Disabled}"
+                        Text="{Binding OrdenProduccion.Orden}" />
 
-                    <Border
+                    <urui:TextField
                         Grid.Row="2"
                         Grid.Column="2"
-                        Style="{StaticResource Border_Disable}">
-                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoMaterial}" />
-                    </Border>
+                        Style="{StaticResource TextField_Disabled}"
+                        Text="{Binding OrdenProduccion.CodigoMaterial}" />
 
-                    <Border Grid.Row="3" Grid.Column="3">
-                        <DatePicker
-                            Date="{Binding OrdenProduccion.Fecha}"
-                            MaximumDate="{Binding RangoPeriodos.FechaMax}"
-                            MinimumDate="{Binding RangoPeriodos.FechaMin}" />
-                    </Border>
 
-                    <Border Grid.Row="4" Grid.Column="4">
-                        <Entry Keyboard="Numeric" Text="{Binding OrdenProduccion.Notificado}" />
-                    </Border>
+                    <urui:DatePickerField
+                        Grid.Row="3"
+                        Grid.Column="3"
+                        AccentColor="#0f2b57"
+                        AllowClear="False"
+                        BorderColor="Transparent"
+                        Date="{Binding OrdenProduccion.Fecha}"
+                        MaximumDate="{Binding RangoPeriodos.FechaMax}"
+                        MinimumDate="{Binding RangoPeriodos.FechaMin}" />
 
-                    <Border Grid.Row="5" Grid.Column="5">
-                        <Picker
-                            Title="Empleado"
-                            ItemsSource="{Binding Empleados}"
-                            SelectedItem="{Binding Empleado}" />
-                    </Border>
+                    <urui:TextField
+                        Grid.Row="4"
+                        Grid.Column="4"
+                        AccentColor="#0f2b57"
+                        BorderColor="Transparent"
+                        Keyboard="Numeric"
+                        Text="{Binding OrdenProduccion.Notificado}" />
 
-                    <Border
+                    <urui:PickerField
+                        Grid.Row="5"
+                        Grid.Column="5"
+                        AccentColor="#0f2b57"
+                        AllowClear="False"
+                        BorderColor="Transparent"
+                        ItemsSource="{Binding Empleados}"
+                        SelectedItem="{Binding Empleado}" />
+
+                    <urui:TextField
                         Grid.Row="6"
                         Grid.Column="6"
-                        Style="{StaticResource Border_Disable}">
-                        <Entry Style="{StaticResource Entry_Disable}" Text="{Binding OrdenProduccion.CodigoUsuario}" />
-                    </Border>
+                        Style="{StaticResource TextField_Disabled}"
+                        Text="{Binding OrdenProduccion.CodigoUsuario}" />
 
-                    <Border Grid.Row="7" Grid.Column="7">
-                        <Entry Placeholder="Ingresar serie" Text="{Binding Serie}" />
-                    </Border>
-
-                    <Button
-                        Grid.Row="8"
-                        Grid.ColumnSpan="2"
-                        Margin="0,15,0,0"
-                        BackgroundColor="#779bba"
-                        HorizontalOptions="Center"
-                        Text="Imprimir" />
-
+                    <urui:TextField
+                        Grid.Row="7"
+                        Grid.Column="7"
+                        AccentColor="#0f2b57"
+                        BorderColor="Transparent"
+                        Text="{Binding Serie}" />
                 </Grid>
 
-                <Grid Grid.Row="1" Padding="50,0">
-                    <Button Command="{Binding NotificarPtCommand}" Text="Notificar" />
-                </Grid>
-            </Grid>
+            </ScrollView>
+        </Border>
 
+        <Grid
+            Grid.Row="2"
+            ColumnDefinitions="2*,*"
+            ColumnSpacing="10">
+            <Button
+                Command="{Binding NotificarPtCommand}"
+                CornerRadius="3"
+                FontAttributes="Bold"
+                Text="Notificar" />
+            <Button
+                Grid.Column="1"
+                BackgroundColor="#779bba"
+                Command="{Binding GenerarPdfCommand}"
+                CommandParameter="{Binding}"
+                CornerRadius="3"
+                ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                              Glyph={x:Static m:MaterialRounded.Picture_as_pdf}}" />
         </Grid>
-    </ScrollView>
+
+    </Grid>
 
     <ContentPage.Resources>
         <ResourceDictionary>
+            <Style x:Key="TextField_Disabled" TargetType="urui:TextField">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="#7a7979" />
+            </Style>
             <Style TargetType="Entry">
                 <Setter Property="HorizontalOptions" Value="FillAndExpand" />
             </Style>
@@ -160,37 +180,14 @@
                 <Setter Property="BackgroundColor" Value="#dfe1e8" />
             </Style>
             <Style x:Key="Border_Label" TargetType="Border">
-                <Setter Property="Stroke" Value="#455d85" />
-                <Setter Property="BackgroundColor" Value="#8096bd" />
-                <Setter Property="Margin" Value="0" />
-                <!--<Setter Property="VisualStateManager.VisualStateGroups">
-                    <VisualStateGroupList>
-                        <VisualStateGroup>
-                            <VisualState x:Name="Portrait">
-                                <VisualState.StateTriggers>
-                                    <OrientationStateTrigger Orientation="Portrait" />
-                                </VisualState.StateTriggers>
-                                <VisualState.Setters>
-                                    <Setter Property="WidthRequest" Value="30" />
-                                    <Setter Property="HeightRequest" Value="150" />
-                                </VisualState.Setters>
-                            </VisualState>
-                            <VisualState x:Name="Landscape">
-                                <VisualState.StateTriggers>
-                                    <OrientationStateTrigger Orientation="Landscape" />
-                                </VisualState.StateTriggers>
-                                <VisualState.Setters>
-                                    <Setter Property="WidthRequest" Value="150" />
-                                    <Setter Property="HeightRequest" Value="30" />
-                                </VisualState.Setters>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateGroupList>
-                </Setter>-->
+                <Setter Property="Stroke" Value="#ffffff" />
+                <Setter Property="BackgroundColor" Value="#ffffff" />
+                <Setter Property="Margin" Value="0,5,0,0" />
+                <Setter Property="Padding" Value="10,5" />
             </Style>
             <Style TargetType="Border">
                 <Setter Property="BackgroundColor" Value="#f1f1f1" />
-                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='15'}" />
+                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='11'}" />
                 <Setter Property="Padding" Value="10,0" />
                 <Setter Property="Margin" Value="15,1" />
             </Style>
@@ -200,13 +197,18 @@
             </Style>
             <Style x:Key="Label_Text" TargetType="Label">
                 <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="FontSize" Value="17" />
+                <Setter Property="FontSize" Value="16" />
                 <Setter Property="VerticalOptions" Value="Center" />
-
+                <Setter Property="LineBreakMode" Value="CharacterWrap" />
+                <Setter Property="TextColor" Value="#0f2b57" />
             </Style>
 
 
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <ContentPage.BackgroundColor>
+        <Color>Red</Color>
+    </ContentPage.BackgroundColor>
 
 </ContentPage>

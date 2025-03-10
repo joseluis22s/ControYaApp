@@ -14,15 +14,17 @@ using ControYaApp.Views.Controls;
 namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(EsNotificado), "esNotificado")]
-    [QueryProperty(nameof(ProductoTerminado), "productoT")]
+    [QueryProperty(nameof(OrdenProduccion), "productoT")]
     public partial class OrdenesViewModel : BaseViewModel
     {
 
         public ISharedData SharedData { get; set; }
 
+
+        public OrdenProduccion OrdenProduccion { get; set; }
+
         public bool EsNotificado { get; set; }
 
-        private PtNotificadoReq ProductoTerminado { get; set; }
 
 
 
@@ -42,7 +44,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ICommand ObtenerPedidosCommand { get; }
+        public ICommand ObtenerOrdenesCommand { get; }
 
         public ICommand NotificarPtCommand { get; }
 
@@ -59,10 +61,10 @@ namespace ControYaApp.ViewModels
             _empleadosRepo = empleadosRepo;
 
 
-            ObtenerPedidosCommand = new AsyncRelayCommand(ObtenerPedidosAsync);
+            ObtenerOrdenesCommand = new AsyncRelayCommand(ObtenerOrdenesAsync);
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionDetalle>(NotificarPtAsync);
-            
-            
+
+
             VaciarOrdenes();
         }
 
@@ -81,23 +83,18 @@ namespace ControYaApp.ViewModels
         }
 
 
-        internal void Appearing()
+        internal async void Appearing()
         {
             try
             {
                 if (EsNotificado)
                 {
                     OrdenesProduccion.FirstOrDefault(o =>
-                        ProductoTerminado.CodigoProduccion == o.CodigoProduccion &&
-                        ProductoTerminado.Orden == o.Orden)
+                        OrdenProduccion.CodigoProduccion == o.CodigoProduccion &&
+                        OrdenProduccion.Orden == o.Orden)
                         .Detalles.FirstOrDefault(d =>
-                                ProductoTerminado.CodigoMaterial == d.CodigoMaterial).Notificado += ProductoTerminado.Notificado;
+                                OrdenProduccion.CodigoMaterial == d.CodigoMaterial).Notificado += OrdenProduccion.Notificado;
 
-                    //OrdenesProduccion.Where(o =>
-                    //    ProductoTerminado.CodigoProduccion == o.CodigoProduccion &&
-                    //    ProductoTerminado.Orden == o.Orden
-                    //    ).FirstOrDefault().Detalles.Where(d =>
-                    //            ProductoTerminado.CodigoMaterial == d.CodigoMaterial).FirstOrDefault().Notificado += ProductoTerminado.Notificado;
                 }
             }
             catch (Exception)
@@ -107,7 +104,7 @@ namespace ControYaApp.ViewModels
         }
 
 
-        public async Task ObtenerPedidosAsync()
+        public async Task ObtenerOrdenesAsync()
         {
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
@@ -227,6 +224,16 @@ namespace ControYaApp.ViewModels
                 Cantidad = detalle.Cantidad,
                 Notificado = detalle.Saldo
             };
+        }
+
+
+        internal async Task BackButtonPressed()
+        {
+            var res = await Shell.Current.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
+            if (res)
+            {
+                await Shell.Current.GoToAsync("//login");
+            }
         }
 
 

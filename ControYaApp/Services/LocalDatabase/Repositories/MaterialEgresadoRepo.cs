@@ -14,17 +14,17 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<NotificarEm>();
+            await _database.CreateTableAsync<MaterialEgreso>();
         }
 
         // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
-        public async Task SaveAllEmAsync(ObservableCollection<NotificarEm> materiales)
+        public async Task SaveAllEmAsync(ObservableCollection<MaterialEgreso> materiales)
         {
             try
             {
                 await InitAsync();
 
-                await _database.DeleteAllAsync<NotificarEm>();
+                await _database.DeleteAllAsync<MaterialEgreso>();
 
                 await _database.InsertAllAsync(materiales);
             }
@@ -34,16 +34,16 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<NotificarEm>> GetAllMaterialEgresado()
+        public async Task<ObservableCollection<MaterialEgreso>> GetAllMaterialEgresado()
         {
             try
             {
                 await InitAsync();
 
-                var materiales = await _database.Table<NotificarEm>().ToListAsync();
+                var materiales = await _database.Table<MaterialEgreso>().ToListAsync();
                 if (materiales.Count != 0)
                 {
-                    return new ObservableCollection<NotificarEm>(materiales);
+                    return new ObservableCollection<MaterialEgreso>(materiales);
                 }
                 return [];
             }

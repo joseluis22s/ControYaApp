@@ -1,9 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Pdf;
 using ControYaApp.Services.WebService;
 
 namespace ControYaApp.ViewModels
@@ -12,10 +14,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(Empleados), "empleados")]
     public class NotificarPtViewModel : BaseViewModel
     {
-
-        private bool _isNotified { get; set; } = false;
-
-
+        private PdfService _pdfService;
 
         private readonly PeriodoRepo _periodoRepo;
 
@@ -24,6 +23,10 @@ namespace ControYaApp.ViewModels
         private readonly PtNotificadoRepo _ptNotificadoRepo;
 
         private readonly RestService _restService;
+
+
+
+        private bool _isNotified;
 
 
 
@@ -72,22 +75,23 @@ namespace ControYaApp.ViewModels
 
         public ICommand NotificarPtCommand { get; }
 
+        public ICommand GenerarPdfCommand { get; }
 
 
 
         public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
-                                    OrdenRepo ordenRepo, PeriodoRepo periodoRepo)
+                                    OrdenRepo ordenRepo, PeriodoRepo periodoRepo, PdfService pdfService)
         {
 
+            _pdfService = pdfService;
             _restService = restService;
             _ptNotificadoRepo = ptNotificadoRepo;
             _ordenRepo = ordenRepo;
             _periodoRepo = periodoRepo;
 
-
-            GoBackCommand = new AsyncRelayCommand(() => GoBackAsync(_isNotified));
+            GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
-
+            GenerarPdfCommand = new AsyncRelayCommand(GenerarPdf);
 
             InitializeRangoPeriodosAsync();
         }
@@ -101,8 +105,12 @@ namespace ControYaApp.ViewModels
             OrdenProduccion.Fecha = DateTime.Now;
         }
 
+        private async Task GoBackAsync()
+        {
+            await (_isNotified ? GoBackNotifiedTrueAsync(true, OrdenProduccion) : GoBackNotifiedFalseAsync(false));
+        }
 
-        private async Task GoBackAsync(bool isNotified)
+        private async Task GoBackNotifiedFalseAsync(bool isNotified)
         {
             var navParameter = new ShellNavigationQueryParameters
             {
@@ -112,12 +120,12 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private async Task GoBackAsync(bool isNotified, PtNotificadoReq producto)
+        private async Task GoBackNotifiedTrueAsync(bool isNotified, OrdenProduccion ordenProduccion)
         {
             var navParameter = new ShellNavigationQueryParameters
             {
                 { "esNotificado", isNotified},
-                { "productoT", producto}
+                { "productoT", ordenProduccion}
             };
             await Shell.Current.GoToAsync("..", navParameter);
         }
@@ -144,24 +152,98 @@ namespace ControYaApp.ViewModels
                     notificarProducto.Serie = "";
                 }
 
-                await _ordenRepo.UpdateOrdenNotificado(notificarProducto);
-                await _ptNotificadoRepo.SaveUpdatePtNotificadoAsync(notificarProducto);
+
 
                 NetworkAccess accessType = Connectivity.Current.NetworkAccess;
                 if (accessType == NetworkAccess.Internet)
                 {
                     // TODO: Preguntar que criterio deberia no mostrar ordenPt para eliminar los registros de la db.
-                    await _restService.NotificarProductoTerminadoAsync(notificarProducto);
-                    await _ptNotificadoRepo.SetSincPtNotificadoAsync(notificarProducto);
+                    var res = await _restService.NotificarProductoTerminadoAsync(notificarProducto);
+                    if (res)
+                    {
+                        // Si hay conexión a internet, se actualiza el campo 'Sincronizado' a 'False' para definir que tambien se hizo en CB.
+                        await _ptNotificadoRepo.SynchronizedTruePtNotificadoAsync(notificarProducto);
+
+                        _isNotified = true;
+
+                        await Toast.Make("Producto notificado").Show();
+                    }
+                    else
+                    {
+                        _isNotified = false;
+
+                        await Toast.Make("Problemas al notificar el producto").Show();
+                    }
                 }
+                else
+                {
+                    // Si no hay conexión a internet, se inserta 'Notificado' en la db local.
+                    await _ordenRepo.NotificarProductoTerminadoAsync(notificarProducto);
+                    // Si no hay conexion a internet, se inserta el registro en la db local.
+                    //await _ptNotificadoRepo.SynchronizedFalsePtNotificadoAsync(notificarProducto);
+                }
+
+
                 // TODO: Mostar ventana con los datos que se van a notificar
-                await GoBackAsync(true, notificarProducto);
+                //await GoBackAsync(true, notificarProducto);
             }
             catch (Exception ex)
             {
                 await Toast.Make(ex.Message).Show();
             }
 
+        }
+
+        private async Task GenerarPdf()
+        {
+            try
+            {
+                var view = Shell.Current.CurrentPage as ContentPage;
+                var path = _pdfService.GeneratePdf(view.Content, OrdenProduccion.CodigoProduccion, OrdenProduccion.Orden, OrdenProduccion.CodigoMaterial);
+                if (string.IsNullOrEmpty(path))
+                {
+                    await Toast.Make("No se genero PDF").Show();
+                }
+                else
+                {
+                    //WebViewPdfSource = path;
+                    await Toast.Make($"PDF generado en: {path}").Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
+            }
+        }
+
+        private async Task GenerarPdfssssss()
+        {
+            try
+            {
+                if (_isNotified)
+                {
+
+                    //await Toast.Make("aqui se busca generar el PDF", ToastDuration.Long).Show();
+                    //var loadingPopUpp = new LoadingPopUp();
+                    //_ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+                    var navParameter = new ShellNavigationQueryParameters
+                    {
+                        { "orden", OrdenProduccion},
+                        { "serie", Serie},
+                        { "empleado", Empleado}
+                    };
+                    await Shell.Current.GoToAsync("notificarPtPdf", navParameter);
+
+
+                    //await loadingPopUpp.CloseAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                await Toast.Make("Error al generar el PDF:\n" + msg, ToastDuration.Long).Show();
+            }
         }
 
 
@@ -172,11 +254,6 @@ namespace ControYaApp.ViewModels
                 CodigoProduccion = orden.CodigoProduccion,
                 Orden = orden.Orden,
                 CodigoMaterial = orden.CodigoMaterial,
-                // TODO: Verificar si al cambiar en la UI, tambien cambio en el viewmodel.
-                //       En caso de no ser así, crear una propiedad para el DatePicker
-                //       y el Picker, para pasarlo a este método.
-                //       Los campos de PtNotificadoque deben verificarse son:
-                //       Fecha, Notificado, CodigoEmpleado, Serie y Usuario
                 Fecha = orden.Fecha,
                 Notificado = orden.Notificado,
                 CodigoEmpleado = empleado,

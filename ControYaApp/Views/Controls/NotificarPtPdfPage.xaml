@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ControYaApp.Views.Controls.NotificarPtPdfPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pdf="clr-namespace:PdfSharp.Maui;assembly=PdfSharp.Maui"
+    xmlns:viewModel="clr-namespace:ControYaApp.ViewModels.Controls"
+    Title="NotificarPtPdfPage"
+    x:DataType="viewModel:NotificarPtPdfViewModel">
+
+    <Grid
+        Margin="10"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="FillAndExpand">
+
+        <VerticalStackLayout IsVisible="{Binding IsVisible}">
+
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="23"
+                    Text="{Binding OrdenProduccion.Producto}"
+                    TextColor="#0f2b57" />
+                <Button
+                    Grid.Column="1"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    Command="{Binding GoBackCommand}"
+                    CornerRadius="50"
+                    FontSize="28"
+                    Text="×"
+                    TextColor="#0f2b57"
+                    VerticalOptions="Start" />
+            </Grid>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Código roducción:" />
+                        <Span Text="{Binding OrdenProduccion.CodigoProduccion}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Orden:" />
+                        <Span Text="{Binding OrdenProduccion.Orden}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Código material:" />
+                        <Span Text="{Binding OrdenProduccion.CodigoMaterial}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Fecha:" />
+                        <Span Text="{Binding OrdenProduccion.Fecha}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Notificado:" />
+                        <Span Text="{Binding OrdenProduccion.Notificado}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Código empleado:" />
+                        <Span Text="{Binding Empleado}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Código Usuario:" />
+                        <Span Text="{Binding OrdenProduccion.CodigoUsuario}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span FontAttributes="Bold" Text="Serie:" />
+                        <Span Text="{Binding Serie}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+
+        </VerticalStackLayout>
+
+        <Button Command="{Binding GenerarPdfCommand}" Text="Generar pdf" />
+
+        <!--<WebView
+            pdf:PdfRendererAttributes.ShouldRender="False"
+            HorizontalOptions="FillAndExpand"
+            Source="{Binding WebViewPdfSource}"
+            VerticalOptions="FillAndExpand" />-->
+    </Grid>
+</ContentPage>

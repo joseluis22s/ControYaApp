@@ -126,7 +126,7 @@ namespace ControYaApp.ViewModels
                                     var estado2 = bool.Parse(estaRegistrado1.ToString());
                                     if (estado2)
                                     {
-                                        SharedData.UsuarioSistema = usuarioSistema.ToString();
+                                        SharedData.UsuarioSistema = usuarioSistema1.ToString();
                                         await Shell.Current.GoToAsync("//home");
                                     }
                                     else
@@ -157,6 +157,7 @@ namespace ControYaApp.ViewModels
                 }
             }
         }
+
 
 
 

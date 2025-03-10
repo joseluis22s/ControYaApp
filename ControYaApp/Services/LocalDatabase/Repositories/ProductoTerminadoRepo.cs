@@ -14,17 +14,17 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<NotificarPt>();
+            await _database.CreateTableAsync<ProductoTerminado>();
         }
 
         // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
-        public async Task SaveAllPtAsync(ObservableCollection<NotificarPt> productos)
+        public async Task SaveAllPtAsync(ObservableCollection<ProductoTerminado> productos)
         {
             try
             {
                 await InitAsync();
 
-                await _database.DeleteAllAsync<NotificarPt>();
+                await _database.DeleteAllAsync<ProductoTerminado>();
 
                 await _database.InsertAllAsync(productos);
             }
@@ -34,16 +34,16 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<NotificarPt>> GetAllProductosT()
+        public async Task<ObservableCollection<ProductoTerminado>> GetAllProductosT()
         {
             try
             {
                 await InitAsync();
 
-                var productos = await _database.Table<NotificarPt>().ToListAsync();
+                var productos = await _database.Table<ProductoTerminado>().ToListAsync();
                 if (productos.Count != 0)
                 {
-                    return new ObservableCollection<NotificarPt>(productos);
+                    return new ObservableCollection<ProductoTerminado>(productos);
                 }
                 return [];
             }

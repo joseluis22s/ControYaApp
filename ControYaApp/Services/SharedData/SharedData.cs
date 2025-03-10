@@ -6,7 +6,6 @@ namespace ControYaApp.Services.SharedData
     {
 
         private string? _usuarioSistema;
-
         public string? UsuarioSistema
         {
             get => _usuarioSistema;
@@ -16,8 +15,9 @@ namespace ControYaApp.Services.SharedData
             }
         }
 
-        private string? _nombreUsuario;
 
+
+        private string? _nombreUsuario;
         public string? NombreUsuario
         {
             get => _nombreUsuario;
@@ -26,5 +26,6 @@ namespace ControYaApp.Services.SharedData
                 SetProperty(ref _nombreUsuario, value);
             }
         }
+
     }
 }

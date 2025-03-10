@@ -10,4 +10,7 @@ public partial class LoginPage : ContentPage
 
         BindingContext = vm;
     }
+
+
+
 }

@@ -43,14 +43,14 @@
                 Grid.Column="1"
                 FontSize="21"
                 IsReadOnly="True"
-                Text="{Binding SharedData.Usuario.UsuarioSistema}"
+                Text="{Binding SharedData.UsuarioSistema}"
                 TitleFontSize="17" />
 
         </HorizontalStackLayout>
 
         <Button
             Grid.Row="1"
-            Command="{Binding ObtenerPedidosCommand}"
+            Command="{Binding ObtenerOrdenesCommand}"
             FontAttributes="Bold"
             FontSize="Body"
             MaximumWidthRequest="200"

@@ -18,4 +18,19 @@ public partial class OrdenesPage : ContentPage
     {
         _vm.Appearing();
     }
+
+    protected override bool OnBackButtonPressed()
+    {
+        // Use the line above if you want to just disable the Back action. 
+        // If you want to instead bind it to the same command as 
+        // the BackButtonBehavior, use something like this :
+
+        if (BindingContext is OrdenesViewModel vm)
+        {
+            vm.BackButtonPressed().GetAwaiter();
+            return true;
+        }
+        return false;
+    }
+
 }
