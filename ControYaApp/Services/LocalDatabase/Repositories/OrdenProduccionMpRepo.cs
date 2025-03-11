@@ -4,7 +4,7 @@ using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
 {
-    public class ProductoTerminadoRepo
+    public class OrdenProduccionMpRepo
     {
         private SQLiteAsyncConnection? _database;
 
@@ -14,19 +14,19 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<ProductoTerminado>();
+            await _database.CreateTableAsync<OrdenProduccionMp>();
         }
 
         // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
-        public async Task SaveAllPtAsync(ObservableCollection<ProductoTerminado> productos)
+        public async Task SaveAllOrdenesProduccionPmAsync(ObservableCollection<OrdenProduccionMp> ordenesProduccionPm)
         {
             try
             {
                 await InitAsync();
 
-                await _database.DeleteAllAsync<ProductoTerminado>();
+                await _database.DeleteAllAsync<OrdenProduccionMp>();
 
-                await _database.InsertAllAsync(productos);
+                await _database.InsertAllAsync(ordenesProduccionPm);
             }
             catch (Exception)
             {
@@ -34,22 +34,20 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<ProductoTerminado>> GetAllProductosT()
+        public async Task<ObservableCollection<OrdenProduccionMp>> GetAllMaterialEgresado()
         {
             try
             {
                 await InitAsync();
 
-                var productos = await _database.Table<ProductoTerminado>().ToListAsync();
-                if (productos.Count != 0)
+                var materiales = await _database.Table<OrdenProduccionMp>().ToListAsync();
+                if (materiales.Count != 0)
                 {
-                    return new ObservableCollection<ProductoTerminado>(productos);
+                    return new ObservableCollection<OrdenProduccionMp>(materiales);
                 }
                 return [];
             }
             catch (Exception) { throw; }
         }
-
-
     }
 }

@@ -1,13 +1,11 @@
-﻿using ControYaApp.ViewModels;
-using SQLite;
+﻿using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class IpServidor : BaseViewModel
+    public class IpServidor
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-
 
         public string? Protocolo { get; set; }
 

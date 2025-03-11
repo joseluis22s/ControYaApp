@@ -16,7 +16,6 @@ namespace ControYaApp.Services.SharedData
         }
 
 
-
         private string? _nombreUsuario;
         public string? NombreUsuario
         {
@@ -24,6 +23,17 @@ namespace ControYaApp.Services.SharedData
             set
             {
                 SetProperty(ref _nombreUsuario, value);
+            }
+        }
+
+
+        private string? _ipServidor;
+        public string? IpServidor
+        {
+            get => _ipServidor;
+            set
+            {
+                SetProperty(ref _ipServidor, value);
             }
         }
 

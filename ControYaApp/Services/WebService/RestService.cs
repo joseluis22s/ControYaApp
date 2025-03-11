@@ -4,104 +4,133 @@ using System.Text;
 using System.Text.Json;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
-using Microsoft.IdentityModel.Tokens;
+using ControYaApp.Services.SharedData;
 
 namespace ControYaApp.Services.WebService
 {
     public class RestService
     {
+        private string? _ipAddress;
+
+        private readonly string _loginUsuarioUri = "/usuarios/login-usuario";
+
+        private readonly string _getAllUsuariosUri = "/usuarios/get-all";
+
+        private readonly string _getRangosPeriodosUri = "/periodos/get-rangos";
+
+        private readonly string _getAllEmpleadosUri = "/empleados/get-all";
+
+        private readonly string _getAllOrdenesProduccionUri = "/ordenes-produccion/get-all";
+
+        private readonly string _getAllOrdenesProduccionPtUri = "/ordenes-produccion/get-all-pt";
+
+        private readonly string _getAllOrdenesProduccionMpUri = "/ordenes-produccion/get-all-mp";
+
+        private readonly string _notificarPtUri = "/ordenes-produccion/sp-notificarpt";
+
+
+
         private IpServidorRepo _ipServidorRepo;
+
         private readonly HttpClient _client = new();
 
         private JsonSerializerOptions _jsonSerializerOptions;
 
-        public RestService(IpServidorRepo ipServidorRepo)
-        {
-            _jsonSerializerOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            };
 
+        public ISharedData SharedData { get; set; }
+
+
+
+        public RestService(IpServidorRepo ipServidorRepo, ISharedData sharedData)
+        {
+
+            SharedData = sharedData; // Debe ir primero, no mover.
+
+            _ipAddress = SharedData.IpServidor;
             _ipServidorRepo = ipServidorRepo;
+            _jsonSerializerOptions = SettingJsonSerializerOptions();
+        }
+
+
+
+        private JsonSerializerOptions SettingJsonSerializerOptions()
+        {
+            return new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true
+            };
         }
 
 
         public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/usuarios/loginusuario";
+            string uri = _ipAddress + _loginUsuarioUri;
+
+            var usuarioLogin = new
+            {
+                NombreUsuario = usuario.NombreUsuario,
+                UsuarioSistema = "",
+                Contrasena = usuario.Contrasena
+            };
+
             try
             {
-                var usuarioLogin = new
-                {
-                    NombreUsuario = usuario.NombreUsuario,
-                    UsuarioSistema = "",
-                    Contrasena = usuario.Contrasena
-                };
                 string json = JsonSerializer.Serialize(usuarioLogin, _jsonSerializerOptions);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                StringContent content = new(json, Encoding.UTF8, "application/json");
 
                 var response = await _client.PostAsync(uri, content);
+                string resContent = await response.Content.ReadAsStringAsync();
+                var values = JsonSerializer.Deserialize<Dictionary<string, object>>(resContent);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, object>>(resContent);
+                if (values != null &&
+                    values.TryGetValue("estaRegistrado", out object? estaRegistrado) &&
+                    values.TryGetValue("usuarioSistema", out object? usuarioSistema) &&
+                    values.TryGetValue("mensaje", out object mensaje))
 
-                    if (values != null &&
-                        values.TryGetValue("estaRegistrado", out object? estaRegistrado) &&
-                        values.TryGetValue("usuarioSistema", out object? usuarioSistema))
-                    {
-                        return new Dictionary<string, object>
-                        {
-                            { "estaRegistrado", estaRegistrado },
-                            { "usuarioSistema", usuarioSistema }
-                        };
-                    }
-                    else
-                    {
-                        return new Dictionary<string, object>
-                        {
-                            { "estaRegistrado", false },
-                            { "usuarioSistema", "Error" }
-                        };
-                    }
-
-                }
-                else
                 {
                     return new Dictionary<string, object>
                         {
-                            { "estaRegistrado", false },
-                            { "usuarioSistema", response.StatusCode }
+                            { "estaRegistrado", estaRegistrado },
+                            { "usuarioSistema", usuarioSistema },
+                            { "mensaje", usuarioSistema }
                         };
                 }
-            }
-            catch (Exception ex)
-            {
 
                 return new Dictionary<string, object>
                         {
                             { "estaRegistrado", false },
-                            { "usuarioSistema", ex.Message }
+                            { "usuarioSistema", "" },
+                            { "mensaje", "Error desconocido" }
+                        };
+            }
+            catch (Exception ex)
+            {
+                return new Dictionary<string, object>
+                        {
+                            { "estaRegistrado", false },
+                            { "usuarioSistema", "" },
+                            { "mensaje", ex.Message }
                         };
             }
         }
 
+
         public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/usuarios/getall";
+            string uri = _ipAddress + _getAllUsuariosUri;
 
             try
             {
-                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                StringContent content = new("", Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
                     var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<Usuario>>>(resContent, _jsonSerializerOptions);
-                    if (!values.IsNullOrEmpty() &&
+
+                    if (values != null &&
                         values.TryGetValue("usuarios", out ObservableCollection<Usuario>? usuarios))
                     {
                         return new ObservableCollection<Usuario>(usuarios);
@@ -115,23 +144,26 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesProduccionAsync()
+
+        public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionAsync(string codigoUsuarioAprobar)
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/ordenes/getall";
+            string uri = _ipAddress + _getAllOrdenesProduccionUri;
 
             try
             {
-                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                string json = JsonSerializer.Serialize(codigoUsuarioAprobar, _jsonSerializerOptions);
+                StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
                     var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccion>>>(resContent, _jsonSerializerOptions);
-                    if (!values.IsNullOrEmpty() &&
-                        values.TryGetValue("ordenes", out ObservableCollection<OrdenProduccion>? ordenes))
+
+                    if (values != null &&
+                        values.TryGetValue("ordenesProduccion", out ObservableCollection<OrdenProduccion>? ordenesProduccion))
                     {
-                        return new ObservableCollection<OrdenProduccion>(ordenes);
+                        return new ObservableCollection<OrdenProduccion>(ordenesProduccion);
                     }
                 }
             }
@@ -142,21 +174,23 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
+
         public async Task<Periodos> GetRangosPeriodos()
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/periodos/getrangos";
+            string uri = _ipAddress + _getRangosPeriodosUri;
 
-            Periodos periodos = new Periodos();
+            Periodos periodos = new();
+
             try
             {
-                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                StringContent content = new("", Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
                     var values = JsonSerializer.Deserialize<Dictionary<string, DateTime>>(resContent, _jsonSerializerOptions);
-                    if (!values.IsNullOrEmpty() &&
+                    if (values != null &&
                         values.TryGetValue("fechaMinima", out DateTime fechaMinima) &&
                         values.TryGetValue("fechaMaxima", out DateTime fechaMaxima))
                     {
@@ -173,23 +207,26 @@ namespace ControYaApp.Services.WebService
             return periodos;
         }
 
-        public async Task<ObservableCollection<ProductoTerminado>> GetAllProductosTerminado()
+
+        public async Task<ObservableCollection<OrdenProduccionPt>> GetAllOrdenesProduccionPtAsync(string codigoUsuarioAprobar)
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/productos/getall";
+            string uri = _ipAddress + _getAllOrdenesProduccionPtUri;
 
             try
             {
-                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                string json = JsonSerializer.Serialize(codigoUsuarioAprobar, _jsonSerializerOptions);
+                StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<ProductoTerminado>>>(resContent, _jsonSerializerOptions);
-                    if (!values.IsNullOrEmpty() &&
-                        values.TryGetValue("notificarPt", out ObservableCollection<ProductoTerminado>? productos))
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccionPt>>>(resContent, _jsonSerializerOptions);
+
+                    if (values != null &&
+                        values.TryGetValue("ordenesProduccionPt", out ObservableCollection<OrdenProduccionPt>? ordenesProduccionPt))
                     {
-                        return new ObservableCollection<ProductoTerminado>(productos);
+                        return new ObservableCollection<OrdenProduccionPt>(ordenesProduccionPt);
                     }
                 }
             }
@@ -200,23 +237,26 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<ObservableCollection<MaterialEgreso>> GetAllMaterialesEgreso()
+
+        public async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionPmAsync(string codigoUsuarioAprobar)
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/materiales/getall";
+            string uri = _ipAddress + _getAllOrdenesProduccionMpUri;
 
             try
             {
-                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                string json = JsonSerializer.Serialize(codigoUsuarioAprobar, _jsonSerializerOptions);
+                StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
-                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<MaterialEgreso>>>(resContent, _jsonSerializerOptions);
-                    if (!values.IsNullOrEmpty() &&
-                        values.TryGetValue("notificarMaterial", out ObservableCollection<MaterialEgreso>? materiales))
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<OrdenProduccionMp>>>(resContent, _jsonSerializerOptions);
+
+                    if (values != null &&
+                        values.TryGetValue("ordenesProduccionMp", out ObservableCollection<OrdenProduccionMp>? ordenesProduccionMp))
                     {
-                        return new ObservableCollection<MaterialEgreso>(materiales);
+                        return new ObservableCollection<OrdenProduccionMp>(ordenesProduccionMp);
                     }
                 }
             }
@@ -227,20 +267,22 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleados()
+
+        public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleadosAsync()
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/empleados/getall";
+            string uri = _ipAddress + _getAllEmpleadosUri;
 
             try
             {
-                StringContent content = new StringContent("", Encoding.UTF8, "application/json");
+                StringContent content = new("", Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
                     string resContent = await response.Content.ReadAsStringAsync();
                     var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<EmpleadoSistema>>>(resContent, _jsonSerializerOptions);
-                    if (!values.IsNullOrEmpty() &&
+
+                    if (values != null &&
                         values.TryGetValue("empleados", out ObservableCollection<EmpleadoSistema>? empleados))
                     {
                         return new ObservableCollection<EmpleadoSistema>(empleados);
@@ -254,24 +296,27 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-        public async Task<bool> NotificarProductoTerminadoAsync(PtNotificadoReq producto)
+
+        public async Task<bool> NotificarPtAsync(PtNotificadoReq productoTerminado)
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            string uri = ip.Protocolo + ip.Ip + "/productos/sp-notificarpt";
+            string uri = _ipAddress + _notificarPtUri;
+
             try
             {
-                string json = JsonSerializer.Serialize(producto, _jsonSerializerOptions);
+                string json = JsonSerializer.Serialize(productoTerminado, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    Debug.WriteLine("Procedimiento ejecutado");
                     return true;
                 }
             }
             catch (Exception ex)
             {
+                // TODO: Eliminar esta línea.
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
             }
             return false;
         }

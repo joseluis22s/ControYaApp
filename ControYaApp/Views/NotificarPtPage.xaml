@@ -20,7 +20,7 @@
             <Label
                 FontAttributes="Bold"
                 FontSize="23"
-                Text="{Binding OrdenProduccion.Producto}"
+                Text="{Binding OrdenProduccionPt.Producto}"
                 TextColor="#0f2b57" />
             <Button
                 Grid.Column="1"
@@ -59,7 +59,7 @@
                     </Border>
 
                     <Border Grid.Row="2" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Código material" />
+                        <Label Style="{StaticResource Label_Text}" Text="Código producto" />
                     </Border>
 
                     <Border Grid.Row="3" Style="{StaticResource Border_Label}">
@@ -86,19 +86,19 @@
                     <urui:TextField
                         Grid.Column="1"
                         Style="{StaticResource TextField_Disabled}"
-                        Text="{Binding OrdenProduccion.CodigoProduccion}" />
+                        Text="{Binding OrdenProduccionPt.CodigoProduccion}" />
 
                     <urui:TextField
                         Grid.Row="1"
                         Grid.Column="1"
                         Style="{StaticResource TextField_Disabled}"
-                        Text="{Binding OrdenProduccion.Orden}" />
+                        Text="{Binding OrdenProduccionPt.Orden}" />
 
                     <urui:TextField
                         Grid.Row="2"
                         Grid.Column="2"
                         Style="{StaticResource TextField_Disabled}"
-                        Text="{Binding OrdenProduccion.CodigoMaterial}" />
+                        Text="{Binding OrdenProduccionPt.CodigoProducto}" />
 
 
                     <urui:DatePickerField

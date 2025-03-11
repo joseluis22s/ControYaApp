@@ -10,7 +10,7 @@ using ControYaApp.Services.WebService;
 
 namespace ControYaApp.ViewModels
 {
-    [QueryProperty(nameof(OrdenProduccion), "orden")]
+    [QueryProperty(nameof(OrdenProduccionPt), "ordenProduccionPt")]
     [QueryProperty(nameof(Empleados), "empleados")]
     public class NotificarPtViewModel : BaseViewModel
     {
@@ -18,7 +18,7 @@ namespace ControYaApp.ViewModels
 
         private readonly PeriodoRepo _periodoRepo;
 
-        private readonly OrdenRepo _ordenRepo;
+        private readonly OrdenProduccionRepo _ordenRepo;
 
         private readonly PtNotificadoRepo _ptNotificadoRepo;
 
@@ -28,6 +28,13 @@ namespace ControYaApp.ViewModels
 
         private bool _isNotified;
 
+
+        private DateTime _fechaActual = DateTime.Now;
+        public DateTime FechaActual
+        {
+            get => _fechaActual;
+            set => SetProperty(ref _fechaActual, value);
+        }
 
 
         private Periodos _rangoPeriodos;
@@ -62,11 +69,11 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private OrdenProduccion? _ordenProduccion;
-        public OrdenProduccion? OrdenProduccion
+        private OrdenProduccionPt? _ordenProduccionPt;
+        public OrdenProduccionPt? OrdenProduccionPt
         {
-            get => _ordenProduccion;
-            set => SetProperty(ref _ordenProduccion, value);
+            get => _ordenProduccionPt;
+            set => SetProperty(ref _ordenProduccionPt, value);
         }
 
 
@@ -80,7 +87,7 @@ namespace ControYaApp.ViewModels
 
 
         public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
-                                    OrdenRepo ordenRepo, PeriodoRepo periodoRepo, PdfService pdfService)
+                                    OrdenProduccionRepo ordenRepo, PeriodoRepo periodoRepo, PdfService pdfService)
         {
 
             _pdfService = pdfService;
@@ -102,7 +109,6 @@ namespace ControYaApp.ViewModels
         private async void InitializeRangoPeriodosAsync()
         {
             RangoPeriodos = await GetRangosPeriodosAsync();
-            OrdenProduccion.Fecha = DateTime.Now;
         }
 
         private async Task GoBackAsync()
@@ -196,24 +202,24 @@ namespace ControYaApp.ViewModels
 
         private async Task GenerarPdf()
         {
-            try
-            {
-                var view = Shell.Current.CurrentPage as ContentPage;
-                var path = _pdfService.GeneratePdf(view.Content, OrdenProduccion.CodigoProduccion, OrdenProduccion.Orden, OrdenProduccion.CodigoMaterial);
-                if (string.IsNullOrEmpty(path))
-                {
-                    await Toast.Make("No se genero PDF").Show();
-                }
-                else
-                {
-                    //WebViewPdfSource = path;
-                    await Toast.Make($"PDF generado en: {path}").Show();
-                }
-            }
-            catch (Exception ex)
-            {
-                await Toast.Make(ex.Message).Show();
-            }
+            //try
+            //{
+            //    var view = Shell.Current.CurrentPage as ContentPage;
+            //    var path = _pdfService.GeneratePdf(view.Content, OrdenProduccion.CodigoProduccion, OrdenProduccion.Orden, OrdenProduccion.CodigoMaterial);
+            //    if (string.IsNullOrEmpty(path))
+            //    {
+            //        await Toast.Make("No se genero PDF").Show();
+            //    }
+            //    else
+            //    {
+            //        //WebViewPdfSource = path;
+            //        await Toast.Make($"PDF generado en: {path}").Show();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    await Toast.Make(ex.Message).Show();
+            //}
         }
 
         private async Task GenerarPdfssssss()

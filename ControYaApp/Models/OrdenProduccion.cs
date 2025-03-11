@@ -1,14 +1,11 @@
 ﻿#nullable disable
 using System.Text.Json.Serialization;
-using ControYaApp.ViewModels;
 using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class OrdenProduccion : BaseViewModel
+    public class OrdenProduccion
     {
-
-        private DateTime _fecha;
 
         public string Centro { get; set; }
 
@@ -16,30 +13,13 @@ namespace ControYaApp.Models
 
         public int Orden { get; set; }
 
-        [JsonPropertyName("codigoUsuarioAprobar")]
-        public string CodigoUsuario { get; set; }
-
-        public DateTime Fecha
-        {
-            get => _fecha;
-            set => SetProperty(ref _fecha, value);
-        }
+        public DateTime Fecha { get; set; }
 
         public string Referencia { get; set; }
 
         public string Detalle { get; set; }
 
-        public string CodigoMaterial { get; set; }
-
-        public string CodigoProducto { get; set; }
-
-        public string Producto { get; set; }
-
-        public string CodigoUnidad { get; set; }
-
-        public float Cantidad { get; set; }
-
-        public decimal? Notificado { get; set; }
+        public string CodigoUsuarioAprobar { get; set; }
 
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]

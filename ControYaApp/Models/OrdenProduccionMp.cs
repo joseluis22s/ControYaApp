@@ -3,13 +3,17 @@ using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class ProductoTerminado
+    public class OrdenProduccionMp
     {
+        public string Centro { get; set; }
+
         public string CodigoProduccion { get; set; }
 
         public int Orden { get; set; }
 
         public string CodigoMaterial { get; set; }
+
+        public string Material { get; set; }
 
         public string CodigoBodega { get; set; }
 
@@ -17,9 +21,13 @@ namespace ControYaApp.Models
 
         public string Producto { get; set; }
 
+        public string CodigoUnidad { get; set; }
+
         public float Cantidad { get; set; }
 
         public decimal? Notificado { get; set; }
+
+        public string CodigoUsuario { get; set; }
 
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]

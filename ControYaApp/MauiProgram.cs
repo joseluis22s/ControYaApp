@@ -75,9 +75,9 @@ namespace ControYaApp
         {
             mauiAppBuilder.Services.AddSingleton<DatabaseConnection>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
-            mauiAppBuilder.Services.AddSingleton<OrdenRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
             mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
-            mauiAppBuilder.Services.AddSingleton<MaterialEgresadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
             mauiAppBuilder.Services.AddSingleton<ProductoTerminadoRepo>();
             mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();

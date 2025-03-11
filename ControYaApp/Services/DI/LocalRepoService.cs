@@ -2,34 +2,23 @@
 
 namespace ControYaApp.Services.DI
 {
-    public class LocalRepoService
+    public class LocalRepoService(EmpleadosRepo empleadosRepo,
+        OrdenProduccionMpRepo ordenProduccionMpRepo,
+        OrdenProduccionPtRepo ordenProduccionPtRepo,
+        PeriodoRepo periodoRepo,
+        OrdenProduccionRepo ordenesProduccionRepo,
+        UsuarioRepo usuarioRepo)
     {
-        public EmpleadosRepo EmpleadosRepo { get; }
+        public EmpleadosRepo EmpleadosRepo { get; } = empleadosRepo;
 
-        public MaterialEgresadoRepo MaterialEgresadoRepo { get; }
+        public OrdenProduccionMpRepo OrdenProduccionMpRepo { get; } = ordenProduccionMpRepo;
 
-        public ProductoTerminadoRepo ProductoTerminadoRepo { get; }
+        public OrdenProduccionPtRepo OrdenProduccionPtRepo { get; } = ordenProduccionPtRepo;
 
-        public PeriodoRepo PeriodoRepo { get; }
+        public PeriodoRepo PeriodoRepo { get; } = periodoRepo;
 
-        public OrdenRepo OrdenRepo { get; }
+        public OrdenProduccionRepo OrdenesProduccionRepo { get; } = ordenesProduccionRepo;
 
-        public UsuarioRepo UsuarioRepo { get; }
-
-
-        public LocalRepoService(EmpleadosRepo empleadosRepo,
-            MaterialEgresadoRepo materialEgresadoRepo,
-            ProductoTerminadoRepo productoTerminadoRepo,
-            PeriodoRepo periodoRepo,
-            OrdenRepo ordenRepo,
-            UsuarioRepo usuarioRepo)
-        {
-            EmpleadosRepo = empleadosRepo;
-            MaterialEgresadoRepo = materialEgresadoRepo;
-            ProductoTerminadoRepo = productoTerminadoRepo;
-            PeriodoRepo = periodoRepo;
-            OrdenRepo = ordenRepo;
-            UsuarioRepo = usuarioRepo;
-        }
+        public UsuarioRepo UsuarioRepo { get; } = usuarioRepo;
     }
 }

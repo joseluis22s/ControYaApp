@@ -4,7 +4,7 @@ using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
 {
-    public class OrdenRepo
+    public class OrdenProduccionRepo
     {
         private SQLiteAsyncConnection? _database;
 
@@ -78,12 +78,12 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesByUsuarioSistema(string? usuarioSistema)
+        public async Task<ObservableCollection<OrdenProduccion>> GetOrdenesProduccionByUsuarioSistema(string? usuarioSistema)
         {
             try
             {
                 await InitAsync();
-                var ordenes = await _database.Table<OrdenProduccion>().Where(t => t.CodigoUsuario.Equals(usuarioSistema)).ToListAsync();
+                var ordenes = await _database.Table<OrdenProduccion>().Where(t => t.CodigoUsuarioAprobar.Equals(usuarioSistema)).ToListAsync();
                 return new ObservableCollection<OrdenProduccion>(ordenes);
             }
             catch (Exception)
@@ -106,7 +106,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task SaveAllOrdenesAsync(ObservableCollection<OrdenProduccion> ordenes)
+        public async Task SaveAllOrdenesProduccionAsync(ObservableCollection<OrdenProduccion> ordenesProduccion)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
                 await _database.DeleteAllAsync<OrdenProduccion>();
 
-                await _database.InsertAllAsync(ordenes);
+                await _database.InsertAllAsync(ordenesProduccion);
             }
             catch (Exception)
             {

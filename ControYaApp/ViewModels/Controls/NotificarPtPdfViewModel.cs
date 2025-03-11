@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Pdf;
@@ -80,24 +79,24 @@ namespace ControYaApp.ViewModels.Controls
 
         private async void GenerarPdf()
         {
-            try
-            {
-                var view = Shell.Current.CurrentPage as ContentPage;
-                var path = _pdfService.GeneratePdf(view.Content, OrdenProduccion.CodigoProduccion, OrdenProduccion.Orden, OrdenProduccion.CodigoMaterial);
-                if (string.IsNullOrEmpty(path))
-                {
-                    await Toast.Make("No se genero PDF").Show();
-                }
-                else
-                {
-                    //WebViewPdfSource = path;
-                    await Toast.Make($"PDF generado en: {path}").Show();
-                }
-            }
-            catch (Exception ex)
-            {
-                await Toast.Make(ex.Message).Show();
-            }
+            //try
+            //{
+            //    var view = Shell.Current.CurrentPage as ContentPage;
+            //    var path = _pdfService.GeneratePdf(view.Content, OrdenProduccion.CodigoProduccion, OrdenProduccion.Orden, OrdenProduccion.CodigoMaterial);
+            //    if (string.IsNullOrEmpty(path))
+            //    {
+            //        await Toast.Make("No se genero PDF").Show();
+            //    }
+            //    else
+            //    {
+            //        //WebViewPdfSource = path;
+            //        await Toast.Make($"PDF generado en: {path}").Show();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    await Toast.Make(ex.Message).Show();
+            //}
         }
 
 

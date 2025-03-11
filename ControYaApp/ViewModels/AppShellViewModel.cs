@@ -3,6 +3,8 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Services.DI;
+using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.Views.Controls;
 
@@ -15,6 +17,8 @@ namespace ControYaApp.ViewModels
 
         private readonly LocalRepoService _localRepoService;
 
+        private IpServidorRepo _ipServidorRepo;
+
 
 
         private bool _isConected;
@@ -23,6 +27,10 @@ namespace ControYaApp.ViewModels
             get => _isConected;
             set => SetProperty(ref _isConected, value);
         }
+
+
+
+        public ISharedData SharedData { get; set; }
 
 
 
@@ -35,18 +43,30 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AppShellViewModel(RestService restService, LocalRepoService localRepoService)
+        public AppShellViewModel(IpServidorRepo ipServidorRepo, RestService restService, LocalRepoService localRepoService, ISharedData sharedData)
         {
+
+            SharedData = sharedData; //No mover.
 
             _restService = restService;
             _localRepoService = localRepoService;
+            _ipServidorRepo = ipServidorRepo;
+
 
 
             GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
             ExtraerDatosCommand = new AsyncRelayCommand(ExtraerDatosAsync);
+
         }
 
+
+
+        private async void InitIpAddress()
+        {
+            var ip = await _ipServidorRepo.GetIpServidorAsync();
+            SharedData.IpServidor = ip.Protocolo + ip.Ip;
+        }
 
 
 
@@ -81,18 +101,18 @@ namespace ControYaApp.ViewModels
             await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
             var usuarios = await _restService.GetAllUsuariosAsync();
-            var ordenes = await _restService.GetOrdenesProduccionAsync();
-            var periodos = await _restService.GetRangosPeriodos();
-            var productos = await _restService.GetAllProductosTerminado();
-            var materiales = await _restService.GetAllMaterialesEgreso();
-            var empleados = await _restService.GetAllEmpleados();
+            var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);
+            var rangoPeriodos = await _restService.GetRangosPeriodos();
+            var ordenesProduccionPt = await _restService.GetAllOrdenesProduccionPtAsync(SharedData.UsuarioSistema);
+            var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
+            var empleados = await _restService.GetAllEmpleadosAsync();
 
 
             await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
-            await _localRepoService.MaterialEgresadoRepo.SaveAllEmAsync(materiales);
-            await _localRepoService.ProductoTerminadoRepo.SaveAllPtAsync(productos);
-            await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(periodos);
-            await _localRepoService.OrdenRepo.SaveAllOrdenesAsync(ordenes);
+            await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
+            await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
+            await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
+            await _localRepoService.OrdenesProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
             await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
 
             Shell.Current.FlyoutIsPresented = false;
