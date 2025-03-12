@@ -8,6 +8,10 @@ namespace ControYaApp.Services.SharedData
 
         string? UsuarioSistema { get; set; }
 
-        string? IpServidor { get; set; }
+        string? IpAddress { get; set; }
+
+        string? Protocolo { get; set; }
+
+        bool NotificarPtAuto { get; set; }
     }
 }

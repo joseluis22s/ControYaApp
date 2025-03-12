@@ -162,12 +162,12 @@
                                 <Label
                                     Grid.Column="1"
                                     Style="{StaticResource Label_PropiedadOrden}"
-                                    Text="Codigo unidad" />
+                                    Text="Codigo Material" />
                                 <Label
                                     Grid.Row="1"
                                     Grid.Column="1"
                                     Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding CodigoUnidad}" />
+                                    Text="{Binding CodigoMaterial}" />
                             </Grid>
 
                             <Grid
@@ -175,30 +175,44 @@
                                 ColumnDefinitions="*,*"
                                 RowDefinitions="Auto,Auto,Auto,Auto"
                                 Style="{StaticResource Grid_DatosOrdenes}">
+
                                 <Label Style="{StaticResource Label_PropiedadOrden}" Text="Cantidad" />
                                 <Label
                                     Grid.Row="1"
                                     Style="{StaticResource Label_ValorPropiedadOrden}"
                                     Text="{Binding Cantidad}" />
+
                                 <Label
                                     Grid.Column="1"
                                     Style="{StaticResource Label_PropiedadOrden}"
-                                    Text="Notificado" />
+                                    Text="Codigo unidad" />
                                 <Label
                                     Grid.Row="1"
                                     Grid.Column="1"
                                     Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding Notificado}" />
+                                    Text="{Binding CodigoUnidad}" />
+
                                 <Label
                                     Grid.Row="2"
-                                    Grid.ColumnSpan="2"
+                                    Style="{StaticResource Label_PropiedadOrden}"
+                                    Text="Notificado" />
+                                <Label
+                                    Grid.Row="3"
+                                    Style="{StaticResource Label_ValorPropiedadOrden}"
+                                    Text="{Binding Notificado}" />
+
+
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.Column="1"
                                     Style="{StaticResource Label_PropiedadOrden}"
                                     Text="Saldo" />
                                 <Label
                                     Grid.Row="3"
-                                    Grid.ColumnSpan="2"
+                                    Grid.Column="1"
                                     Style="{StaticResource Label_ValorPropiedadOrden}"
                                     Text="{Binding Saldo}" />
+
                             </Grid>
                         </Grid>
                     </Border>

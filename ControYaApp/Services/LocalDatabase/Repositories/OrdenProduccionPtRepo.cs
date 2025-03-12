@@ -17,7 +17,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<OrdenProduccionPt>();
         }
 
-        // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
+
         public async Task SaveAllOrdenesProduccionPtAsync(ObservableCollection<OrdenProduccionPt> ordenesProduccionPt)
         {
             try
@@ -28,10 +28,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
                 await _database.InsertAllAsync(ordenesProduccionPt);
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch (Exception) { throw; }
         }
 
         public async Task<ObservableCollection<OrdenProduccionPt>> GetAllOrdenesProduccionPt()
@@ -45,10 +42,42 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 {
                     return new ObservableCollection<OrdenProduccionPt>(productos);
                 }
-                return [];
+            }
+            catch (Exception) { throw; }
+
+            return [];
+        }
+
+        public async Task UpdateNotificadoAsync(OrdenProduccionPt ordenProduccionpt)
+        {
+            try
+            {
+                await InitAsync();
+
+                // TODO: En caso de error, buscar con Any y el argumento pra obtener la pk
+                await _database.UpdateAsync(ordenProduccionpt);
             }
             catch (Exception) { throw; }
         }
+
+        public async Task<decimal?> GetNotificadoValue(OrdenProduccionPt ordenProduccionpt)
+        {
+            try
+            {
+                await InitAsync();
+
+                var oppt = await _database.Table<OrdenProduccionPt>().FirstOrDefaultAsync(oppt =>
+                        oppt.Centro == ordenProduccionpt.Centro &&
+                        oppt.CodigoProduccion == ordenProduccionpt.CodigoProduccion &&
+                        oppt.Orden == ordenProduccionpt.Orden &&
+                        oppt.CodigoMaterial == ordenProduccionpt.CodigoMaterial &&
+                        oppt.CodigoProducto == ordenProduccionpt.CodigoMaterial);
+
+                return oppt.Notificado;
+            }
+            catch (Exception) { throw; }
+        }
+
 
 
     }

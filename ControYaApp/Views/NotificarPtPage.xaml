@@ -8,20 +8,30 @@
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:NotificarPtViewModel"
-    HideSoftInputOnTapped="True">
+    HideSoftInputOnTapped="True"
+    Shell.PresentationMode="Modal">
 
     <Grid
         Padding="15,25,15,15"
         RowDefinitions="Auto,*,Auto"
         RowSpacing="10">
 
-        <Grid Padding="7,0,15,0" ColumnDefinitions="*,Auto">
+        <Grid
+            Padding="7,0,15,0"
+            ColumnDefinitions="*,Auto"
+            RowDefinitions="Auto,Auto">
 
             <Label
                 FontAttributes="Bold"
                 FontSize="23"
-                Text="{Binding OrdenProduccionPt.Producto}"
-                TextColor="#0f2b57" />
+                TextColor="#0f2b57">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{Binding OrdenProduccionPt.CodigoProducto, StringFormat='{0}: '}" />
+                        <Span Text="{Binding OrdenProduccionPt.Producto}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
             <Button
                 Grid.Column="1"
                 Padding="0"
@@ -32,6 +42,11 @@
                 Text="×"
                 TextColor="#0f2b57"
                 VerticalOptions="Start" />
+
+            <Label
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                Text="{Binding OrdenProduccionPt.Saldo, StringFormat='Saldo: {0}'}" />
 
         </Grid>
 
@@ -59,7 +74,7 @@
                     </Border>
 
                     <Border Grid.Row="2" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Código producto" />
+                        <Label Style="{StaticResource Label_Text}" Text="Código material" />
                     </Border>
 
                     <Border Grid.Row="3" Style="{StaticResource Border_Label}">
@@ -96,32 +111,38 @@
 
                     <urui:TextField
                         Grid.Row="2"
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Style="{StaticResource TextField_Disabled}"
-                        Text="{Binding OrdenProduccionPt.CodigoProducto}" />
+                        Text="{Binding OrdenProduccionPt.CodigoMaterial}" />
+
+                    <urui:TextField
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Style="{StaticResource TextField_Disabled}"
+                        Text="{Binding OrdenProduccionPt.CodigoUsuarioAprobar}" />
 
 
                     <urui:DatePickerField
-                        Grid.Row="3"
-                        Grid.Column="3"
+                        Grid.Row="4"
+                        Grid.Column="1"
                         AccentColor="#0f2b57"
                         AllowClear="False"
                         BorderColor="Transparent"
-                        Date="{Binding OrdenProduccion.Fecha}"
+                        Date="{Binding FechaActual}"
                         MaximumDate="{Binding RangoPeriodos.FechaMax}"
                         MinimumDate="{Binding RangoPeriodos.FechaMin}" />
 
                     <urui:TextField
-                        Grid.Row="4"
-                        Grid.Column="4"
+                        Grid.Row="5"
+                        Grid.Column="1"
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Keyboard="Numeric"
-                        Text="{Binding OrdenProduccion.Notificado}" />
+                        Text="{Binding OrdenProduccionPt.Notificado}" />
 
                     <urui:PickerField
-                        Grid.Row="5"
-                        Grid.Column="5"
+                        Grid.Row="6"
+                        Grid.Column="1"
                         AccentColor="#0f2b57"
                         AllowClear="False"
                         BorderColor="Transparent"
@@ -129,20 +150,15 @@
                         SelectedItem="{Binding Empleado}" />
 
                     <urui:TextField
-                        Grid.Row="6"
-                        Grid.Column="6"
-                        Style="{StaticResource TextField_Disabled}"
-                        Text="{Binding OrdenProduccion.CodigoUsuario}" />
-
-                    <urui:TextField
                         Grid.Row="7"
-                        Grid.Column="7"
+                        Grid.Column="1"
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Text="{Binding Serie}" />
                 </Grid>
 
             </ScrollView>
+
         </Border>
 
         <Grid
@@ -206,9 +222,5 @@
 
         </ResourceDictionary>
     </ContentPage.Resources>
-
-    <ContentPage.BackgroundColor>
-        <Color>Red</Color>
-    </ContentPage.BackgroundColor>
 
 </ContentPage>

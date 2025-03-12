@@ -14,76 +14,117 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<PtNotificadoReq>();
+            await _database.CreateTableAsync<PtNotificado>();
         }
 
-        public async Task SynchronizedFalsePtNotificadoAsync(PtNotificadoReq ptNotificado)
+        public async Task SaveOrUpdatePtNotificadoAsync(PtNotificado ptNotificado)
         {
             try
             {
                 await InitAsync();
-                var producto = await _database.Table<PtNotificadoReq>().Where(pt =>
+                var ptNotificadoSaved = await _database.Table<PtNotificado>().Where(pt =>
                     pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
                     pt.Orden == ptNotificado.Orden &&
                     pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
-                    pt.Usuario == pt.Usuario
+                    pt.Usuario == ptNotificado.Usuario
                 ).FirstOrDefaultAsync();
-                if (producto is not null)
+                if (ptNotificadoSaved is not null)
                 {
-                    producto.Sincronizado = false;
-                    await _database.UpdateAsync(producto);
-                    return;
+                    ptNotificadoSaved.Fecha = ptNotificado.Fecha;
+                    ptNotificadoSaved.Notificado = ptNotificado.Notificado;
+                    ptNotificadoSaved.CodigoEmpleado = ptNotificado.CodigoEmpleado;
+                    ptNotificadoSaved.Serie = ptNotificado.Serie;
+                    await _database.UpdateAsync(ptNotificadoSaved);
+                }
+                else
+                {
+                    await _database.InsertAsync(ptNotificado);
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch (Exception) { throw; }
         }
 
-        public async Task UpdateSincPtNotificadoAsync()
-        {
-            try
-            {
-                await InitAsync();
-                var productos = await _database.Table<PtNotificadoReq>().Where(pt => pt.Sincronizado == false).ToListAsync();
-                foreach (var producto in productos)
-                {
-                    producto.Sincronizado = true;
-                    await _database.UpdateAsync(producto);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        //public async Task SavePtNotificadoAsync(PtNotificado ptNotificado)
+        //{
+        //    try
+        //    {
+        //        await InitAsync();
+        //        await _database.InsertAsync(ptNotificado);
 
-        public async Task SynchronizedTruePtNotificadoAsync(PtNotificadoReq ptNotificado)
-        {
-            try
-            {
-                await InitAsync();
-                var producto = await _database.Table<PtNotificadoReq>().Where(pt =>
-                    pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
-                    pt.Orden == ptNotificado.Orden &&
-                    pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
-                    pt.Usuario == pt.Usuario
-                ).FirstOrDefaultAsync();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
-                if (producto is not null)
-                {
-                    producto.Notificado = ptNotificado.Notificado;
-                    producto.Sincronizado = true;
+        //public async Task SynchronizedFalsePtNotificadoAsync(PtNotificado ptNotificado)
+        //{
+        //    try
+        //    {
+        //        await InitAsync();
+        //        var producto = await _database.Table<PtNotificadoReq>().Where(pt =>
+        //            pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
+        //            pt.Orden == ptNotificado.Orden &&
+        //            pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
+        //            pt.Usuario == pt.Usuario
+        //        ).FirstOrDefaultAsync();
+        //        if (producto is not null)
+        //        {
+        //            producto.Sincronizado = false;
+        //            await _database.UpdateAsync(producto);
+        //            return;
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
-                    await _database.UpdateAsync(producto);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        //public async Task UpdateSincPtNotificadoAsync()
+        //{
+        //    try
+        //    {
+        //        await InitAsync();
+        //        var productos = await _database.Table<PtNotificadoReq>().Where(pt => pt.Sincronizado == false).ToListAsync();
+        //        foreach (var producto in productos)
+        //        {
+        //            producto.Sincronizado = true;
+        //            await _database.UpdateAsync(producto);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        //public async Task SynchronizedTruePtNotificadoAsync(PtNotificado ptNotificado)
+        //{
+        //    try
+        //    {
+        //        await InitAsync();
+        //        var producto = await _database.Table<PtNotificado>().Where(pt =>
+        //            pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
+        //            pt.Orden == ptNotificado.Orden &&
+        //            pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
+        //            pt.Usuario == pt.Usuario
+        //        ).FirstOrDefaultAsync();
+
+        //        if (producto is not null)
+        //        {
+        //            producto.Notificado = ptNotificado.Notificado;
+        //            producto.Sincronizado = true;
+
+        //            await _database.UpdateAsync(producto);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
     }
 }

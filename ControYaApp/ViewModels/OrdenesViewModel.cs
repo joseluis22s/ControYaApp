@@ -14,7 +14,7 @@ using ControYaApp.Views.Controls;
 namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(EsNotificado), "esNotificado")]
-    [QueryProperty(nameof(OrdenProduccionPt), "productoT")]
+    [QueryProperty(nameof(OrdenProduccionPt), "ordenProduccionPt")]
     public partial class OrdenesViewModel : BaseViewModel
     {
 
@@ -36,16 +36,8 @@ namespace ControYaApp.ViewModels
 
 
 
-        private ObservableCollection<OrdenProduccionCabecera>? _ordenesProduccion;
-
-        public ObservableCollection<OrdenProduccionCabecera>? OrdenesProduccion
-        {
-            get => _ordenesProduccion;
-            set => SetProperty(ref _ordenesProduccion, value);
-        }
-
         private ObservableCollection<OrdenProduccionGroup> _ordenesGrouped;
-        public ObservableCollection<OrdenProduccionGroup> OrdenesProduccionGrouped
+        public ObservableCollection<OrdenProduccionGroup> OrdenesProduccionGroups
         {
             get => _ordenesGrouped;
             set => SetProperty(ref _ordenesGrouped, value);
@@ -99,12 +91,18 @@ namespace ControYaApp.ViewModels
             {
                 if (EsNotificado)
                 {
-                    OrdenesProduccion.FirstOrDefault(o =>
-                        OrdenProduccionPt.Centro == o.Centro &&
-                        OrdenProduccionPt.CodigoProduccion == o.CodigoProduccion &&
-                        OrdenProduccionPt.Orden == o.Orden)
-                        .Detalles.FirstOrDefault(d =>
-                                OrdenProduccionPt.CodigoProducto == d.CodigoProducto).Notificado += OrdenProduccionPt.Notificado;
+                    var notificadoValue = await _ordenProduccionPtRepo.GetNotificadoValue(OrdenProduccionPt);
+
+                    // TODO: Verificar si el valor de notificado cambia. Creo que falta en la propiedad notificado de OrdenProduccionPt
+                    //       o directamente usar notificapropertuychanged aqui.
+                    OrdenesProduccionGroups.FirstOrDefault(opg =>
+                            opg.OrdenProduccion.Centro == OrdenProduccionPt.Centro &&
+                            opg.OrdenProduccion.CodigoProduccion == OrdenProduccionPt.CodigoProduccion &&
+                            opg.OrdenProduccion.Orden == OrdenProduccionPt.Orden
+                        ).FirstOrDefault(oppt =>
+                            oppt.CodigoProducto == OrdenProduccionPt.CodigoProducto &&
+                            oppt.CodigoMaterial == OrdenProduccionPt.CodigoMaterial
+                        ).Notificado = notificadoValue;
 
                 }
             }
@@ -122,7 +120,7 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                if (OrdenesProduccionGrouped.Count != 0)
+                if (OrdenesProduccionGroups.Count != 0)
                 {
 
                 }
@@ -131,7 +129,7 @@ namespace ControYaApp.ViewModels
                 if (ordenesProduccionDb.Count != 0)
                 {
                     var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
-                    OrdenesProduccionGrouped = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
+                    OrdenesProduccionGroups = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
                 }
                 else
                 {
@@ -170,76 +168,6 @@ namespace ControYaApp.ViewModels
                 await Toast.Make(ex.Message).Show();
             }
         }
-
-
-        private ObservableCollection<OrdenProduccionCabecera> MapOrdenesCabeceras(ObservableCollection<OrdenProduccion> ordenesProduccion)
-        {
-            // Agrupa las órdenes por las propiedades de cabecera
-            var agrupaciones = ordenesProduccion
-                .GroupBy(op => new
-                {
-                    op.Centro,
-                    op.CodigoProduccion,
-                    op.Orden,
-                    op.Fecha,
-                    op.Referencia,
-                });
-
-            var cabeceras = agrupaciones.Select(grupo =>
-            {
-                var cabecera = new OrdenProduccionCabecera
-                {
-                    Centro = grupo.Key.Centro,
-                    CodigoProduccion = grupo.Key.CodigoProduccion,
-                    Orden = grupo.Key.Orden,
-                    Fecha = grupo.Key.Fecha,
-                    Referencia = grupo.Key.Referencia,
-                    Detalles = new ObservableCollection<OrdenProduccionDetalle>()
-                };
-
-                foreach (var op in grupo)
-                {
-                    var detalle = new OrdenProduccionDetalle
-                    {
-                        Detalle = op.Detalle,
-                        CodigoMaterial = op.CodigoMaterial,
-                        CodigoProducto = op.CodigoProducto,
-                        Producto = op.Producto,
-                        CodigoUnidad = op.CodigoUnidad,
-                        Cantidad = op.Cantidad,
-                        Notificado = op.Notificado,
-                        Cabecera = cabecera // Asignar la cabecera aquí
-                    };
-                    cabecera.Detalles.Add(detalle);
-                }
-
-                return cabecera;
-            });
-
-            return new ObservableCollection<OrdenProduccionCabecera>(cabeceras);
-        }
-
-
-        //private OrdenProduccion MapOrdenProduccion(OrdenProduccionDetalle detalle)
-        //{
-        //    return new OrdenProduccion
-        //    {
-        //        Centro = detalle.Cabecera.Centro,
-        //        CodigoProduccion = detalle.Cabecera.CodigoProduccion,
-        //        Orden = detalle.Cabecera.Orden,
-        //        CodigoUsuario = SharedData.UsuarioSistema,
-        //        Fecha = detalle.Cabecera.Fecha,
-        //        Referencia = detalle.Cabecera.Referencia,
-        //        Detalle = detalle.Detalle,
-        //        CodigoMaterial = detalle.CodigoMaterial,
-        //        CodigoProducto = detalle.CodigoProducto,
-        //        Producto = detalle.Producto,
-        //        CodigoUnidad = detalle.CodigoUnidad,
-        //        Cantidad = detalle.Cantidad,
-        //        Notificado = detalle.Saldo
-        //    };
-        //}
-
 
         private ObservableCollection<OrdenProduccionGroup> MapOrdenesProduccionGrouped(ObservableCollection<OrdenProduccion> ordenesPrd, ObservableCollection<OrdenProduccionPt> ordenesProducciondPt)
         {

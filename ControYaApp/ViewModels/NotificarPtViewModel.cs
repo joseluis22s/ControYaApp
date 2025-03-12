@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
@@ -18,13 +17,15 @@ namespace ControYaApp.ViewModels
 
         private readonly PeriodoRepo _periodoRepo;
 
-        private readonly OrdenProduccionRepo _ordenRepo;
+        private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
 
         private readonly PtNotificadoRepo _ptNotificadoRepo;
 
         private readonly RestService _restService;
 
 
+
+        private readonly decimal? _notificadoLimit;
 
         private bool _isNotified;
 
@@ -53,16 +54,16 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private string? _empleado;
-        public string? Empleado
+        private EmpleadoSistema? _empleado;
+        public EmpleadoSistema? Empleado
         {
             get => _empleado;
             set => SetProperty(ref _empleado, value);
         }
 
 
-        private ObservableCollection<string>? _empleados;
-        public ObservableCollection<string>? Empleados
+        private ObservableCollection<EmpleadoSistema>? _empleados;
+        public ObservableCollection<EmpleadoSistema>? Empleados
         {
             get => _empleados;
             set => SetProperty(ref _empleados, value);
@@ -87,14 +88,16 @@ namespace ControYaApp.ViewModels
 
 
         public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
-                                    OrdenProduccionRepo ordenRepo, PeriodoRepo periodoRepo, PdfService pdfService)
+                                    OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo, PdfService pdfService)
         {
 
             _pdfService = pdfService;
             _restService = restService;
             _ptNotificadoRepo = ptNotificadoRepo;
-            _ordenRepo = ordenRepo;
+            _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _periodoRepo = periodoRepo;
+
+            _notificadoLimit = OrdenProduccionPt.Notificado;
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
@@ -113,7 +116,17 @@ namespace ControYaApp.ViewModels
 
         private async Task GoBackAsync()
         {
-            await (_isNotified ? GoBackNotifiedTrueAsync(true, OrdenProduccion) : GoBackNotifiedFalseAsync(false));
+            await (_isNotified ? GoBackNotifiedTrueAsync(true, OrdenProduccionPt) : GoBackNotifiedFalseAsync(false));
+        }
+
+        private async Task GoBackNotifiedTrueAsync(bool isNotified, OrdenProduccionPt ordenProduccionPt)
+        {
+            var navParameter = new ShellNavigationQueryParameters
+            {
+                { "esNotificado", isNotified},
+                { "ordenProduccionPt", ordenProduccionPt}
+            };
+            await Shell.Current.GoToAsync("..", navParameter);
         }
 
         private async Task GoBackNotifiedFalseAsync(bool isNotified)
@@ -125,73 +138,24 @@ namespace ControYaApp.ViewModels
             await Shell.Current.GoToAsync("..", navParameter);
         }
 
-
-        private async Task GoBackNotifiedTrueAsync(bool isNotified, OrdenProduccion ordenProduccion)
-        {
-            var navParameter = new ShellNavigationQueryParameters
-            {
-                { "esNotificado", isNotified},
-                { "productoT", ordenProduccion}
-            };
-            await Shell.Current.GoToAsync("..", navParameter);
-        }
-
-
         private async Task NotificarPtAsync()
         {
             try
             {
-                var notificarProducto = MapPtNotificado(OrdenProduccion, Empleado, Serie);
-
-                if (notificarProducto.Notificado <= 0)
+                if (!await ValidarNotificacionPt())
                 {
-                    await Toast.Make($"Valor de notificado: \'{notificarProducto.Notificado}\' no válido").Show();
                     return;
                 }
-                else if (string.IsNullOrEmpty(notificarProducto.CodigoEmpleado))
-                {
-                    await Toast.Make($"Debe elegir un empleado").Show();
-                    return;
-                }
-                else if (string.IsNullOrWhiteSpace(notificarProducto.Serie))
-                {
-                    notificarProducto.Serie = "";
-                }
 
+                // TODO: Verificar si 'Empleado.CodigoEmpleado' es null.
+                var ptNotificado = MapPtNotificado(OrdenProduccionPt, Empleado.CodigoEmpleado, Serie);
 
+                await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
-                NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-                if (accessType == NetworkAccess.Internet)
-                {
-                    // TODO: Preguntar que criterio deberia no mostrar ordenPt para eliminar los registros de la db.
-                    var res = await _restService.NotificarProductoTerminadoAsync(notificarProducto);
-                    if (res)
-                    {
-                        // Si hay conexión a internet, se actualiza el campo 'Sincronizado' a 'False' para definir que tambien se hizo en CB.
-                        await _ptNotificadoRepo.SynchronizedTruePtNotificadoAsync(notificarProducto);
+                await _ptNotificadoRepo.SaveOrUpdatePtNotificadoAsync(ptNotificado);
 
-                        _isNotified = true;
+                _isNotified = true;
 
-                        await Toast.Make("Producto notificado").Show();
-                    }
-                    else
-                    {
-                        _isNotified = false;
-
-                        await Toast.Make("Problemas al notificar el producto").Show();
-                    }
-                }
-                else
-                {
-                    // Si no hay conexión a internet, se inserta 'Notificado' en la db local.
-                    await _ordenRepo.NotificarProductoTerminadoAsync(notificarProducto);
-                    // Si no hay conexion a internet, se inserta el registro en la db local.
-                    //await _ptNotificadoRepo.SynchronizedFalsePtNotificadoAsync(notificarProducto);
-                }
-
-
-                // TODO: Mostar ventana con los datos que se van a notificar
-                //await GoBackAsync(true, notificarProducto);
             }
             catch (Exception ex)
             {
@@ -200,74 +164,67 @@ namespace ControYaApp.ViewModels
 
         }
 
-        private async Task GenerarPdf()
+        private async Task<bool> ValidarNotificacionPt()
         {
-            //try
-            //{
-            //    var view = Shell.Current.CurrentPage as ContentPage;
-            //    var path = _pdfService.GeneratePdf(view.Content, OrdenProduccion.CodigoProduccion, OrdenProduccion.Orden, OrdenProduccion.CodigoMaterial);
-            //    if (string.IsNullOrEmpty(path))
-            //    {
-            //        await Toast.Make("No se genero PDF").Show();
-            //    }
-            //    else
-            //    {
-            //        //WebViewPdfSource = path;
-            //        await Toast.Make($"PDF generado en: {path}").Show();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    await Toast.Make(ex.Message).Show();
-            //}
+            if (OrdenProduccionPt.Saldo == 0)
+            {
+                await Toast.Make("No se puede notificar más").Show();
+                return false;
+            }
+
+            if (OrdenProduccionPt.Notificado > OrdenProduccionPt.Saldo)
+            {
+                await Toast.Make("Valor de notificado mayor al límite").Show();
+                return false;
+            }
+
+            if (OrdenProduccionPt.Notificado <= 0)
+            {
+                await Toast.Make("Valor de notificado no válido").Show();
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(Empleado.Empleado))
+            {
+                await Toast.Make($"Debe elegir un empleado").Show();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(Serie))
+            {
+                Serie = "";
+            }
+
+            return true;
         }
 
-        private async Task GenerarPdfssssss()
+        private async Task GenerarPdf()
         {
             try
             {
-                if (_isNotified)
-                {
-
-                    //await Toast.Make("aqui se busca generar el PDF", ToastDuration.Long).Show();
-                    //var loadingPopUpp = new LoadingPopUp();
-                    //_ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
-
-                    var navParameter = new ShellNavigationQueryParameters
-                    {
-                        { "orden", OrdenProduccion},
-                        { "serie", Serie},
-                        { "empleado", Empleado}
-                    };
-                    await Shell.Current.GoToAsync("notificarPtPdf", navParameter);
-
-
-                    //await loadingPopUpp.CloseAsync();
-                }
+                // TODO: Controlar que notifique la menos una vez para poder generar
+                await Toast.Make($"Botón para generar un pdf").Show();
             }
             catch (Exception ex)
             {
-                var msg = ex.Message;
-                await Toast.Make("Error al generar el PDF:\n" + msg, ToastDuration.Long).Show();
+                await Toast.Make(ex.Message).Show();
             }
         }
 
-
-        private PtNotificadoReq MapPtNotificado(OrdenProduccion? orden, string? empleado, string? serie)
+        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serie)
         {
-            return new PtNotificadoReq
+            return new PtNotificado
             {
-                CodigoProduccion = orden.CodigoProduccion,
-                Orden = orden.Orden,
-                CodigoMaterial = orden.CodigoMaterial,
-                Fecha = orden.Fecha,
-                Notificado = orden.Notificado,
-                CodigoEmpleado = empleado,
+                CodigoProduccion = ordenProduccionPt.CodigoProduccion,
+                Orden = ordenProduccionPt.Orden,
+                CodigoMaterial = ordenProduccionPt.CodigoMaterial,
+                Fecha = FechaActual,
+                Notificado = ordenProduccionPt.Notificado,
+                CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
-                Usuario = orden.CodigoUsuario
+                Usuario = ordenProduccionPt.CodigoUsuarioAprobar
             };
         }
-
 
         private async Task<Periodos> GetRangosPeriodosAsync()
         {

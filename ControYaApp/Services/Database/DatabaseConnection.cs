@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Microsoft.Data.SqlClient;
 
 namespace ControYaApp.Services.Database
 {

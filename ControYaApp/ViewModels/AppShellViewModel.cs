@@ -52,7 +52,7 @@ namespace ControYaApp.ViewModels
             _localRepoService = localRepoService;
             _ipServidorRepo = ipServidorRepo;
 
-
+            InitIpAddress();
 
             GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
@@ -65,7 +65,8 @@ namespace ControYaApp.ViewModels
         private async void InitIpAddress()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
-            SharedData.IpServidor = ip.Protocolo + ip.Ip;
+            SharedData.IpAddress = ip.Ip;
+            SharedData.Protocolo = ip.Protocolo;
         }
 
 

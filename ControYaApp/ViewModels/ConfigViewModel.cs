@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.SharedData;
 
 namespace ControYaApp.ViewModels
 {
@@ -27,6 +28,10 @@ namespace ControYaApp.ViewModels
 
 
 
+        public ISharedData SharedData { get; set; }
+
+
+
         public ICommand SaveIpServidorCommand { get; }
 
         public ICommand BackButtonPressedCommand { get; }
@@ -34,45 +39,27 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ConfigViewModel(IpServidorRepo ipServidorRepo)
+        public ConfigViewModel(IpServidorRepo ipServidorRepo, ISharedData sharedData)
         {
+
+            SharedData = sharedData; //No mover.
 
             _ipServidorRepo = ipServidorRepo;
 
+            InitIpServidor();
 
             SaveIpServidorCommand = new AsyncRelayCommand(SaveIpServidorAsync);
             BackButtonPressedCommand = new AsyncRelayCommand(BackButtonPressed);
 
-
-            InitializeIpServidor();
         }
 
 
 
 
-        private async void InitializeIpServidor()
+        private void InitIpServidor()
         {
-            IpServidor = await GetIpServidorAsync();
-
-            _ip = IpServidor.Ip;
-        }
-
-
-        private async Task<IpServidor> GetIpServidorAsync()
-        {
-            try
-            {
-                var ip = await _ipServidorRepo.GetIpServidorAsync();
-                if (ip is not null)
-                {
-                    return ip;
-                }
-            }
-            catch (Exception ex)
-            {
-                await Toast.Make(ex.Message).Show();
-            }
-            return new IpServidor { Protocolo = "http://", Ip = "" };
+            IpServidor.Ip = _ip = SharedData.IpAddress;
+            IpServidor.Protocolo = SharedData.Protocolo;
         }
 
 
@@ -106,36 +93,35 @@ namespace ControYaApp.ViewModels
             if (_isSaved)
             {
                 await Shell.Current.GoToAsync("..");
+                return;
             }
-            else
+
+            if (string.IsNullOrEmpty(IpServidor.Ip))
             {
-                string? ip = IpServidor.Ip;
-                if (string.IsNullOrEmpty(ip))
+                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
+                if (res)
                 {
-                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
-                    if (res)
-                    {
-                        await Shell.Current.GoToAsync("..");
-                    }
-                }
-                else if (_ip != ip)
-                {
-                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
-                    if (res)
-                    {
-                        await Shell.Current.GoToAsync("..");
-                    }
-                }
-                else
-                {
-                    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
-                    if (res)
-                    {
-                        await Shell.Current.GoToAsync("..");
-                    }
+                    await Shell.Current.GoToAsync("..");
+                    return;
                 }
             }
 
+            if (_ip != IpServidor.Ip)
+            {
+                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
+                if (res)
+                {
+                    await Shell.Current.GoToAsync("..");
+                }
+            }
+            else
+            {
+                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
+                if (res)
+                {
+                    await Shell.Current.GoToAsync("..");
+                }
+            }
         }
 
 

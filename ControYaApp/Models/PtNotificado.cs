@@ -3,7 +3,7 @@ using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class PtNotificadoReq
+    public class PtNotificado
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]
@@ -11,6 +11,9 @@ namespace ControYaApp.Models
 
         [JsonIgnore]
         public bool Sincronizado { get; set; }
+
+        [JsonIgnore]
+        public bool Autorizado { get; set; }
 
         public string CodigoProduccion { get; set; }
 
