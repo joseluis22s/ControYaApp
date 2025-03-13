@@ -9,10 +9,9 @@ namespace ControYaApp.ViewModels
 {
     public class ConfigViewModel : BaseViewModel
     {
-        private string _ip;
-
         private bool _isSaved;
 
+        private IpServidor _ipServidorSave = new();
 
 
         private readonly IpServidorRepo _ipServidorRepo;
@@ -37,7 +36,7 @@ namespace ControYaApp.ViewModels
 
             _ipServidorRepo = ipServidorRepo;
 
-            _ip = SharedData.IpAddress;
+            InitData();
 
             SaveIpServidorCommand = new AsyncRelayCommand(SaveIpServidorAsync);
             BackButtonPressedCommand = new AsyncRelayCommand(BackButtonPressed);
@@ -45,8 +44,15 @@ namespace ControYaApp.ViewModels
 
         }
 
+        private void InitData()
+        {
+            _ipServidorSave.Protocolo = SharedData.Protocolo;
+            _ipServidorSave.Ip = SharedData.IpAddress;
+        }
+
         private async void SelectedItemChanged(string selectedItem)
         {
+            _ipServidorSave.Protocolo = SharedData.Protocolo;
             SharedData.Protocolo = selectedItem;
         }
 
@@ -61,15 +67,16 @@ namespace ControYaApp.ViewModels
 
                 if (res)
                 {
-                    IpServidor ipServidor = new()
-                    {
-                        Protocolo = SharedData.Protocolo,
-                        Ip = SharedData.IpAddress
-                    };
-                    await _ipServidorRepo.SaveIpServidor(ipServidor);
+                    _ipServidorSave.Protocolo = SharedData.Protocolo;
+                    _ipServidorSave.Ip = SharedData.IpAddress;
+                    await _ipServidorRepo.SaveIpServidor(_ipServidorSave);
 
                     _isSaved = true;
+
+                    await Toast.Make("Dirección IP guardada").Show();
+                    await Shell.Current.GoToAsync("..");
                 }
+
             }
             catch (Exception ex)
             {
@@ -91,16 +98,20 @@ namespace ControYaApp.ViewModels
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
                 if (res)
                 {
+                    SharedData.IpAddress = _ipServidorSave.Ip;
+                    SharedData.Protocolo = _ipServidorSave.Protocolo;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
             }
 
-            if (_ip != SharedData.IpAddress)
+            if (_ipServidorSave.Ip != SharedData.IpAddress)
             {
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
                 if (res)
                 {
+                    SharedData.IpAddress = _ipServidorSave.Ip;
+                    SharedData.Protocolo = _ipServidorSave.Protocolo;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -110,6 +121,8 @@ namespace ControYaApp.ViewModels
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
                 if (res)
                 {
+                    SharedData.IpAddress = _ipServidorSave.Ip;
+                    SharedData.Protocolo = _ipServidorSave.Protocolo;
                     await Shell.Current.GoToAsync("..");
                 }
             }
