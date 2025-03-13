@@ -63,56 +63,30 @@ namespace ControYaApp.Services.WebService
         }
 
 
-        public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
+        public async Task<Usuario> CheckUsuarioCredentialsAsync(Usuario usuarioReq)
         {
             string uri = _protocol + _ipAddress + _loginUsuarioUri;
 
-            var usuarioLogin = new
-            {
-                NombreUsuario = usuario.NombreUsuario,
-                UsuarioSistema = "",
-                Contrasena = usuario.Contrasena
-            };
+            usuarioReq.UsuarioSistema = "";
 
             try
             {
-                string json = JsonSerializer.Serialize(usuarioLogin, _jsonSerializerOptions);
+                string json = JsonSerializer.Serialize(usuarioReq, _jsonSerializerOptions);
                 StringContent content = new(json, Encoding.UTF8, "application/json");
 
                 var response = await _client.PostAsync(uri, content);
                 string resContent = await response.Content.ReadAsStringAsync();
-                var values = JsonSerializer.Deserialize<Dictionary<string, object>>(resContent);
+                var values = JsonSerializer.Deserialize<Dictionary<string, Usuario>>(resContent);
 
                 if (values != null &&
-                    values.TryGetValue("estaRegistrado", out object? estaRegistrado) &&
-                    values.TryGetValue("usuarioSistema", out object? usuarioSistema) &&
-                    values.TryGetValue("mensaje", out object mensaje))
+                    values.TryGetValue("usuario", out Usuario? usuarioRes))
 
                 {
-                    return new Dictionary<string, object>
-                        {
-                            { "estaRegistrado", estaRegistrado },
-                            { "usuarioSistema", usuarioSistema },
-                            { "mensaje", usuarioSistema }
-                        };
+                    return usuarioRes;
                 }
-
-                return new Dictionary<string, object>
-                        {
-                            { "estaRegistrado", false },
-                            { "usuarioSistema", "" },
-                            { "mensaje", "Error desconocido" }
-                        };
+                return null;
             }
-            catch (Exception ex)
-            {
-                return new Dictionary<string, object>
-                        {
-                            { "estaRegistrado", false },
-                            { "usuarioSistema", "" },
-                            { "mensaje", ex.Message }
-                        };
-            }
+            catch (Exception) { throw; }
         }
 
 

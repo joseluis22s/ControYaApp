@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
@@ -70,11 +71,7 @@ namespace ControYaApp.ViewModels
 
         private async Task GoToHomeAsync()
         {
-            if (string.IsNullOrEmpty(SharedData.NombreUsuario) || string.IsNullOrEmpty(Contrasena))
-            {
-                await Toast.Make("Los campos no seben estar vacios.").Show();
-            }
-            else
+            try
             {
                 var ip = await _ipServidorRepo.GetIpServidorAsync();
                 if (ip is null)
@@ -83,83 +80,52 @@ namespace ControYaApp.ViewModels
                     if (res)
                     {
                         await Shell.Current.GoToAsync("config");
+                        return;
                     }
+                }
+
+                var usuario = new Usuario
+                {
+                    NombreUsuario = SharedData.NombreUsuario,
+                    Contrasena = Contrasena
+                };
+
+                var loadingPopUpp = new LoadingPopUp();
+                _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+                // TODO: Agregar que cuando no haya conexión, decir que se conecte en caso de que no se haya importado el usaurio.
+
+                NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+                if (accessType != NetworkAccess.Internet)
+                {
+                    var usuarioDb = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
+                    await ValidateNavigationToHome(usuarioDb, usuario);
                 }
                 else
                 {
-                    var usuario = new Usuario
-                    {
-                        NombreUsuario = SharedData.NombreUsuario,
-                        Contrasena = Contrasena
-                    };
-
-                    var loadingPopUpp = new LoadingPopUp();
-                    _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
-
-                    NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-                    // TODO: Agregar que cuando no haya conexión, decir que se conecte en caso de que no se haya importado el usaurio.
-                    try
-                    {
-                        // TODO: VER MENSAJE de db
-                        var result = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
-
-                        if (result.TryGetValue("usuarioSistema", out object? usuarioSistema) &&
-                            result.TryGetValue("estaRegistrado", out object? estaRegistrado))
-                        {
-                            var estado1 = bool.Parse(estaRegistrado.ToString());
-                            if (estado1)
-                            {
-                                SharedData.UsuarioSistema = usuarioSistema.ToString();
-
-                                await Shell.Current.GoToAsync("//home");
-                            }
-                            else if (accessType == NetworkAccess.Internet)
-                            {
-                                var res = await _restService.CheckUsuarioCredentialsAsync(usuario);
-
-                                if (res.TryGetValue("estaRegistrado", out object? estaRegistrado1) &&
-                                    res.TryGetValue("usuarioSistema", out object? usuarioSistema1) &&
-                                        estaRegistrado1 != null)
-                                {
-
-                                    var estado2 = bool.Parse(estaRegistrado1.ToString());
-                                    if (estado2)
-                                    {
-                                        SharedData.UsuarioSistema = usuarioSistema1.ToString();
-                                        await Shell.Current.GoToAsync("//home");
-                                    }
-                                    else
-                                    {
-                                        await Toast.Make(usuarioSistema1.ToString()).Show();
-                                    }
-                                }
-                                else
-                                {
-                                    await Toast.Make("Error de sistema").Show();
-                                }
-                            }
-                            else
-                            {
-                                await Toast.Make("Usuario no encontrado").Show();
-                            }
-                        }
-                        else
-                        {
-                            await Toast.Make("Error de sistema").Show();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        await Toast.Make(ex.Message).Show();
-                    }
-                    await loadingPopUpp.CloseAsync();
+                    var usuarioWs = await _restService.CheckUsuarioCredentialsAsync(usuario);
+                    await ValidateNavigationToHome(usuarioWs, usuario);
                 }
+                await loadingPopUpp.CloseAsync();
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
             }
         }
 
-
-
-
-
+        private async Task ValidateNavigationToHome(Usuario usuarioRes, Usuario usuario)
+        {
+            if ((usuarioRes is null) ||
+                (usuarioRes.NombreUsuario != usuario.NombreUsuario && usuarioRes.Contrasena != usuario.Contrasena))
+            {
+                await Toast.Make("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long).Show();
+            }
+            else
+            {
+                SharedData.UsuarioSistema = usuarioRes.UsuarioSistema;
+                await Shell.Current.GoToAsync("//home");
+            }
+        }
     }
 }

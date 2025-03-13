@@ -47,38 +47,22 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
         }
 
 
-        // Retorna TRUE si credenciales son correctas. FALSE no son correctas.
-        public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
+        //public async Task<Dictionary<string, object>> CheckUsuarioCredentialsAsync(Usuario usuario)
+        public async Task<Usuario> CheckUsuarioCredentialsAsync(Usuario usuario)
         {
             try
             {
                 // TODO: Verificar si 'usuarioDb' puede ser 'null'. En ese caso el return cambio
                 await InitAsync();
 
-
-                var usuarioDb = await _database.Table<Usuario>().Where(u =>
-                    u.NombreUsuario.Equals(usuario.NombreUsuario) &&
-                    u.Contrasena.Equals(usuario.Contrasena)).FirstOrDefaultAsync();
-
-                if (usuarioDb != null)
-                {
-                    return new Dictionary<string, object>
-                    {
-                        {"usuarioSistema" , usuarioDb.UsuarioSistema},
-                        {"estaRegistrado" , true }
-                    };
-                }
+                return await _database.Table<Usuario>().Where(u =>
+                    u.NombreUsuario == usuario.NombreUsuario &&
+                    u.Contrasena == usuario.Contrasena).FirstOrDefaultAsync();
             }
             catch (Exception)
             {
                 throw;
             }
-
-            return new Dictionary<string, object>
-                    {
-                        {"usuarioSistema" , ""},
-                        {"estaRegistrado" , false }
-                    };
         }
 
         public async Task SaveAllUsuariosAsync(ObservableCollection<Usuario> usuarios)
