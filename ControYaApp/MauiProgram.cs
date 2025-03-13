@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui;
-using ControYaApp.Services.Database;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Pdf;
@@ -73,17 +72,16 @@ namespace ControYaApp
         }
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<DatabaseConnection>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
-            mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
             mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
-            mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
-            mauiAppBuilder.Services.AddSingleton<ProductoTerminadoRepo>();
-            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
-            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
-            mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
-            mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
             mauiAppBuilder.Services.AddSingleton<IpServidorRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionPtRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
+            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
+            mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
+            mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
 
             mauiAppBuilder.Services.AddTransient<PdfService>();

@@ -65,8 +65,16 @@ namespace ControYaApp.ViewModels
         private async void InitIpAddress()
         {
             var ip = await _ipServidorRepo.GetIpServidorAsync();
-            SharedData.IpAddress = ip.Ip;
-            SharedData.Protocolo = ip.Protocolo;
+            if (ip is null)
+            {
+                SharedData.IpAddress = "";
+                SharedData.Protocolo = "http://";
+            }
+            else
+            {
+                SharedData.IpAddress = ip.Ip;
+                SharedData.Protocolo = ip.Protocolo;
+            }
         }
 
 

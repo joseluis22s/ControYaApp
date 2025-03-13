@@ -79,7 +79,7 @@ namespace ControYaApp.ViewModels
             {
                 if (m.Value == "Vaciar")
                 {
-                    OrdenesProduccion?.Clear();
+                    OrdenesProduccionGroups?.Clear();
                 }
             });
         }

@@ -79,7 +79,6 @@ namespace ControYaApp.ViewModels
                 var ip = await _ipServidorRepo.GetIpServidorAsync();
                 if (ip is null)
                 {
-
                     var res = await Shell.Current.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
                     if (res)
                     {

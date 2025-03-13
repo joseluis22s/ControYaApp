@@ -23,4 +23,12 @@ public partial class ConfigPage : ContentPage
         }
         return false;
     }
+
+    private async void BackButtonPressed()
+    {
+        if (BindingContext is ConfigViewModel vm)
+        {
+            await vm.BackButtonPressed();
+        }
+    }
 }

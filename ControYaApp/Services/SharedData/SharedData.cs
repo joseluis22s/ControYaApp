@@ -26,11 +26,26 @@ namespace ControYaApp.Services.SharedData
             }
         }
 
+        private string? _protocolo;
+        public string? Protocolo
+        {
+            get => _protocolo;
+            set
+            {
+                SetProperty(ref _protocolo, value);
+            }
+        }
 
-        public string? Protocolo { get; set; }
 
-
-        public string? IpAddress { get; set; }
+        private string? _ipAddress;
+        public string? IpAddress
+        {
+            get => _ipAddress;
+            set
+            {
+                SetProperty(ref _ipAddress, value);
+            }
+        }
 
 
         private bool _notificarPtAuto;

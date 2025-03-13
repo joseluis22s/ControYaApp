@@ -8,9 +8,6 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
     {
         private SQLiteAsyncConnection? _database;
 
-
-        // TODO: Eliminar todo lo que no se use.
-
         async Task InitAsync()
         {
             if (_database is not null)
@@ -86,10 +83,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 var ordenes = await _database.Table<OrdenProduccion>().Where(t => t.CodigoUsuarioAprobar.Equals(usuarioSistema)).ToListAsync();
                 return new ObservableCollection<OrdenProduccion>(ordenes);
             }
-            catch (Exception)
-            {
-                return [];
-            }
+            catch (Exception) { throw; }
         }
 
 
@@ -103,37 +97,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
                 await _database.InsertAllAsync(ordenesProduccion);
             }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-
-
-        public async Task NotificarProductoTerminadoAsync(PtNotificadoReq ptnotificado)
-        {
-            try
-            {
-                await InitAsync();
-
-                var producto = await _database.Table<OrdenProduccion>().Where(pt =>
-                    pt.CodigoProduccion == ptnotificado.CodigoProduccion &&
-                    pt.Orden == ptnotificado.Orden &&
-                    pt.CodigoMaterial == ptnotificado.CodigoMaterial &&
-                    pt.CodigoUsuario == ptnotificado.Usuario
-                ).FirstOrDefaultAsync();
-
-                producto.Notificado = ptnotificado.Notificado;
-
-                await _database.UpdateAsync(producto);
-
-
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            catch (Exception) { throw; }
         }
 
 

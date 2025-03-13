@@ -19,15 +19,6 @@ namespace ControYaApp.ViewModels
 
 
 
-        private IpServidor _ipServidor;
-        public IpServidor IpServidor
-        {
-            get => _ipServidor;
-            set => SetProperty(ref _ipServidor, value);
-        }
-
-
-
         public ISharedData SharedData { get; set; }
 
 
@@ -36,50 +27,49 @@ namespace ControYaApp.ViewModels
 
         public ICommand BackButtonPressedCommand { get; }
 
+        public ICommand SelectedItemChangedCommand { get; }
 
 
 
         public ConfigViewModel(IpServidorRepo ipServidorRepo, ISharedData sharedData)
         {
-
             SharedData = sharedData; //No mover.
 
             _ipServidorRepo = ipServidorRepo;
 
-            InitIpServidor();
+            _ip = SharedData.IpAddress;
 
             SaveIpServidorCommand = new AsyncRelayCommand(SaveIpServidorAsync);
             BackButtonPressedCommand = new AsyncRelayCommand(BackButtonPressed);
+            SelectedItemChangedCommand = new RelayCommand<string>(SelectedItemChanged);
 
         }
 
-
-
-
-        private void InitIpServidor()
+        private async void SelectedItemChanged(string selectedItem)
         {
-            IpServidor.Ip = _ip = SharedData.IpAddress;
-            IpServidor.Protocolo = SharedData.Protocolo;
+            SharedData.Protocolo = selectedItem;
         }
 
 
         private async Task SaveIpServidorAsync()
         {
-
             try
             {
-                string ip = IpServidor.Protocolo + IpServidor.Ip;
+                string ip = SharedData.Protocolo + SharedData.IpAddress;
 
                 var res = await Shell.Current.DisplayAlert("Nueva conexión", $"¿Está seguro que desea guardar la siguiente ip?:\n{ip}", "Aceptar", "Cancelar");
 
                 if (res)
                 {
-                    await _ipServidorRepo.SaveIpServidor(IpServidor);
+                    IpServidor ipServidor = new()
+                    {
+                        Protocolo = SharedData.Protocolo,
+                        Ip = SharedData.IpAddress
+                    };
+                    await _ipServidorRepo.SaveIpServidor(ipServidor);
+
                     _isSaved = true;
                 }
-
-                await Shell.Current.GoToAsync("..");
-
             }
             catch (Exception ex)
             {
@@ -96,7 +86,7 @@ namespace ControYaApp.ViewModels
                 return;
             }
 
-            if (string.IsNullOrEmpty(IpServidor.Ip))
+            if (string.IsNullOrEmpty(SharedData.IpAddress))
             {
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
                 if (res)
@@ -106,12 +96,13 @@ namespace ControYaApp.ViewModels
                 }
             }
 
-            if (_ip != IpServidor.Ip)
+            if (_ip != SharedData.IpAddress)
             {
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
                 if (res)
                 {
                     await Shell.Current.GoToAsync("..");
+                    return;
                 }
             }
             else
