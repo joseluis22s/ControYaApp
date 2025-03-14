@@ -59,9 +59,9 @@
         <CollectionView
             Grid.Row="2"
             IsGrouped="True"
-            ItemsSource="{Binding OrdenesProduccionGrouped}"
+            ItemsSource="{Binding OrdenesProduccionGroups}"
+            SelectedItem="{Binding OrdenProduccionPtSelected}"
             SelectionChangedCommand="{Binding NotificarPtCommand}"
-            SelectionChangedCommandParameter="{Binding}"
             SelectionMode="Single">
 
             <CollectionView.GroupHeaderTemplate>

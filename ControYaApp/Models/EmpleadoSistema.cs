@@ -7,7 +7,7 @@ namespace ControYaApp.Models
         [PrimaryKey]
         public string CodigoEmpleado { get; set; }
 
-        public string Empleado { get; set; }
+        public string NombreEmpleado { get; set; }
 
     }
 }

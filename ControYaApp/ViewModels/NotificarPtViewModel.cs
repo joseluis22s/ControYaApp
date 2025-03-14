@@ -54,11 +54,11 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private EmpleadoSistema? _empleado;
-        public EmpleadoSistema? Empleado
+        private EmpleadoSistema? _empleadoSelected;
+        public EmpleadoSistema? EmpleadoSelected
         {
-            get => _empleado;
-            set => SetProperty(ref _empleado, value);
+            get => _empleadoSelected;
+            set => SetProperty(ref _empleadoSelected, value);
         }
 
 
@@ -97,7 +97,7 @@ namespace ControYaApp.ViewModels
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _periodoRepo = periodoRepo;
 
-            _notificadoLimit = OrdenProduccionPt.Notificado;
+            //_notificadoLimit = OrdenProduccionPt.Notificado;
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
@@ -148,7 +148,7 @@ namespace ControYaApp.ViewModels
                 }
 
                 // TODO: Verificar si 'Empleado.CodigoEmpleado' es null.
-                var ptNotificado = MapPtNotificado(OrdenProduccionPt, Empleado.CodigoEmpleado, Serie);
+                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie);
 
                 await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
@@ -184,7 +184,7 @@ namespace ControYaApp.ViewModels
                 return false;
             }
 
-            if (string.IsNullOrEmpty(Empleado.Empleado))
+            if (string.IsNullOrEmpty(EmpleadoSelected.NombreEmpleado))
             {
                 await Toast.Make($"Debe elegir un empleado").Show();
                 return false;

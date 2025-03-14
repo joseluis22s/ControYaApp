@@ -78,19 +78,19 @@
                     </Border>
 
                     <Border Grid.Row="3" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Fecha" />
+                        <Label Style="{StaticResource Label_Text}" Text="Código usuario" />
                     </Border>
 
                     <Border Grid.Row="4" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Notificado" />
+                        <Label Style="{StaticResource Label_Text}" Text="Fecha" />
                     </Border>
 
                     <Border Grid.Row="5" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Código empleado" />
+                        <Label Style="{StaticResource Label_Text}" Text="Notificado" />
                     </Border>
 
                     <Border Grid.Row="6" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Código usuario" />
+                        <Label Style="{StaticResource Label_Text}" Text="Empleado" />
                     </Border>
 
                     <Border Grid.Row="7" Style="{StaticResource Border_Label}">
@@ -146,8 +146,9 @@
                         AccentColor="#0f2b57"
                         AllowClear="False"
                         BorderColor="Transparent"
+                        ItemDisplayBinding="{Binding NombreEmpleado}"
                         ItemsSource="{Binding Empleados}"
-                        SelectedItem="{Binding Empleado}" />
+                        SelectedItem="{Binding EmpleadoSelected}" />
 
                     <urui:TextField
                         Grid.Row="7"

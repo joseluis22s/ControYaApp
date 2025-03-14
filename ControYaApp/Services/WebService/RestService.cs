@@ -9,7 +9,7 @@ namespace ControYaApp.Services.WebService
 {
     public class RestService
     {
-        private string _protocol;
+        private string? _protocol;
 
         private string? _ipAddress;
 
@@ -45,8 +45,6 @@ namespace ControYaApp.Services.WebService
 
             SharedData = sharedData; // Debe ir primero, no mover.
 
-            _protocol = SharedData.Protocolo;
-            _ipAddress = SharedData.IpAddress;
 
             _jsonSerializerOptions = SettingJsonSerializerOptions();
         }
@@ -62,10 +60,15 @@ namespace ControYaApp.Services.WebService
             };
         }
 
+        private string GetIp()
+        {
+            return SharedData.Protocolo + SharedData.IpAddress;
+        }
+
 
         public async Task<Usuario> CheckUsuarioCredentialsAsync(Usuario usuarioReq)
         {
-            string uri = _protocol + _ipAddress + _loginUsuarioUri;
+            string uri = GetIp() + _loginUsuarioUri;
 
             usuarioReq.UsuarioSistema = "";
 
@@ -76,7 +79,7 @@ namespace ControYaApp.Services.WebService
 
                 var response = await _client.PostAsync(uri, content);
                 string resContent = await response.Content.ReadAsStringAsync();
-                var values = JsonSerializer.Deserialize<Dictionary<string, Usuario>>(resContent);
+                var values = JsonSerializer.Deserialize<Dictionary<string, Usuario>>(resContent, _jsonSerializerOptions);
 
                 if (values != null &&
                     values.TryGetValue("usuario", out Usuario? usuarioRes))
@@ -92,7 +95,7 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
         {
-            string uri = _protocol + _protocol + _ipAddress + _getAllUsuariosUri;
+            string uri = GetIp() + _getAllUsuariosUri;
 
             try
             {
@@ -121,11 +124,11 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionAsync(string codigoUsuarioAprobar)
         {
-            string uri = _protocol + _ipAddress + _getAllOrdenesProduccionUri;
+            string uri = GetIp() + _getAllOrdenesProduccionUri + $"?codigoUsuarioAprobar={codigoUsuarioAprobar}";
 
             try
             {
-                string json = JsonSerializer.Serialize(codigoUsuarioAprobar, _jsonSerializerOptions);
+                string json = JsonSerializer.Serialize("", _jsonSerializerOptions);
                 StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
 
@@ -151,7 +154,7 @@ namespace ControYaApp.Services.WebService
 
         public async Task<Periodos> GetRangosPeriodos()
         {
-            string uri = _protocol + _ipAddress + _getRangosPeriodosUri;
+            string uri = GetIp() + _getRangosPeriodosUri;
 
             Periodos periodos = new();
 
@@ -184,11 +187,11 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<OrdenProduccionPt>> GetAllOrdenesProduccionPtAsync(string codigoUsuarioAprobar)
         {
-            string uri = _protocol + _ipAddress + _getAllOrdenesProduccionPtUri;
+            string uri = GetIp() + _getAllOrdenesProduccionPtUri + $"?codigoUsuarioAprobar={codigoUsuarioAprobar}";
 
             try
             {
-                string json = JsonSerializer.Serialize(codigoUsuarioAprobar, _jsonSerializerOptions);
+                string json = JsonSerializer.Serialize("", _jsonSerializerOptions);
                 StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
 
@@ -214,11 +217,11 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionPmAsync(string codigoUsuarioAprobar)
         {
-            string uri = _protocol + _ipAddress + _getAllOrdenesProduccionMpUri;
+            string uri = GetIp() + _getAllOrdenesProduccionMpUri + $"?codigoUsuarioAprobar={codigoUsuarioAprobar}";
 
             try
             {
-                string json = JsonSerializer.Serialize(codigoUsuarioAprobar, _jsonSerializerOptions);
+                string json = JsonSerializer.Serialize("", _jsonSerializerOptions);
                 StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
 
@@ -244,7 +247,7 @@ namespace ControYaApp.Services.WebService
 
         public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleadosAsync()
         {
-            string uri = _protocol + _ipAddress + _getAllEmpleadosUri;
+            string uri = GetIp() + _getAllEmpleadosUri;
 
             try
             {
@@ -273,7 +276,7 @@ namespace ControYaApp.Services.WebService
 
         public async Task<bool> NotificarPtAsync(PtNotificado ptNotificado)
         {
-            string uri = _protocol + _ipAddress + _notificarPtUri;
+            string uri = GetIp() + _notificarPtUri;
 
             try
             {

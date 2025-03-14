@@ -71,6 +71,8 @@ namespace ControYaApp.ViewModels
 
         private async Task GoToHomeAsync()
         {
+            var loadingPopUpp = new LoadingPopUp();
+            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
             try
             {
                 var ip = await _ipServidorRepo.GetIpServidorAsync();
@@ -90,8 +92,6 @@ namespace ControYaApp.ViewModels
                     Contrasena = Contrasena
                 };
 
-                var loadingPopUpp = new LoadingPopUp();
-                _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
                 // TODO: Agregar que cuando no haya conexión, decir que se conecte en caso de que no se haya importado el usaurio.
 
@@ -106,11 +106,15 @@ namespace ControYaApp.ViewModels
                     var usuarioWs = await _restService.CheckUsuarioCredentialsAsync(usuario);
                     await ValidateNavigationToHome(usuarioWs, usuario);
                 }
-                await loadingPopUpp.CloseAsync();
+                //await loadingPopUpp.CloseAsync();
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
+            finally
+            {
+                await loadingPopUpp.CloseAsync();
             }
         }
 

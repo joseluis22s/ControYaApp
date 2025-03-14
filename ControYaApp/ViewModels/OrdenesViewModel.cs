@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
@@ -36,6 +37,14 @@ namespace ControYaApp.ViewModels
 
 
 
+        private OrdenProduccionPt _ordenProduccionPtSelected;
+        public OrdenProduccionPt OrdenProduccionPtSelected
+        {
+            get => _ordenProduccionPtSelected;
+            set => SetProperty(ref _ordenProduccionPtSelected, value);
+        }
+
+
         private ObservableCollection<OrdenProduccionGroup> _ordenesGrouped;
         public ObservableCollection<OrdenProduccionGroup> OrdenesProduccionGroups
         {
@@ -64,7 +73,7 @@ namespace ControYaApp.ViewModels
 
 
             ObtenerOrdenesCommand = new AsyncRelayCommand(ObtenerOrdenesAsync);
-            NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionPt>(NotificarPtAsync);
+            NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
 
 
             VaciarOrdenes();
@@ -120,10 +129,10 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                if (OrdenesProduccionGroups.Count != 0)
-                {
-
-                }
+                // TODO: verifcar si la list a de grupos est avacia para mostar emptyr view
+                //if (OrdenesProduccionGroups.Count != 0)
+                //{
+                //}
                 var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
 
                 if (ordenesProduccionDb.Count != 0)
@@ -133,12 +142,12 @@ namespace ControYaApp.ViewModels
                 }
                 else
                 {
-                    await Toast.Make("No se han encontrado datos").Show();
+                    await Toast.Make("No se han encontrado datos", ToastDuration.Long).Show();
                 }
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             finally
             {
@@ -147,18 +156,23 @@ namespace ControYaApp.ViewModels
 
         }
 
+        private void FilterData()
+        {
+            // https://stackoverflow.com/questions/77772127/filtering-data-for-collectionview-in-net-maui-mvvm-by-parameters-from-the-botto
+        }
 
-        public async Task NotificarPtAsync(OrdenProduccionPt ordenProduccionPt)
+
+        public async Task NotificarPtAsync()
         {
             try
             {
                 var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
 
-                empleados = empleados.Order().ToObservableCollection();
+                empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
                 var navParameter = new ShellNavigationQueryParameters
                 {
-                    { "ordenProduccionPt", ordenProduccionPt},
+                    { "ordenProduccionPt", OrdenProduccionPtSelected},
                     { "empleados", empleados}
                 };
                 await Shell.Current.GoToAsync("notificarPt", navParameter);

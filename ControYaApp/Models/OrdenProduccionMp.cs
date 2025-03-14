@@ -27,7 +27,7 @@ namespace ControYaApp.Models
 
         public decimal? Notificado { get; set; }
 
-        public string CodigoUsuario { get; set; }
+        public string CodigoUsuarioAprobar { get; set; }
 
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]
