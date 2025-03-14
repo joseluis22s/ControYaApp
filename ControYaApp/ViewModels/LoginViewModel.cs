@@ -106,7 +106,6 @@ namespace ControYaApp.ViewModels
                     var usuarioWs = await _restService.CheckUsuarioCredentialsAsync(usuario);
                     await ValidateNavigationToHome(usuarioWs, usuario);
                 }
-                //await loadingPopUpp.CloseAsync();
             }
             catch (Exception ex)
             {

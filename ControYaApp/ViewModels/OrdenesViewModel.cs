@@ -18,13 +18,22 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(OrdenProduccionPt), "ordenProduccionPt")]
     public partial class OrdenesViewModel : BaseViewModel
     {
-
+        enum OrdenesProduccionFilters
+        {
+            All,
+            Notified,
+            Pending
+        }
         public ISharedData SharedData { get; set; }
+
+
+        private ObservableCollection<OrdenProduccionGroup> _allOrdenesGrouped;
 
 
         public OrdenProduccionPt OrdenProduccionPt { get; set; }
 
         public bool EsNotificado { get; set; }
+
 
 
 
@@ -52,13 +61,20 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _ordenesGrouped, value);
         }
 
+        private bool _ordenesGroupLoaded;
+        public bool OrdenesGroupLoaded
+        {
+            get => _ordenesGroupLoaded;
+            set => SetProperty(ref _ordenesGroupLoaded, value);
+        }
+
 
 
         public ICommand ObtenerOrdenesCommand { get; }
 
         public ICommand NotificarPtCommand { get; }
 
-
+        public ICommand FilterOrdenesCommand { get; }
 
 
         public OrdenesViewModel(RestService restService, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData)
@@ -74,7 +90,7 @@ namespace ControYaApp.ViewModels
 
             ObtenerOrdenesCommand = new AsyncRelayCommand(ObtenerOrdenesAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
-
+            FilterOrdenesCommand = new RelayCommand(() => FilterOrdenes(_allOrdenesGrouped));
 
             VaciarOrdenes();
         }
@@ -113,6 +129,14 @@ namespace ControYaApp.ViewModels
                             oppt.CodigoMaterial == OrdenProduccionPt.CodigoMaterial
                         ).Notificado = notificadoValue;
 
+                    _allOrdenesGrouped.FirstOrDefault(opg =>
+                            opg.OrdenProduccion.Centro == OrdenProduccionPt.Centro &&
+                            opg.OrdenProduccion.CodigoProduccion == OrdenProduccionPt.CodigoProduccion &&
+                            opg.OrdenProduccion.Orden == OrdenProduccionPt.Orden
+                        ).FirstOrDefault(oppt =>
+                            oppt.CodigoProducto == OrdenProduccionPt.CodigoProducto &&
+                            oppt.CodigoMaterial == OrdenProduccionPt.CodigoMaterial
+                        ).Notificado = notificadoValue;
                 }
             }
             catch (Exception)
@@ -129,16 +153,14 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                // TODO: verifcar si la list a de grupos est avacia para mostar emptyr view
-                //if (OrdenesProduccionGroups.Count != 0)
-                //{
-                //}
                 var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
 
                 if (ordenesProduccionDb.Count != 0)
                 {
                     var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
-                    OrdenesProduccionGroups = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
+                    _allOrdenesGrouped = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
+                    OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, _allOrdenesGrouped);
+                    OrdenesGroupLoaded = true;
                 }
                 else
                 {
@@ -156,9 +178,38 @@ namespace ControYaApp.ViewModels
 
         }
 
-        private void FilterData()
+        private async Task FilterOrdenes(ObservableCollection<OrdenProduccionGroup> allOrdenesGrouped)
         {
-            // https://stackoverflow.com/questions/77772127/filtering-data-for-collectionview-in-net-maui-mvvm-by-parameters-from-the-botto
+            OrdenesProduccionGroups.Clear();
+            string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes", "Notificadas");
+            if (action == "Pendientes")
+            {
+                OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, allOrdenesGrouped);
+                return;
+            }
+            if (action == "Notificadas")
+            {
+                OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Notified, allOrdenesGrouped);
+                return;
+            }
+            OrdenesProduccionGroups = allOrdenesGrouped;
+        }
+
+        private ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
+        {
+            if (OrdenesProduccionFilters.Notified == filter)
+            {
+                return ordenesProduccionGroups
+                    .Where(opg => opg.All(oppt => oppt.Notificado == 0)).ToObservableCollection();
+
+            }
+            if (OrdenesProduccionFilters.Pending == filter)
+            {
+                return ordenesProduccionGroups
+                    .Where(opg => opg.All(oppt => oppt.Saldo != 0)).ToObservableCollection(); ;
+            }
+
+            return ordenesProduccionGroups;
         }
 
 
@@ -166,9 +217,15 @@ namespace ControYaApp.ViewModels
         {
             try
             {
+                if (OrdenProduccionPtSelected.Saldo == 0)
+                {
+                    await Toast.Make("Esta orden no tiene saldo para notificar", ToastDuration.Long).Show();
+                    return;
+                }
                 var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
 
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
+
 
                 var navParameter = new ShellNavigationQueryParameters
                 {
@@ -224,8 +281,6 @@ namespace ControYaApp.ViewModels
                 await Shell.Current.GoToAsync("//login");
             }
         }
-
-
 
 
     }

@@ -6,6 +6,7 @@
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:v="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:NotificarPtViewModel"
     HideSoftInputOnTapped="True"
@@ -44,9 +45,10 @@
                 VerticalOptions="Start" />
 
             <Label
+                x:Name="Label_Saldo"
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
-                Text="{Binding OrdenProduccionPt.Saldo, StringFormat='Saldo: {0}'}" />
+                Text="{Binding Saldo, StringFormat='Saldo para notificar = {0}'}" />
 
         </Grid>
 
@@ -121,7 +123,6 @@
                         Style="{StaticResource TextField_Disabled}"
                         Text="{Binding OrdenProduccionPt.CodigoUsuarioAprobar}" />
 
-
                     <urui:DatePickerField
                         Grid.Row="4"
                         Grid.Column="1"
@@ -138,7 +139,7 @@
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Keyboard="Numeric"
-                        Text="{Binding OrdenProduccionPt.Notificado}" />
+                        Text="{Binding Notificado}" />
 
                     <urui:PickerField
                         Grid.Row="6"
@@ -171,14 +172,14 @@
                 CornerRadius="3"
                 FontAttributes="Bold"
                 Text="Notificar" />
-            <Button
+            <!--<Button
                 Grid.Column="1"
                 BackgroundColor="#779bba"
                 Command="{Binding GenerarPdfCommand}"
                 CommandParameter="{Binding}"
                 CornerRadius="3"
                 ImageSource="{FontImageSource FontFamily=MaterialSharp,
-                                              Glyph={x:Static m:MaterialRounded.Picture_as_pdf}}" />
+                                              Glyph={x:Static m:MaterialRounded.Picture_as_pdf}}" />-->
         </Grid>
 
     </Grid>

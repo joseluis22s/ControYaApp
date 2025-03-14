@@ -49,7 +49,8 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
             mauiAppBuilder.Services.AddTransient<NotificarPtViewModel>();
             mauiAppBuilder.Services.AddTransient<ConfigViewModel>();
-            mauiAppBuilder.Services.AddTransient<HomeViewModel>();
+            //mauiAppBuilder.Services.AddTransient<HomeViewModel>();
+            mauiAppBuilder.Services.AddSingleton<HomeViewModel>();
 
 
             mauiAppBuilder.Services.AddSingleton<NotificarPtPdfViewModel>();
@@ -65,7 +66,8 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<OrdenesPage>();
             mauiAppBuilder.Services.AddTransient<NotificarPtPage>();
             mauiAppBuilder.Services.AddTransient<ConfigPage>();
-            mauiAppBuilder.Services.AddTransient<HomePage>();
+            //mauiAppBuilder.Services.AddTransient<HomePage>();
+            mauiAppBuilder.Services.AddSingleton<HomePage>();
             mauiAppBuilder.Services.AddTransient<NotificarPtPdfPage>();
 
             return mauiAppBuilder;

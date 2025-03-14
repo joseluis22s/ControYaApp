@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace ControYaApp.Services.SharedData
 {
@@ -13,5 +14,7 @@ namespace ControYaApp.Services.SharedData
         string? Protocolo { get; set; }
 
         bool NotificarPtAuto { get; set; }
+
+        ObservableCollection<OrdenProduccionGroup> OrdenesProduccionGroup { get; set; }
     }
 }

@@ -48,13 +48,27 @@
 
         </HorizontalStackLayout>
 
-        <Button
-            Grid.Row="1"
-            Command="{Binding ObtenerOrdenesCommand}"
-            FontAttributes="Bold"
-            FontSize="Body"
-            MaximumWidthRequest="200"
-            Text="Obtener ordenes" />
+        <Grid Grid.Row="1" ColumnDefinitions="*,auto">
+
+            <Button
+                Command="{Binding ObtenerOrdenesCommand}"
+                FontAttributes="Bold"
+                FontSize="Body"
+                MaximumWidthRequest="200"
+                Text="Obtener ordenes" />
+            <Button
+                Grid.Column="1"
+                Padding="5"
+                BackgroundColor="#779bba"
+                Command="{Binding FilterOrdenesCommand}"
+                FontAttributes="Bold"
+                FontSize="Body"
+                ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                              Glyph={x:Static m:MaterialSharp.Filter_list},
+                                              Color=#ffffff}"
+                IsVisible="{Binding OrdenesGroupLoaded}"
+                MaximumWidthRequest="200" />
+        </Grid>
 
         <CollectionView
             Grid.Row="2"
@@ -560,9 +574,9 @@
 
     </ContentPage.Resources>
 
-    <ContentPage.BackgroundColor>
+    <!--<ContentPage.BackgroundColor>
         <Color>#8db3d6</Color>
-    </ContentPage.BackgroundColor>
+    </ContentPage.BackgroundColor>-->
 
 
 </ContentPage>

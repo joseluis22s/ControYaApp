@@ -13,6 +13,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(Empleados), "empleados")]
     public class NotificarPtViewModel : BaseViewModel
     {
+
         private PdfService _pdfService;
 
         private readonly PeriodoRepo _periodoRepo;
@@ -25,9 +26,34 @@ namespace ControYaApp.ViewModels
 
 
 
-        private readonly decimal? _notificadoLimit;
 
         private bool _isNotified;
+
+
+
+        private decimal? _cantidad;
+        public decimal? Cantidad
+        {
+            get => _cantidad;
+            set => SetProperty(ref _cantidad, value);
+        }
+
+
+        private decimal? _notificado;
+        public decimal? Notificado
+        {
+            get => _notificado;
+            set
+            {
+                if (SetProperty(ref _notificado, value))
+                {
+                    OnPropertyChanged(nameof(Saldo));
+                }
+            }
+        }
+
+
+        public decimal? Saldo => Cantidad - Notificado;
 
 
         private DateTime _fechaActual = DateTime.Now;
@@ -74,7 +100,12 @@ namespace ControYaApp.ViewModels
         public OrdenProduccionPt? OrdenProduccionPt
         {
             get => _ordenProduccionPt;
-            set => SetProperty(ref _ordenProduccionPt, value);
+            set
+            {
+                SetProperty(ref _ordenProduccionPt, value);
+                Cantidad = _ordenProduccionPt?.Saldo;
+                Notificado = _ordenProduccionPt?.Saldo;
+            }
         }
 
 
@@ -96,8 +127,6 @@ namespace ControYaApp.ViewModels
             _ptNotificadoRepo = ptNotificadoRepo;
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _periodoRepo = periodoRepo;
-
-            //_notificadoLimit = OrdenProduccionPt.Notificado;
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
@@ -147,7 +176,6 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                // TODO: Verificar si 'Empleado.CodigoEmpleado' es null.
                 var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie);
 
                 await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
@@ -155,6 +183,15 @@ namespace ControYaApp.ViewModels
                 await _ptNotificadoRepo.SaveOrUpdatePtNotificadoAsync(ptNotificado);
 
                 _isNotified = true;
+
+                var res = await Shell.Current.DisplayAlert($"Se ha notificado la cantidad {Notificado}", "¿Desea generar un pdf?", "Aceptar", "Salir");
+                if (res)
+                {
+                    await GenerarPdf();
+                    return;
+                }
+                await GoBackAsync();
+                return;
 
             }
             catch (Exception ex)
@@ -172,11 +209,11 @@ namespace ControYaApp.ViewModels
                 return false;
             }
 
-            if (OrdenProduccionPt.Notificado > OrdenProduccionPt.Saldo)
-            {
-                await Toast.Make("Valor de notificado mayor al límite").Show();
-                return false;
-            }
+            //if (OrdenProduccionPt.Notificado > OrdenProduccionPt.Saldo)
+            //{
+            //    await Toast.Make("Valor de notificado mayor al límite").Show();
+            //    return false;
+            //}
 
             if (OrdenProduccionPt.Notificado <= 0)
             {
@@ -198,6 +235,8 @@ namespace ControYaApp.ViewModels
             return true;
         }
 
+        // TODO: No modificar si el pdf se elimina con DisplayAlert.
+        //       Si es con boton, habilitar el boton.
         private async Task GenerarPdf()
         {
             try
