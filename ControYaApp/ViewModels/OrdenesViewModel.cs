@@ -3,14 +3,13 @@ using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
-using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -18,18 +17,13 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(OrdenProduccionPt), "ordenProduccionPt")]
     public partial class OrdenesViewModel : BaseViewModel
     {
-        enum OrdenesProduccionFilters
-        {
-            All,
-            Notified,
-            Pending
-        }
         public ISharedData SharedData { get; set; }
 
 
         private ObservableCollection<OrdenProduccionGroup> _allOrdenesGrouped;
 
 
+        private OrdenProduccionFilter OrdenProduccionFilter { get; }
         public OrdenProduccionPt OrdenProduccionPt { get; set; }
 
         public bool EsNotificado { get; set; }
@@ -65,7 +59,20 @@ namespace ControYaApp.ViewModels
         public bool OrdenesGroupLoaded
         {
             get => _ordenesGroupLoaded;
-            set => SetProperty(ref _ordenesGroupLoaded, value);
+            set
+            {
+                if (SetProperty(ref _ordenesGroupLoaded, value))
+                {
+                    OrdenesGroupIsNull = !value;
+                }
+            }
+        }
+
+        private bool _ordenesGroupIsNull;
+        public bool OrdenesGroupIsNull
+        {
+            get => _ordenesGroupIsNull;
+            set => SetProperty(ref _ordenesGroupIsNull, value);
         }
 
 
@@ -87,15 +94,23 @@ namespace ControYaApp.ViewModels
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _empleadosRepo = empleadosRepo;
 
+            InitData();
 
-            ObtenerOrdenesCommand = new AsyncRelayCommand(ObtenerOrdenesAsync);
+            ObtenerOrdenesCommand = new AsyncRelayCommand(GetOrdenesProduccionAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             FilterOrdenesCommand = new RelayCommand(() => FilterOrdenes(_allOrdenesGrouped));
 
             VaciarOrdenes();
         }
 
-
+        private void InitData()
+        {
+            OrdenesProduccionGroups = SharedData.AllOrdenesProduccionGroups;
+            if (OrdenesProduccionGroups.Count != 0)
+            {
+                OrdenesGroupLoaded = true;
+            }
+        }
 
 
         private void VaciarOrdenes()
@@ -129,7 +144,7 @@ namespace ControYaApp.ViewModels
                             oppt.CodigoMaterial == OrdenProduccionPt.CodigoMaterial
                         ).Notificado = notificadoValue;
 
-                    _allOrdenesGrouped.FirstOrDefault(opg =>
+                    SharedData.AllOrdenesProduccionGroups.FirstOrDefault(opg =>
                             opg.OrdenProduccion.Centro == OrdenProduccionPt.Centro &&
                             opg.OrdenProduccion.CodigoProduccion == OrdenProduccionPt.CodigoProduccion &&
                             opg.OrdenProduccion.Orden == OrdenProduccionPt.Orden
@@ -139,78 +154,81 @@ namespace ControYaApp.ViewModels
                         ).Notificado = notificadoValue;
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-
-        public async Task ObtenerOrdenesAsync()
-        {
-            var loadingPopUpp = new LoadingPopUp();
-            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
-
-            try
-            {
-                var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
-
-                if (ordenesProduccionDb.Count != 0)
-                {
-                    var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
-                    _allOrdenesGrouped = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
-                    OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, _allOrdenesGrouped);
-                    OrdenesGroupLoaded = true;
-                }
-                else
-                {
-                    await Toast.Make("No se han encontrado datos", ToastDuration.Long).Show();
-                }
-            }
             catch (Exception ex)
             {
                 await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
-            finally
-            {
-                await loadingPopUpp.CloseAsync();
-            }
+        }
+
+
+        public async Task GetOrdenesProduccionAsync()
+        {
+
+            //var loadingPopUpp = new LoadingPopUp();
+            //_ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+            //try
+            //{
+            //    var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
+
+            //    if (ordenesProduccionDb.Count != 0)
+            //    {
+            //        var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
+            //        _allOrdenesGrouped = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
+            //        OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, _allOrdenesGrouped);
+            //        OrdenesGroupLoaded = true;
+            //    }
+            //    else
+            //    {
+            //        await Toast.Make("No se han encontrado datos", ToastDuration.Long).Show();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            //}
+            //finally
+            //{
+            //    await loadingPopUpp.CloseAsync();
+            //}
 
         }
 
         private async Task FilterOrdenes(ObservableCollection<OrdenProduccionGroup> allOrdenesGrouped)
         {
             OrdenesProduccionGroups.Clear();
+
+
             string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes", "Notificadas");
             if (action == "Pendientes")
             {
-                OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, allOrdenesGrouped);
+                OrdenesProduccionGroups = OrdenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesGrouped);
                 return;
             }
             if (action == "Notificadas")
             {
-                OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Notified, allOrdenesGrouped);
+                OrdenesProduccionGroups = OrdenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Notified, allOrdenesGrouped);
                 return;
             }
             OrdenesProduccionGroups = allOrdenesGrouped;
         }
 
-        private ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
-        {
-            if (OrdenesProduccionFilters.Notified == filter)
-            {
-                return ordenesProduccionGroups
-                    .Where(opg => opg.All(oppt => oppt.Notificado == 0)).ToObservableCollection();
+        //private ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
+        //{
+        //    if (OrdenesProduccionFilters.Notified == filter)
+        //    {
+        //        return ordenesProduccionGroups
+        //            .Where(opg => opg.All(oppt => oppt.Notificado == 0)).ToObservableCollection();
 
-            }
-            if (OrdenesProduccionFilters.Pending == filter)
-            {
-                return ordenesProduccionGroups
-                    .Where(opg => opg.All(oppt => oppt.Saldo != 0)).ToObservableCollection(); ;
-            }
+        //    }
+        //    if (OrdenesProduccionFilters.Pending == filter)
+        //    {
+        //        return ordenesProduccionGroups
+        //            .Where(opg => opg.All(oppt => oppt.Saldo != 0)).ToObservableCollection(); ;
+        //    }
 
-            return ordenesProduccionGroups;
-        }
+        //    return ordenesProduccionGroups;
+        //}
 
 
         public async Task NotificarPtAsync()

@@ -58,6 +58,13 @@ namespace ControYaApp.ViewModels
             GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
             GoToConfigCommand = new AsyncRelayCommand(GoToConfigAsync);
 
+            // TODO: Eliminar el siguiente objeto.
+            var mockUsuario = new Usuario
+            {
+                NombreUsuario = SharedData.NombreUsuario = "jadame",
+                Contrasena = Contrasena = "admin123"
+            };
+            // TODO: Fin eliminar objeto.
         }
 
 
@@ -73,6 +80,7 @@ namespace ControYaApp.ViewModels
         {
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
             try
             {
                 var ip = await _ipServidorRepo.GetIpServidorAsync();
@@ -82,8 +90,8 @@ namespace ControYaApp.ViewModels
                     if (res)
                     {
                         await Shell.Current.GoToAsync("config");
-                        return;
                     }
+                    return;
                 }
 
                 var usuario = new Usuario

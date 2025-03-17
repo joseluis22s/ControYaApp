@@ -338,6 +338,21 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
+            <CollectionView.EmptyView>
+                <DataTemplate>
+                    <Grid HorizontalOptions="Center" VerticalOptions="Center">
+                        <Grid IsVisible="{Binding OrdenesGroupLoaded}">
+                            <ActivityIndicator IsRunning="{Binding OrdenesGroupLoaded}" Color="#0f2b57" />
+                            <Label Text="Cargando..." />
+                        </Grid>
+                        <Grid IsVisible="{Binding OrdenesGroupIsNull}">
+                            <Label Text="No se han sincronizado ordenes" />
+                        </Grid>
+                    </Grid>
+
+                </DataTemplate>
+            </CollectionView.EmptyView>
+
         </CollectionView>
 
         <!--<CollectionView

@@ -1,5 +1,10 @@
-﻿using CommunityToolkit.Maui.Core;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Core.Extensions;
+using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 
 namespace ControYaApp.ViewModels
@@ -8,6 +13,7 @@ namespace ControYaApp.ViewModels
     {
         private readonly OrdenProduccionRepo _ordenProduccionRepo;
         private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
+        private OrdenProduccionFilter OrdenProduccionFilter { get; set; }
 
         public ISharedData SharedData { get; set; }
 
@@ -20,9 +26,14 @@ namespace ControYaApp.ViewModels
 
             _ordenProduccionRepo = ordenProduccionRepo;
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
+
+            InitData();
         }
 
-
+        private async void InitData()
+        {
+            SharedData.AllOrdenesProduccionGroups = await GetAllOrdenesProduccionAsync();
+        }
 
 
         internal async Task BackButtonPressed()
@@ -34,35 +45,80 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        public async Task ObtenerOrdenesAsync()
+        public async Task<ObservableCollection<OrdenProduccionGroup>> GetAllOrdenesProduccionAsync()
         {
             try
             {
                 var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
 
-                if (ordenesProduccionDb.Count != 0)
+                if (ordenesProduccionDb.Count == 0)
                 {
-                    var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
-                    _allOrdenesGrouped = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
-                    OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, _allOrdenesGrouped);
-                    OrdenesGroupLoaded = true;
+                    await Toast.Make("No se han encontrado ordenes de producción", ToastDuration.Long).Show();
+                    return [];
                 }
                 else
                 {
-                    await Toast.Make("No se han encontrado datos", ToastDuration.Long).Show();
+                    var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
+                    var allOrdenesProduccionGroups = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
+                    var a = FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesProduccionGroups);
+                    return a;
                 }
             }
             catch (Exception ex)
             {
                 await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
-            finally
-            {
-                await loadingPopUpp.CloseAsync();
-            }
-
+            return [];
         }
 
+        private ObservableCollection<OrdenProduccionGroup> MapOrdenesProduccionGrouped(ObservableCollection<OrdenProduccion> ordenesPrd, ObservableCollection<OrdenProduccionPt> ordenesProducciondPt)
+        {
+            var ordenProducciondPtDic = ordenesProducciondPt
+                .GroupBy(d => new
+                {
+                    d.Centro,
+                    d.CodigoProduccion,
+                    d.Orden
+                }
+                ).ToDictionary(g => g.Key, g => g.ToList());
+
+
+            var ordenesProduccionGrouped = ordenesPrd
+                .Select(ordenProduccion =>
+                {
+                    var key = new
+                    {
+                        ordenProduccion.Centro,
+                        ordenProduccion.CodigoProduccion,
+                        ordenProduccion.Orden
+                    };
+
+                    return new OrdenProduccionGroup(
+                        ordenProduccion,
+                        ordenProducciondPtDic.TryGetValue(key, out var ordenesProducciondPtGrouped) ? ordenesProducciondPtGrouped : new List<OrdenProduccionPt>()
+                    );
+                })
+                .ToList();
+
+            return new ObservableCollection<OrdenProduccionGroup>(ordenesProduccionGrouped);
+        }
+
+        public ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
+        {
+            if (OrdenProduccionFilter.OrdenesProduccionFilters.Notified == filter)
+            {
+                return ordenesProduccionGroups
+                    .Where(opg => opg.All(oppt => oppt.Notificado == 0)).ToObservableCollection();
+
+            }
+            if (OrdenProduccionFilter.OrdenesProduccionFilters.Pending == filter)
+            {
+                return ordenesProduccionGroups
+                    .Where(opg => opg.All(oppt => oppt.Saldo > 0)).ToObservableCollection(); ;
+            }
+
+            return ordenesProduccionGroups;
+        }
 
 
     }

@@ -6,6 +6,7 @@
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:urui2="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
     xmlns:v="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     x:DataType="viewModel:NotificarPtViewModel"
@@ -139,9 +140,11 @@
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Keyboard="Numeric"
-                        Text="{Binding Notificado}" />
+                        Text="{Binding Notificado}">
+                        <v:RequiredValidation />
+                    </urui:TextField>
 
-                    <urui:PickerField
+                    <!--<urui:PickerField
                         Grid.Row="6"
                         Grid.Column="1"
                         AccentColor="#0f2b57"
@@ -149,7 +152,21 @@
                         BorderColor="Transparent"
                         ItemDisplayBinding="{Binding NombreEmpleado}"
                         ItemsSource="{Binding Empleados}"
-                        SelectedItem="{Binding EmpleadoSelected}" />
+                        SelectedItem="{Binding EmpleadoSelected}" />-->
+                    <urui:InputField
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        AccentColor="#0f2b57"
+                        BorderColor="Transparent">
+                        <Picker
+                            ItemDisplayBinding="{Binding NombreEmpleado}"
+                            ItemsSource="{Binding Empleados}"
+                            SelectedItem="{Binding EmpleadoSelected}"
+                            VerticalOptions="Center" />
+                        <urui:InputField.Validations>
+                            <v:RequiredValidation />
+                        </urui:InputField.Validations>
+                    </urui:InputField>
 
                     <urui:TextField
                         Grid.Row="7"

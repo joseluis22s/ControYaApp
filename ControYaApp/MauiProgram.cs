@@ -30,7 +30,13 @@ namespace ControYaApp
                 }).UseMauiCommunityToolkit()
                 .RegisterAppServices()
                 .RegisterViews()
-                .RegisterViewModels();
+                .RegisterViewModels()
+                .ConfigureMauiHandlers(handlers =>
+                {
+#if ANDROID
+                    handlers.AddHandler(typeof(Picker), typeof(Platforms.Android.MyPickerHandler));
+#endif
+                });
 
 #if DEBUG
             builder.Logging.AddDebug();
@@ -89,6 +95,11 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<PdfService>();
 
             return mauiAppBuilder;
+        }
+
+        public static void ConfigureMauiHandlers()
+        {
+
         }
     }
 

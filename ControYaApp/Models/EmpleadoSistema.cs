@@ -8,6 +8,5 @@ namespace ControYaApp.Models
         public string CodigoEmpleado { get; set; }
 
         public string NombreEmpleado { get; set; }
-
     }
 }

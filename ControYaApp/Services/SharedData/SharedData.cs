@@ -1,4 +1,6 @@
-﻿using ControYaApp.ViewModels;
+﻿using System.Collections.ObjectModel;
+using ControYaApp.Models;
+using ControYaApp.ViewModels;
 
 namespace ControYaApp.Services.SharedData
 {
@@ -57,6 +59,8 @@ namespace ControYaApp.Services.SharedData
                 SetProperty(ref _notificarPtAuto, value);
             }
         }
+
+        public ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
 
     }
 }

@@ -176,7 +176,7 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie);
+                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado);
 
                 await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
@@ -221,7 +221,7 @@ namespace ControYaApp.ViewModels
                 return false;
             }
 
-            if (string.IsNullOrEmpty(EmpleadoSelected.NombreEmpleado))
+            if (EmpleadoSelected is null)
             {
                 await Toast.Make($"Debe elegir un empleado").Show();
                 return false;
@@ -250,7 +250,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serie)
+        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serie, decimal? notificado)
         {
             return new PtNotificado
             {
@@ -258,7 +258,7 @@ namespace ControYaApp.ViewModels
                 Orden = ordenProduccionPt.Orden,
                 CodigoMaterial = ordenProduccionPt.CodigoMaterial,
                 Fecha = FechaActual,
-                Notificado = ordenProduccionPt.Notificado,
+                Notificado = notificado,
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
                 Usuario = ordenProduccionPt.CodigoUsuarioAprobar

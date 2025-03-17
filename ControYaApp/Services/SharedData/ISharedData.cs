@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using ControYaApp.Models;
 
 namespace ControYaApp.Services.SharedData
 {
@@ -15,6 +16,6 @@ namespace ControYaApp.Services.SharedData
 
         bool NotificarPtAuto { get; set; }
 
-        ObservableCollection<OrdenProduccionGroup> OrdenesProduccionGroup { get; set; }
+        ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
     }
 }
