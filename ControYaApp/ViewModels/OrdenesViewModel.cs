@@ -23,7 +23,9 @@ namespace ControYaApp.ViewModels
         private ObservableCollection<OrdenProduccionGroup> _allOrdenesGrouped;
 
 
-        private OrdenProduccionFilter OrdenProduccionFilter { get; }
+
+        private OrdenProduccionFilter OrdenProduccionFilter { get; } = new();
+
         public OrdenProduccionPt OrdenProduccionPt { get; set; }
 
         public bool EsNotificado { get; set; }
@@ -38,6 +40,8 @@ namespace ControYaApp.ViewModels
 
         private readonly EmpleadosRepo _empleadosRepo;
 
+        private readonly AppShellViewModel _appShellViewModel;
+
 
 
         private OrdenProduccionPt _ordenProduccionPtSelected;
@@ -48,43 +52,43 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private ObservableCollection<OrdenProduccionGroup> _ordenesGrouped;
+        private ObservableCollection<OrdenProduccionGroup> _ordenesProduccionGroups;
         public ObservableCollection<OrdenProduccionGroup> OrdenesProduccionGroups
         {
-            get => _ordenesGrouped;
-            set => SetProperty(ref _ordenesGrouped, value);
+            get => _ordenesProduccionGroups;
+
+            set => SetProperty(ref _ordenesProduccionGroups, value);
         }
+
 
         private bool _ordenesGroupLoaded;
         public bool OrdenesGroupLoaded
         {
             get => _ordenesGroupLoaded;
-            set
-            {
-                if (SetProperty(ref _ordenesGroupLoaded, value))
-                {
-                    OrdenesGroupIsNull = !value;
-                }
-            }
+            set => SetProperty(ref _ordenesGroupLoaded, value);
         }
+
 
         private bool _ordenesGroupIsNull;
         public bool OrdenesGroupIsNull
         {
-            get => _ordenesGroupIsNull;
+            get => _ordenesGroupIsNull = !_ordenesGroupLoaded;
             set => SetProperty(ref _ordenesGroupIsNull, value);
         }
 
 
 
-        public ICommand ObtenerOrdenesCommand { get; }
+        public ICommand GetOrdenesCommand { get; }
 
         public ICommand NotificarPtCommand { get; }
 
         public ICommand FilterOrdenesCommand { get; }
 
+        public ICommand SincronizarOrdenesProduccionCommand { get; }
 
-        public OrdenesViewModel(RestService restService, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData)
+
+
+        public OrdenesViewModel(RestService restService, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData, AppShellViewModel appShellViewModel)
         {
 
             SharedData = sharedData;
@@ -93,24 +97,34 @@ namespace ControYaApp.ViewModels
             _ordenProduccionRepo = ordenProduccionRepo;
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _empleadosRepo = empleadosRepo;
+            _appShellViewModel = appShellViewModel;
 
             InitData();
 
-            ObtenerOrdenesCommand = new AsyncRelayCommand(GetOrdenesProduccionAsync);
+            GetOrdenesCommand = new AsyncRelayCommand(GetOrdenesProduccionAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
-            FilterOrdenesCommand = new RelayCommand(() => FilterOrdenes(_allOrdenesGrouped));
+            FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
+            SincronizarOrdenesProduccionCommand = _appShellViewModel.ExtraerDatosCommand;
 
             VaciarOrdenes();
         }
 
-        private void InitData()
+        private async void InitData()
         {
-            OrdenesProduccionGroups = SharedData.AllOrdenesProduccionGroups;
-            if (OrdenesProduccionGroups.Count != 0)
+            try
             {
-                OrdenesGroupLoaded = true;
+                if (SharedData.AllOrdenesProduccionGroups.Count != 0)
+                {
+                    OrdenesProduccionGroups = OrdenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, SharedData.AllOrdenesProduccionGroups);
+                    OrdenesGroupLoaded = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
             }
         }
+
 
 
         private void VaciarOrdenes()
@@ -163,7 +177,20 @@ namespace ControYaApp.ViewModels
 
         public async Task GetOrdenesProduccionAsync()
         {
-
+            try
+            {
+                if (SharedData.AllOrdenesProduccionGroups.Count == 0)
+                {
+                    await Toast.Make("No se han encontrado ordenes de producción").Show();
+                    return;
+                }
+                OrdenesProduccionGroups = SharedData.AllOrdenesProduccionGroups;
+                OrdenesGroupLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
+            }
             //var loadingPopUpp = new LoadingPopUp();
             //_ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
@@ -196,9 +223,6 @@ namespace ControYaApp.ViewModels
 
         private async Task FilterOrdenes(ObservableCollection<OrdenProduccionGroup> allOrdenesGrouped)
         {
-            OrdenesProduccionGroups.Clear();
-
-
             string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes", "Notificadas");
             if (action == "Pendientes")
             {

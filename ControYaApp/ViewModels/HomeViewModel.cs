@@ -59,9 +59,8 @@ namespace ControYaApp.ViewModels
                 else
                 {
                     var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
-                    var allOrdenesProduccionGroups = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
-                    var a = FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesProduccionGroups);
-                    return a;
+                    return MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
+                    //var a = FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesProduccionGroups);
                 }
             }
             catch (Exception ex)

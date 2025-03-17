@@ -51,11 +51,11 @@
         <Grid Grid.Row="1" ColumnDefinitions="*,auto">
 
             <Button
-                Command="{Binding ObtenerOrdenesCommand}"
+                Command="{Binding GetOrdenesCommand}"
                 FontAttributes="Bold"
                 FontSize="Body"
-                MaximumWidthRequest="200"
-                Text="Obtener ordenes" />
+                HorizontalOptions="Center"
+                Text="Cargar órdenes de producción" />
             <Button
                 Grid.Column="1"
                 Padding="5"
@@ -68,6 +68,7 @@
                                               Color=#ffffff}"
                 IsVisible="{Binding OrdenesGroupLoaded}"
                 MaximumWidthRequest="200" />
+
         </Grid>
 
         <CollectionView
@@ -339,18 +340,25 @@
             </CollectionView.ItemTemplate>
 
             <CollectionView.EmptyView>
-                <DataTemplate>
+                <ContentView>
                     <Grid HorizontalOptions="Center" VerticalOptions="Center">
-                        <Grid IsVisible="{Binding OrdenesGroupLoaded}">
+                        <Grid IsVisible="{Binding OrdenesGroupLoaded}" RowDefinitions="Auto,Auto">
                             <ActivityIndicator IsRunning="{Binding OrdenesGroupLoaded}" Color="#0f2b57" />
-                            <Label Text="Cargando..." />
+                            <Label Grid.Row="1" Text="Cargando..." />
                         </Grid>
-                        <Grid IsVisible="{Binding OrdenesGroupIsNull}">
+                        <Grid
+                            IsVisible="{Binding OrdenesGroupIsNull}"
+                            RowDefinitions="Auto,Auto"
+                            RowSpacing="10">
                             <Label Text="No se han sincronizado ordenes" />
+                            <Button
+                                Grid.Row="1"
+                                Command="{Binding SincronizarOrdenesProduccionCommand}"
+                                HorizontalOptions="Center"
+                                Text="Sincronizar ordenes" />
                         </Grid>
                     </Grid>
-
-                </DataTemplate>
+                </ContentView>
             </CollectionView.EmptyView>
 
         </CollectionView>
