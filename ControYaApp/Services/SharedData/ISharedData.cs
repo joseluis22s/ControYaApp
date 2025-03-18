@@ -17,5 +17,6 @@ namespace ControYaApp.Services.SharedData
         bool NotificarPtAuto { get; set; }
 
         ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
+
     }
 }

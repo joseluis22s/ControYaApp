@@ -62,21 +62,45 @@
         </VerticalStackLayout>
 
         <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0">
-            <Button
-                Padding="50,0"
-                BackgroundColor="#ffffff"
-                CornerRadius="3"
-                FontSize="17"
-                HorizontalOptions="Center"
-                Shadow="{Shadow Opacity=0.18,
-                                Offset='0,10'}"
-                Text="# ordenes pendientes"
-                TextColor="#0f2b57" />
+            <VerticalStackLayout IsVisible="{Binding OrdenesGroupIsNull}">
+
+                <Label
+                    FontSize="18"
+                    Text="No se han sincronizado órdenes"
+                    TextColor="#0f2b57" />
+                <Button
+                    Padding="50,0"
+                    Command="{Binding SincronizarOrdenesProduccionCommand}"
+                    CornerRadius="3"
+                    FontSize="17"
+                    HorizontalOptions="Center"
+                    Shadow="{Shadow Opacity=0.18,
+                                    Offset='0,10'}"
+                    Text="Sincronizar órdenes" />
+
+            </VerticalStackLayout>
+            <VerticalStackLayout IsVisible="{Binding OrdenesGroupLoaded}">
+
+                <Label
+                    FontSize="18"
+                    Text="{Binding PendingOrdenesProdCount, StringFormat='{0} orden/es pendiente/s'}"
+                    TextColor="#0f2b57" />
+                <Button
+                    Padding="50,0"
+                    Command="{Binding GoToOrdenesCommand}"
+                    CornerRadius="3"
+                    FontSize="17"
+                    HorizontalOptions="Center"
+                    Shadow="{Shadow Opacity=0.18,
+                                    Offset='0,10'}"
+                    Text="Ir" />
+
+            </VerticalStackLayout>
         </VerticalStackLayout>
     </Grid>
 
-    <ContentPage.BackgroundColor>
+    <!--<ContentPage.BackgroundColor>
         <Color>#8db3d6</Color>
-    </ContentPage.BackgroundColor>
+    </ContentPage.BackgroundColor>-->
 
 </ContentPage>
