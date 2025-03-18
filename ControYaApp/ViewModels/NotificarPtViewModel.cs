@@ -52,8 +52,20 @@ namespace ControYaApp.ViewModels
             }
         }
 
+        private decimal? _saldo;
+        public decimal? Saldo
+        {
+            get => _saldo;
+            set
+            {
+                if (SetProperty(ref _saldo, value))
+                {
+                    OnPropertyChanged(nameof(Saldo));
+                }
+            }
+        }
 
-        public decimal? Saldo => Cantidad - Notificado;
+
 
 
         private DateTime _fechaActual = DateTime.Now;
@@ -103,8 +115,7 @@ namespace ControYaApp.ViewModels
             set
             {
                 SetProperty(ref _ordenProduccionPt, value);
-                Cantidad = _ordenProduccionPt?.Saldo;
-                Notificado = _ordenProduccionPt?.Saldo;
+                Saldo = Notificado = Cantidad = _ordenProduccionPt?.Saldo;
             }
         }
 
@@ -134,8 +145,6 @@ namespace ControYaApp.ViewModels
 
             InitializeRangoPeriodosAsync();
         }
-
-
 
 
         private async void InitializeRangoPeriodosAsync()
@@ -176,7 +185,7 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado);
+                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Convert.ToDecimal(Notificado));
 
                 await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
@@ -203,9 +212,9 @@ namespace ControYaApp.ViewModels
 
         private async Task<bool> ValidarNotificacionPt()
         {
-            if (OrdenProduccionPt.Saldo == 0)
+            if (Saldo < 0)
             {
-                await Toast.Make("No se puede notificar más").Show();
+                await Toast.Make("Saldo agotado").Show();
                 return false;
             }
 
@@ -214,10 +223,15 @@ namespace ControYaApp.ViewModels
             //    await Toast.Make("Valor de notificado mayor al límite").Show();
             //    return false;
             //}
-
-            if (OrdenProduccionPt.Notificado <= 0)
+            if (Convert.ToDecimal(Notificado) > Cantidad)
             {
-                await Toast.Make("Valor de notificado no válido").Show();
+                await Toast.Make("Valor a notificar excede el límite").Show();
+                return false;
+            }
+
+            if (Convert.ToDecimal(Notificado) <= 0)
+            {
+                await Toast.Make("Valor a notificar no válido").Show();
                 return false;
             }
 

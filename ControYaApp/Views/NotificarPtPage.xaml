@@ -49,7 +49,7 @@
                 x:Name="Label_Saldo"
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
-                Text="{Binding Saldo, StringFormat='Saldo para notificar = {0}'}" />
+                Text="{Binding Saldo, StringFormat='Saldo = {0}'}" />
 
         </Grid>
 
@@ -237,7 +237,6 @@
                 <Setter Property="LineBreakMode" Value="CharacterWrap" />
                 <Setter Property="TextColor" Value="#0f2b57" />
             </Style>
-
 
         </ResourceDictionary>
     </ContentPage.Resources>

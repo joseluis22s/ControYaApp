@@ -9,4 +9,5 @@ public partial class NotificarPtPage : ContentPage
         InitializeComponent();
         BindingContext = vm;
     }
+
 }

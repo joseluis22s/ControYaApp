@@ -30,7 +30,7 @@ namespace ControYaApp.ViewModels
             InitData();
         }
 
-        private async void InitData()
+        public async void InitData()
         {
             SharedData.AllOrdenesProduccionGroups = await GetAllOrdenesProduccionAsync();
         }
@@ -45,7 +45,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccionGroup>> GetAllOrdenesProduccionAsync()
+        private async Task<ObservableCollection<OrdenProduccionGroup>> GetAllOrdenesProduccionAsync()
         {
             try
             {

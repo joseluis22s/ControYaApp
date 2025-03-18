@@ -42,6 +42,8 @@ namespace ControYaApp.ViewModels
 
         private readonly AppShellViewModel _appShellViewModel;
 
+        private readonly HomeViewModel _homeViewModel;
+
 
 
         private OrdenProduccionPt _ordenProduccionPtSelected;
@@ -88,7 +90,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public OrdenesViewModel(RestService restService, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData, AppShellViewModel appShellViewModel)
+        public OrdenesViewModel(RestService restService, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel)
         {
 
             SharedData = sharedData;
@@ -98,13 +100,14 @@ namespace ControYaApp.ViewModels
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _empleadosRepo = empleadosRepo;
             _appShellViewModel = appShellViewModel;
+            _homeViewModel = homeViewModel;
 
             InitData();
 
             GetOrdenesCommand = new AsyncRelayCommand(GetOrdenesProduccionAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
-            SincronizarOrdenesProduccionCommand = _appShellViewModel.ExtraerDatosCommand;
+            SincronizarOrdenesProduccionCommand = new RelayCommand(SincronizarOrdenesProduccion);
 
             VaciarOrdenes();
         }
@@ -123,6 +126,20 @@ namespace ControYaApp.ViewModels
             {
                 await Toast.Make(ex.Message).Show();
             }
+        }
+
+        private void SincronizarOrdenesProduccion()
+        {
+            _appShellViewModel.ExtraerDatosCommand.Execute(null);
+            _homeViewModel.InitData();
+            if (SharedData.AllOrdenesProduccionGroups.Count != 0)
+            {
+                OrdenesGroupLoaded = true;
+                return;
+            }
+            OrdenesGroupLoaded = false;
+            return;
+
         }
 
 
