@@ -185,8 +185,8 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Convert.ToDecimal(Notificado));
-
+                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado);
+                OrdenProduccionPt.Notificado = ptNotificado.Notificado;
                 await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
                 await _ptNotificadoRepo.SaveOrUpdatePtNotificadoAsync(ptNotificado);
@@ -197,6 +197,7 @@ namespace ControYaApp.ViewModels
                 if (res)
                 {
                     await GenerarPdf();
+                    // TODO: Poenr un go back aqui.
                     return;
                 }
                 await GoBackAsync();
@@ -272,7 +273,7 @@ namespace ControYaApp.ViewModels
                 Orden = ordenProduccionPt.Orden,
                 CodigoMaterial = ordenProduccionPt.CodigoMaterial,
                 Fecha = FechaActual,
-                Notificado = notificado,
+                Notificado = ordenProduccionPt.Notificado + notificado,
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
                 Usuario = ordenProduccionPt.CodigoUsuarioAprobar

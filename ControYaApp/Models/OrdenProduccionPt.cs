@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using ControYaApp.ViewModels;
 using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class OrdenProduccionPt
+    public class OrdenProduccionPt : BaseViewModel
     {
 
         [JsonIgnore]
@@ -30,7 +31,19 @@ namespace ControYaApp.Models
 
         public float Cantidad { get; set; }
 
-        public decimal? Notificado { get; set; }
+        private decimal? _notificado;
+        public decimal? Notificado
+        {
+            get => _notificado;
+            set
+            {
+                if (SetProperty(ref _notificado, value))
+                {
+                    OnPropertyChanged(nameof(Saldo));
+
+                }
+            }
+        }
 
         public string CodigoUsuarioAprobar { get; set; }
     }

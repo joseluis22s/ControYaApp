@@ -34,9 +34,10 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
+
             <Button
                 Grid.Column="1"
-                Padding="0"
+                Padding="5,0"
                 BackgroundColor="Transparent"
                 Command="{Binding GoBackCommand}"
                 CornerRadius="50"
@@ -144,15 +145,6 @@
                         <v:RequiredValidation />
                     </urui:TextField>
 
-                    <!--<urui:PickerField
-                        Grid.Row="6"
-                        Grid.Column="1"
-                        AccentColor="#0f2b57"
-                        AllowClear="False"
-                        BorderColor="Transparent"
-                        ItemDisplayBinding="{Binding NombreEmpleado}"
-                        ItemsSource="{Binding Empleados}"
-                        SelectedItem="{Binding EmpleadoSelected}" />-->
                     <urui:InputField
                         Grid.Row="6"
                         Grid.Column="1"
@@ -174,6 +166,7 @@
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Text="{Binding Serie}" />
+                    
                 </Grid>
 
             </ScrollView>

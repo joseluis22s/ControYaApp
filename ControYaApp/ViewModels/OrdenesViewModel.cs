@@ -254,23 +254,6 @@ namespace ControYaApp.ViewModels
             OrdenesProduccionGroups = allOrdenesGrouped;
         }
 
-        //private ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
-        //{
-        //    if (OrdenesProduccionFilters.Notified == filter)
-        //    {
-        //        return ordenesProduccionGroups
-        //            .Where(opg => opg.All(oppt => oppt.Notificado == 0)).ToObservableCollection();
-
-        //    }
-        //    if (OrdenesProduccionFilters.Pending == filter)
-        //    {
-        //        return ordenesProduccionGroups
-        //            .Where(opg => opg.All(oppt => oppt.Saldo != 0)).ToObservableCollection(); ;
-        //    }
-
-        //    return ordenesProduccionGroups;
-        //}
-
 
         public async Task NotificarPtAsync()
         {
@@ -291,7 +274,9 @@ namespace ControYaApp.ViewModels
                     { "ordenProduccionPt", OrdenProduccionPtSelected},
                     { "empleados", empleados}
                 };
+
                 await Shell.Current.GoToAsync("notificarPt", navParameter);
+                OrdenProduccionPtSelected = null;
             }
             catch (Exception ex)
             {
