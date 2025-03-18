@@ -166,7 +166,7 @@
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Text="{Binding Serie}" />
-                    
+
                 </Grid>
 
             </ScrollView>

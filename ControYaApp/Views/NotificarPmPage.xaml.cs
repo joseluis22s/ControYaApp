@@ -1,9 +1,12 @@
+using ControYaApp.ViewModels;
+
 namespace ControYaApp.Views;
 
 public partial class NotificarPmPage : ContentPage
 {
-	public NotificarPmPage()
-	{
-		InitializeComponent();
-	}
+    public NotificarPmPage(NotificarPmViewModel vm)
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
 }
