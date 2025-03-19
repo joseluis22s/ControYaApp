@@ -1,9 +1,14 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
+using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -35,9 +40,7 @@ namespace ControYaApp.ViewModels
 
         public ICommand FlyoutShellCommand { get; }
 
-
-
-
+        public ICommand ExtraerDatosCommand { get; }
 
         public AppShellViewModel(IpServidorRepo ipServidorRepo, RestService restService, LocalRepoService localRepoService, ISharedData sharedData)
         {
@@ -52,7 +55,7 @@ namespace ControYaApp.ViewModels
 
             GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
-
+            ExtraerDatosCommand = new AsyncRelayCommand(ExtraerDatosAsync);
         }
 
 
@@ -94,7 +97,49 @@ namespace ControYaApp.ViewModels
             }
         }
 
+        private async Task ExtraerDatosAsync()
+        {
 
+            var loadingPopUpp = new LoadingPopUp();
+            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+
+            try
+            {
+                WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
+
+
+                await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
+
+                var usuarios = await _restService.GetAllUsuariosAsync();
+                var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);
+                var rangoPeriodos = await _restService.GetRangosPeriodos();
+                var ordenesProduccionPt = await _restService.GetAllOrdenesProduccionPtAsync(SharedData.UsuarioSistema);
+                var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
+                var empleados = await _restService.GetAllEmpleadosAsync();
+
+
+                await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
+                await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
+                await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
+                await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
+                await _localRepoService.OrdenesProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
+                await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
+
+
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
+            finally
+            {
+                Shell.Current.FlyoutIsPresented = false;
+
+                await loadingPopUpp.CloseAsync();
+            }
+
+
+        }
 
 
 
