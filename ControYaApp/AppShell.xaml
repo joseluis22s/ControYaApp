@@ -71,14 +71,6 @@
             ColumnDefinitions="*,Auto"
             ColumnSpacing="5">
             <Button
-                Command="{Binding ExtraerDatosCommand}"
-                CornerRadius="3"
-                FontAttributes="Bold"
-                FontSize="16"
-                IsEnabled="{Binding IsConected}"
-                IsVisible="{Binding IsConected}"
-                Text="Extaer datos" />
-            <Button
                 Grid.Column="1"
                 Padding="10,0"
                 BackgroundColor="#cacccf"
