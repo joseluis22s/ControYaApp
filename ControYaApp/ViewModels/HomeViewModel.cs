@@ -160,7 +160,7 @@ namespace ControYaApp.ViewModels
 
                 if (ordenesProduccionDb.Count == 0)
                 {
-                    await Toast.Make("No se han encontrado ordenes de producción", ToastDuration.Long).Show();
+                    //await Toast.Make("No se han encontrado ordenes de producción", ToastDuration.Long).Show();
                     return [];
                 }
                 else

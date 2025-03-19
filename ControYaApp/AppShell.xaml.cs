@@ -16,6 +16,7 @@ namespace ControYaApp
             BindingContext = _vm = vm;
 
             Routing.RegisterRoute("notificarPt", typeof(NotificarPtPage));
+            Routing.RegisterRoute("notificarPm", typeof(NotificarPmPage));
             Routing.RegisterRoute("config", typeof(ConfigPage));
             Routing.RegisterRoute("notificarPtPdf", typeof(NotificarPtPdfPage));
         }

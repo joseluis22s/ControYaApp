@@ -17,8 +17,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<OrdenProduccionMp>();
         }
 
-        // Retorna TRUE si el usuario se guardó. FALSE si el usuario no se guardó.
-        public async Task SaveAllOrdenesProduccionPmAsync(ObservableCollection<OrdenProduccionMp> ordenesProduccionPm)
+        public async Task SaveAllOrdenesProduccionPmAsync(ObservableCollection<OrdenProduccionMp> ordenesProduccionMp)
         {
             try
             {
@@ -26,7 +25,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
                 await _database.DeleteAllAsync<OrdenProduccionMp>();
 
-                await _database.InsertAllAsync(ordenesProduccionPm);
+                await _database.InsertAllAsync(ordenesProduccionMp);
             }
             catch (Exception)
             {
@@ -34,20 +33,25 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
         }
 
-        public async Task<ObservableCollection<OrdenProduccionMp>> GetAllMaterialEgresado()
+        public async Task<ObservableCollection<OrdenProduccionMp>> GetOrdenesProduccionMpByOrdenProduccion(OrdenProduccion ordenProduccion)
         {
             try
             {
                 await InitAsync();
 
-                var materiales = await _database.Table<OrdenProduccionMp>().ToListAsync();
-                if (materiales.Count != 0)
+                var ordenesProduccionMp = await _database.Table<OrdenProduccionMp>()
+                    .Where(orMp =>
+                        orMp.Orden == ordenProduccion.Orden &&
+                        orMp.CodigoProduccion == ordenProduccion.CodigoProduccion
+                    ).ToListAsync();
+                if (ordenesProduccionMp.Count != 0)
                 {
-                    return new ObservableCollection<OrdenProduccionMp>(materiales);
+                    return new ObservableCollection<OrdenProduccionMp>(ordenesProduccionMp);
                 }
                 return [];
             }
             catch (Exception) { throw; }
+            return null;
         }
     }
 }

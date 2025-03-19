@@ -168,7 +168,8 @@
                             Grid.RowSpan="4"
                             Grid.Column="1"
                             Padding="11"
-                            CornerRadius="5"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPmCommand}"
+                            CornerRadius="5" CommandParameter="{Binding}"
                             HeightRequest="50"
                             HorizontalOptions="Center"
                             ImageSource="{FontImageSource FontFamily=MaterialSharp,

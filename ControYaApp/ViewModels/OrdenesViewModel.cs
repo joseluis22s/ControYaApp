@@ -20,25 +20,17 @@ namespace ControYaApp.ViewModels
         public ISharedData SharedData { get; set; }
 
 
-        private ObservableCollection<OrdenProduccionGroup> _allOrdenesGrouped;
-
-
-
         private OrdenProduccionFilter OrdenProduccionFilter { get; } = new();
 
         public OrdenProduccionPt OrdenProduccionPt { get; set; }
 
         public bool EsNotificado { get; set; }
 
-
-
-
-
-        private readonly OrdenProduccionRepo _ordenProduccionRepo;
-
         private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
 
         private readonly EmpleadosRepo _empleadosRepo;
+
+        private readonly OrdenProduccionMpRepo _ordenProduccionMpRepo;
 
         private readonly AppShellViewModel _appShellViewModel;
 
@@ -69,6 +61,7 @@ namespace ControYaApp.ViewModels
             get => _ordenesGroupLoaded;
             set => SetProperty(ref _ordenesGroupLoaded, value);
         }
+        public string Comer { get; set; }
 
 
         private bool _ordenesGroupIsNull;
@@ -88,17 +81,18 @@ namespace ControYaApp.ViewModels
 
         public ICommand SincronizarOrdenesProduccionCommand { get; }
 
+        public ICommand NotificarPmCommand { get; }
 
 
-        public OrdenesViewModel(RestService restService, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel)
+        public OrdenesViewModel(RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel, OrdenProduccionMpRepo ordenProduccionMpRepo)
         {
 
             SharedData = sharedData;
 
-
-            _ordenProduccionRepo = ordenProduccionRepo;
+            _ordenProduccionMpRepo = ordenProduccionMpRepo;
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _empleadosRepo = empleadosRepo;
+
             _appShellViewModel = appShellViewModel;
             _homeViewModel = homeViewModel;
 
@@ -108,8 +102,39 @@ namespace ControYaApp.ViewModels
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
             SincronizarOrdenesProduccionCommand = new RelayCommand(SincronizarOrdenesProduccion);
-
+            NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPm);
             VaciarOrdenes();
+        }
+
+
+        private async Task NotificarPm(OrdenProduccionGroup ordenProduccion)
+        {
+            try
+            {
+                var ordenesProduccionMpDb = await _ordenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
+                if (ordenesProduccionMpDb is null)
+                {
+                    await Toast.Make("Problemas al recuperar datos.", ToastDuration.Long).Show();
+                    return;
+                }
+                if (ordenesProduccionMpDb.Count == 0)
+                {
+                    await Toast.Make("Usuario sin materiales de producción asignados para esta orden de producción.", ToastDuration.Long).Show();
+                    return;
+                }
+
+                var ordenesProduccionMaterialGroup = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpDb);
+                var navParameter = new ShellNavigationQueryParameters
+                    {
+                        { "ordenesProdMpGrouped", ordenesProduccionMaterialGroup}
+                    };
+                await Shell.Current.GoToAsync("notificarPm", navParameter);
+
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message).Show();
+            }
         }
 
         private async void InitData()
@@ -128,6 +153,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
+
         private void SincronizarOrdenesProduccion()
         {
             _appShellViewModel.ExtraerDatosCommand.Execute(null);
@@ -141,7 +167,6 @@ namespace ControYaApp.ViewModels
             return;
 
         }
-
 
 
         private void VaciarOrdenes()
@@ -316,6 +341,29 @@ namespace ControYaApp.ViewModels
             return new ObservableCollection<OrdenProduccionGroup>(ordenesProduccionGrouped);
         }
 
+        private ObservableCollection<OrdenProduccionMaterialGroup> MapOrdenesProduccionMaterialGrouped(ObservableCollection<OrdenProduccionMp> ordenesProducciondMp)
+        {
+            // Agrupar los OrdenProduccionMp por CodigoProduccion, Orden, CodigoMaterial y Material
+            var grupos = ordenesProducciondMp
+                .GroupBy(mp => new
+                {
+                    mp.CodigoProduccion,
+                    mp.Orden,
+                    mp.CodigoMaterial,
+                    mp.Material
+                })
+                .Select(g => new OrdenProduccionMaterialGroup(
+                    g.Key.CodigoProduccion, // CodigoProduccion del grupo
+                    g.Key.Orden,           // Orden del grupo
+                    g.Key.CodigoMaterial,   // CodigoMaterial del grupo
+                    g.Key.Material,         // Material del grupo
+                    g.ToList()              // Lista de OrdenProduccionMp del grupo
+                ))
+                .ToList();
+
+            // Retornar la colección observable
+            return new ObservableCollection<OrdenProduccionMaterialGroup>(grupos);
+        }
 
         internal async Task BackButtonPressed()
         {

@@ -2,15 +2,20 @@
 {
     public class OrdenProduccionMaterialGroup : List<OrdenProduccionMp>
     {
-        public OrdenProduccion OrdenProduccion { get; private set; }
+        public string CodigoProduccion { get; set; }
+
+        public int Orden { get; set; }
 
         public string CodigoMaterial { get; set; }
 
         public string Material { get; set; }
 
-        public OrdenProduccionMaterialGroup(OrdenProduccion ordenProduccion, List<OrdenProduccionMp> ordenesProduccionMp) : base(ordenesProduccionMp)
+        public OrdenProduccionMaterialGroup(string codigoProduccion, int orden, string codigoMaterial, string material, List<OrdenProduccionMp> ordenesProduccionMp) : base(ordenesProduccionMp)
         {
-            OrdenProduccion = ordenProduccion;
+            CodigoProduccion = codigoProduccion;
+            Orden = orden;
+            CodigoMaterial = codigoMaterial;
+            Material = material;
         }
     }
 }
