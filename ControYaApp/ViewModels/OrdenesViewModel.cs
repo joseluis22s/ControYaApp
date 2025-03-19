@@ -265,6 +265,10 @@ namespace ControYaApp.ViewModels
 
         private async Task FilterOrdenes(ObservableCollection<OrdenProduccionGroup> allOrdenesGrouped)
         {
+            if (OrdenesProduccionGroups is not null)
+            {
+                OrdenesProduccionGroups.Clear();
+            }
             string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes", "Notificadas");
             if (action == "Pendientes")
             {

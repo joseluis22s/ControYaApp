@@ -73,7 +73,7 @@ namespace ControYaApp.ViewModels
 
                     _isSaved = true;
 
-                    await Toast.Make("Dirección IP guardada").Show();
+                    await Toast.Make("Configuración guardada").Show();
                     await Shell.Current.GoToAsync("..");
                 }
 

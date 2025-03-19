@@ -88,7 +88,7 @@
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="{Binding OrdenesProdCount, StringFormat='Tiene {0} orden/es. '}" />
-                            <Span Text="{Binding PendingOrdenesProdCount, StringFormat='{0} orden/es pendiente/s.'}" />
+                            <Span Text="{Binding PendingOrdenesProdCount, StringFormat='{0} orden/es para notificar pt pendiente/s.'}" />
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>

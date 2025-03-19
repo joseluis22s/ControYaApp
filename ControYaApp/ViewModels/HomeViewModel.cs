@@ -165,7 +165,7 @@ namespace ControYaApp.ViewModels
         {
             try
             {
-                var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
+                var ordenesProduccionDb = await _ordenProduccionRepo.GetAllOrdenesProduccionAsync();
 
                 if (ordenesProduccionDb.Count == 0)
                 {
@@ -182,39 +182,56 @@ namespace ControYaApp.ViewModels
             {
                 await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
-            return [];
+            return null;
         }
 
         private ObservableCollection<OrdenProduccionGroup> MapOrdenesProduccionGrouped(ObservableCollection<OrdenProduccion> ordenesPrd, ObservableCollection<OrdenProduccionPt> ordenesProducciondPt)
         {
-            var ordenProducciondPtDic = ordenesProducciondPt
-                .GroupBy(d => new
-                {
-                    d.Centro,
-                    d.CodigoProduccion,
-                    d.Orden
-                }
-                ).ToDictionary(g => g.Key, g => g.ToList());
+            var gruposPt = ordenesProducciondPt
+                .GroupBy(pt => (pt.Centro, pt.CodigoProduccion, pt.Orden))
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.AsEnumerable(),
+                    EqualityComparer<(string, string, int)>.Default);
+
+            return new ObservableCollection<OrdenProduccionGroup>(ordenesPrd.Select(orden =>
+                    new OrdenProduccionGroup
+                    (
+                        orden,
+                        gruposPt.TryGetValue((orden.Centro, orden.CodigoProduccion, orden.Orden), out var grupoPt)
+                            ? grupoPt.ToList()
+                            : new List<OrdenProduccionPt>()
+                    )
+                )
+            );
+            //var ordenProducciondPtDic = ordenesProducciondPt
+            //    .GroupBy(d => new
+            //    {
+            //        d.Centro,
+            //        d.CodigoProduccion,
+            //        d.Orden
+            //    }
+            //    ).ToDictionary(g => g.Key, g => g.ToList());
 
 
-            var ordenesProduccionGrouped = ordenesPrd
-                .Select(ordenProduccion =>
-                {
-                    var key = new
-                    {
-                        ordenProduccion.Centro,
-                        ordenProduccion.CodigoProduccion,
-                        ordenProduccion.Orden
-                    };
+            //var ordenesProduccionGrouped = ordenesPrd
+            //    .Select(ordenProduccion =>
+            //    {
+            //        var key = new
+            //        {
+            //            ordenProduccion.Centro,
+            //            ordenProduccion.CodigoProduccion,
+            //            ordenProduccion.Orden
+            //        };
 
-                    return new OrdenProduccionGroup(
-                        ordenProduccion,
-                        ordenProducciondPtDic.TryGetValue(key, out var ordenesProducciondPtGrouped) ? ordenesProducciondPtGrouped : new List<OrdenProduccionPt>()
-                    );
-                })
-                .ToList();
+            //        return new OrdenProduccionGroup(
+            //            ordenProduccion,
+            //            ordenProducciondPtDic.TryGetValue(key, out var ordenesProducciondPtGrouped) ? ordenesProducciondPtGrouped : new List<OrdenProduccionPt>()
+            //        );
+            //    })
+            //    .ToList();
 
-            return new ObservableCollection<OrdenProduccionGroup>(ordenesProduccionGrouped);
+            //return new ObservableCollection<OrdenProduccionGroup>(ordenesProduccionGrouped);
         }
 
         public ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
