@@ -3,7 +3,7 @@ using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
 {
-    public class PmNotificadoRepo
+    public class MpNotificadoRepo
     {
         private SQLiteAsyncConnection? _database;
 
@@ -40,5 +40,41 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
             catch (Exception) { throw; }
         }
+
+        public async Task AuthorizeAllMpNotificado()
+        {
+            try
+            {
+                await InitAsync();
+
+                // Actualiza todos los registros en una sola operación
+                await _database.ExecuteAsync(
+                    "UPDATE PmNotificado SET NotificacionAutorizada = ? WHERE NotificacionAutorizada = ?",
+                    true, false);
+            }
+            catch (Exception ex)
+            {
+                // Maneja otras excepciones
+                Console.WriteLine($"Error inesperado: {ex.Message}");
+                throw;
+            }
+        }
+
+        //public async Task AuthorizeAllMpNotificado()
+        //{
+        //    try
+        //    {
+        //        await InitAsync();
+        //        var mpNotificados = await _database.Table<PmNotificado>().Where(mp =>
+        //            mp.NotificacionAutorizada == false
+        //        ).ToListAsync();
+        //        foreach (var mpNotificado in mpNotificados)
+        //        {
+        //            mpNotificado.NotificacionAutorizada = true;
+        //            await _database.UpdateAsync(mpNotificado);
+        //        }
+        //    }
+        //    catch (Exception) { throw; }
+        //}
     }
 }

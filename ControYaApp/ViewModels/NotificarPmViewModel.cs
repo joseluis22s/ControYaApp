@@ -20,7 +20,7 @@ namespace ControYaApp.ViewModels
         private readonly OrdenProduccionMpRepo _ordenProduccionMpRepo;
 
 
-        private readonly PmNotificadoRepo _pmNotificadoRepo;
+        private readonly MpNotificadoRepo _pmNotificadoRepo;
 
         public ISharedData SharedData { get; set; }
 
@@ -82,7 +82,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, PmNotificadoRepo pmNotificadoRepo)
+        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo)
         {
             SharedData = sharedData;
 
@@ -97,7 +97,7 @@ namespace ControYaApp.ViewModels
 
         private readonly OrdenProduccionMpFilter _ordenProduccionMpFilter;
 
-        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, PmNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter)
+        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter)
         {
             SharedData = sharedData;
 
