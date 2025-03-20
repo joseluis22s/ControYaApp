@@ -2,7 +2,7 @@
 
 namespace ControYaApp.Models
 {
-    public class IpServidor
+    public class DataConfig
     {
         [PrimaryKey, AutoIncrement]
         public int? Id { get; set; }
@@ -10,5 +10,7 @@ namespace ControYaApp.Models
         public string? Protocolo { get; set; }
 
         public string? Ip { get; set; }
+
+        public bool AuthorizedNotification { get; set; }
     }
 }

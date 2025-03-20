@@ -19,7 +19,7 @@ namespace ControYaApp.ViewModels
 
         private readonly LocalRepoService _localRepoService;
 
-        private IpServidorRepo _ipServidorRepo;
+        private DataConfigRepo _dataConfigRepo;
 
 
 
@@ -42,14 +42,14 @@ namespace ControYaApp.ViewModels
 
         public ICommand ExtraerDatosCommand { get; }
 
-        public AppShellViewModel(IpServidorRepo ipServidorRepo, RestService restService, LocalRepoService localRepoService, ISharedData sharedData)
+        public AppShellViewModel(DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService, ISharedData sharedData)
         {
 
             SharedData = sharedData; //No mover.
 
             _restService = restService;
             _localRepoService = localRepoService;
-            _ipServidorRepo = ipServidorRepo;
+            _dataConfigRepo = dataConfigRepo;
 
             InitIpAddress();
 
@@ -62,16 +62,19 @@ namespace ControYaApp.ViewModels
 
         private async void InitIpAddress()
         {
-            var ip = await _ipServidorRepo.GetIpServidorAsync();
-            if (ip is null)
+            var dataConfig = await _dataConfigRepo.GetDataConfigAsync();
+            if (dataConfig is null)
             {
                 SharedData.IpAddress = "";
                 SharedData.Protocolo = "http://";
+                SharedData.AuthorizedNotification = false;
             }
             else
             {
-                SharedData.IpAddress = ip.Ip;
-                SharedData.Protocolo = ip.Protocolo;
+                SharedData.IpAddress = dataConfig.Ip;
+                SharedData.Protocolo = dataConfig.Protocolo;
+                SharedData.AuthorizedNotification = dataConfig.AuthorizedNotification;
+
             }
         }
 

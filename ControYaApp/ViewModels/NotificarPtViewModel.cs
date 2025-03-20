@@ -134,7 +134,7 @@ namespace ControYaApp.ViewModels
                                     OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo,
                                     PdfService pdfService, ISharedData sharedData)
         {
-
+            SharedData = sharedData;
             _pdfService = pdfService;
             _restService = restService;
             _ptNotificadoRepo = ptNotificadoRepo;

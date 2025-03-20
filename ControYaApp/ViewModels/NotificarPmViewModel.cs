@@ -124,7 +124,8 @@ namespace ControYaApp.ViewModels
             {
                 // Verifica si hay al menos un ítem seleccionado
                 int selectedItemsCount = OrdenesProduccionMaterialGroupSource
-                    .Count(opmg => opmg.Any(opm => opm.IsSelected == true));
+                .SelectMany(opmg => opmg.Where(opm => opm.IsSelected == true))
+                .ToList().Count;
 
                 if (selectedItemsCount == 0)
                 {

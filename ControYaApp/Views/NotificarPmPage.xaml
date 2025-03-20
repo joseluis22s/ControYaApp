@@ -176,6 +176,7 @@
                                     <Entry
                                         Grid.Row="1"
                                         HorizontalTextAlignment="Center"
+                                        Keyboard="Numeric"
                                         Text="{Binding Notificado}" />
                                     <Border
                                         Grid.Row="1"

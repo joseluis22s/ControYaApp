@@ -3,7 +3,7 @@ using SQLite;
 
 namespace ControYaApp.Services.LocalDatabase.Repositories
 {
-    public class IpServidorRepo
+    public class DataConfigRepo
     {
         private SQLiteAsyncConnection? _database;
 
@@ -13,38 +13,38 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<IpServidor>();
+            await _database.CreateTableAsync<DataConfig>();
         }
 
-        public async Task SaveIpServidor(IpServidor ip)
+        public async Task SaveIpServidor(DataConfig dataConfig)
         {
             try
             {
                 await InitAsync();
 
-                await _database.DeleteAllAsync<IpServidor>();
+                await _database.DeleteAllAsync<DataConfig>();
 
-                await _database.InsertAsync(ip);
+                await _database.InsertAsync(dataConfig);
             }
             catch (Exception) { throw; }
         }
 
 
-        public async Task<IpServidor?> GetIpServidorAsync()
+        public async Task<DataConfig?> GetDataConfigAsync()
         {
-            IpServidor ipServidor = new();
+            DataConfig dataConfig = new();
             try
             {
                 await InitAsync();
-                ipServidor = await _database.Table<IpServidor>().FirstOrDefaultAsync();
+                dataConfig = await _database.Table<DataConfig>().FirstOrDefaultAsync();
 
-                if (ipServidor is not null)
+                if (dataConfig is not null)
                 {
-                    return ipServidor;
+                    return dataConfig;
                 }
             }
             catch (Exception) { throw; }
-            return ipServidor;
+            return dataConfig;
         }
     }
 }

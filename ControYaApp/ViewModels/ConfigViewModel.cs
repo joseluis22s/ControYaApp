@@ -11,10 +11,10 @@ namespace ControYaApp.ViewModels
     {
         private bool _isSaved;
 
-        private IpServidor _ipServidorSave = new();
+        private DataConfig _dataConfigSave = new();
 
 
-        private readonly IpServidorRepo _ipServidorRepo;
+        private readonly DataConfigRepo _dataConfigRepo;
 
 
 
@@ -30,11 +30,11 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ConfigViewModel(IpServidorRepo ipServidorRepo, ISharedData sharedData)
+        public ConfigViewModel(DataConfigRepo dataConfigRepo, ISharedData sharedData)
         {
             SharedData = sharedData; //No mover.
 
-            _ipServidorRepo = ipServidorRepo;
+            _dataConfigRepo = dataConfigRepo;
 
             InitData();
 
@@ -46,13 +46,14 @@ namespace ControYaApp.ViewModels
 
         private void InitData()
         {
-            _ipServidorSave.Protocolo = SharedData.Protocolo;
-            _ipServidorSave.Ip = SharedData.IpAddress;
+            _dataConfigSave.Protocolo = SharedData.Protocolo;
+            _dataConfigSave.Ip = SharedData.IpAddress;
+            _dataConfigSave.AuthorizedNotification = SharedData.AuthorizedNotification;
         }
 
         private async void SelectedItemChanged(string selectedItem)
         {
-            _ipServidorSave.Protocolo = SharedData.Protocolo;
+            _dataConfigSave.Protocolo = SharedData.Protocolo;
             SharedData.Protocolo = selectedItem;
         }
 
@@ -67,9 +68,10 @@ namespace ControYaApp.ViewModels
 
                 if (res)
                 {
-                    _ipServidorSave.Protocolo = SharedData.Protocolo;
-                    _ipServidorSave.Ip = SharedData.IpAddress;
-                    await _ipServidorRepo.SaveIpServidor(_ipServidorSave);
+                    _dataConfigSave.Protocolo = SharedData.Protocolo;
+                    _dataConfigSave.Ip = SharedData.IpAddress;
+                    _dataConfigSave.AuthorizedNotification = SharedData.AuthorizedNotification;
+                    await _dataConfigRepo.SaveIpServidor(_dataConfigSave);
 
                     _isSaved = true;
 
@@ -98,20 +100,22 @@ namespace ControYaApp.ViewModels
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
                 if (res)
                 {
-                    SharedData.IpAddress = _ipServidorSave.Ip;
-                    SharedData.Protocolo = _ipServidorSave.Protocolo;
+                    SharedData.IpAddress = _dataConfigSave.Ip;
+                    SharedData.Protocolo = _dataConfigSave.Protocolo;
+                    SharedData.AuthorizedNotification = _dataConfigSave.AuthorizedNotification;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
             }
 
-            if (_ipServidorSave.Ip != SharedData.IpAddress)
+            if (_dataConfigSave.Ip != SharedData.IpAddress)
             {
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
                 if (res)
                 {
-                    SharedData.IpAddress = _ipServidorSave.Ip;
-                    SharedData.Protocolo = _ipServidorSave.Protocolo;
+                    SharedData.IpAddress = _dataConfigSave.Ip;
+                    SharedData.Protocolo = _dataConfigSave.Protocolo;
+                    SharedData.AuthorizedNotification = _dataConfigSave.AuthorizedNotification;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -121,8 +125,9 @@ namespace ControYaApp.ViewModels
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
                 if (res)
                 {
-                    SharedData.IpAddress = _ipServidorSave.Ip;
-                    SharedData.Protocolo = _ipServidorSave.Protocolo;
+                    SharedData.IpAddress = _dataConfigSave.Ip;
+                    SharedData.Protocolo = _dataConfigSave.Protocolo;
+                    SharedData.AuthorizedNotification = _dataConfigSave.AuthorizedNotification;
                     await Shell.Current.GoToAsync("..");
                 }
             }

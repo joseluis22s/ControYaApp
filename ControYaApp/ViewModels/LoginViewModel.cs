@@ -22,7 +22,7 @@ namespace ControYaApp.ViewModels
 
         private readonly UsuarioRepo _usuarioRepo;
 
-        private readonly IpServidorRepo _ipServidorRepo;
+        private readonly DataConfigRepo _dataConfigRepo;
 
 
 
@@ -44,7 +44,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService, IpServidorRepo ipServidorRepo, ISharedData sharedData)
+        public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService, DataConfigRepo dataConfigRepo, ISharedData sharedData)
         {
 
             SharedData = sharedData;
@@ -52,7 +52,7 @@ namespace ControYaApp.ViewModels
 
             _restService = restService;
             _usuarioRepo = usuarioRepo;
-            _ipServidorRepo = ipServidorRepo;
+            _dataConfigRepo = dataConfigRepo;
 
 
             GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
@@ -83,8 +83,8 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                var ip = await _ipServidorRepo.GetIpServidorAsync();
-                if (ip is null)
+                var dataConfig = await _dataConfigRepo.GetDataConfigAsync();
+                if (dataConfig is null)
                 {
                     var res = await Shell.Current.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
                     if (res)
