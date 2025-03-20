@@ -5,6 +5,17 @@ namespace ControYaApp.Models
 {
     public class OrdenProduccionMp
     {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [JsonIgnore]
+        [Ignore]
+        public decimal? Saldo => ((decimal)Cantidad) - Notificado;
+
+        [JsonIgnore]
+        [Ignore]
+        public bool IsSelected { get; set; }
+
         public string Centro { get; set; }
 
         public string CodigoProduccion { get; set; }
@@ -25,12 +36,12 @@ namespace ControYaApp.Models
 
         public float Cantidad { get; set; }
 
-        public decimal? Notificado { get; set; }
+        public decimal Notificado { get; set; }
 
         public string CodigoUsuarioAprobar { get; set; }
 
-        [JsonIgnore]
-        [PrimaryKey, AutoIncrement]
-        public int? Id { get; set; }
+
+
+
     }
 }

@@ -233,33 +233,6 @@ namespace ControYaApp.ViewModels
             {
                 await Toast.Make(ex.Message).Show();
             }
-            //var loadingPopUpp = new LoadingPopUp();
-            //_ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
-
-            //try
-            //{
-            //    var ordenesProduccionDb = await _ordenProduccionRepo.GetOrdenesProduccionByUsuarioSistema(SharedData.UsuarioSistema);
-
-            //    if (ordenesProduccionDb.Count != 0)
-            //    {
-            //        var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
-            //        _allOrdenesGrouped = MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
-            //        OrdenesProduccionGroups = FilteredOrdenesProduccionGroup(OrdenesProduccionFilters.Pending, _allOrdenesGrouped);
-            //        OrdenesGroupLoaded = true;
-            //    }
-            //    else
-            //    {
-            //        await Toast.Make("No se han encontrado datos", ToastDuration.Long).Show();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    await Toast.Make(ex.Message, ToastDuration.Long).Show();
-            //}
-            //finally
-            //{
-            //    await loadingPopUpp.CloseAsync();
-            //}
 
         }
 
@@ -361,7 +334,7 @@ namespace ControYaApp.ViewModels
                     g.Key.Orden,           // Orden del grupo
                     g.Key.CodigoMaterial,   // CodigoMaterial del grupo
                     g.Key.Material,         // Material del grupo
-                    g.ToList()              // Lista de OrdenProduccionMp del grupo
+                    g.ToObservableCollection()              // Lista de OrdenProduccionMp del grupo
                 ))
                 .ToList();
 

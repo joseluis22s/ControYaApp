@@ -3,6 +3,7 @@
     x:Class="ControYaApp.Views.NotificarPmPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:ControYaApp.Models"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
@@ -13,17 +14,21 @@
 
     <Grid
         Padding="15,25,15,15"
-        RowDefinitions="Auto,*,Auto"
+        RowDefinitions="Auto,*"
         RowSpacing="10">
 
         <Grid
             Padding="7,0,15,0"
-            ColumnDefinitions="Auto,Auto"
-            RowDefinitions="Auto,Auto,Auto">
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="10"
+            RowDefinitions="Auto,Auto,Auto"
+            RowSpacing="15">
 
             <Label
+                Padding="0,10,5,0"
                 FontAttributes="Bold"
-                FontSize="20"
+                FontSize="24"
+                HorizontalOptions="Center"
                 Text="Notificar material para producción"
                 TextColor="#0f2b57" />
 
@@ -40,17 +45,21 @@
                 TextColor="#0f2b57"
                 VerticalOptions="Start" />
 
-            <VerticalStackLayout Grid.Row="1">
+            <!--<VerticalStackLayout Grid.Row="1">
                 <Switch IsToggled="{Binding PorLote}" />
                 <Label Text="{Binding ModoNotificarText}" />
-            </VerticalStackLayout>
+            </VerticalStackLayout>-->
 
             <Button
-                Grid.Row="2"
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
                 Command="{Binding NotificarPmCommand}"
                 CornerRadius="3"
                 FontAttributes="Bold"
+                HorizontalOptions="Center"
                 Text="Notificar selección" />
+
+            <Label Grid.Row="2" Text="Binding Count, StringFormat='{0} item/s seleccionados.'}" />
 
 
         </Grid>
@@ -59,26 +68,41 @@
 
         <CollectionView
             Grid.Row="1"
+            Margin="0,0,0,10"
             IsGrouped="True"
-            SelectionMode="Multiple">
+            ItemsSource="{Binding OrdenesProduccionMaterialGroupSource}"
+            SelectionMode="None">
 
             <CollectionView.GroupHeaderTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="model:OrdenProduccionMaterialGroup">
 
-                    <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto">
+                    <Grid
+                        Padding="0,0,0,17"
+                        ColumnDefinitions="Auto,*"
+                        RowDefinitions="Auto,Auto,Auto">
 
-                        <Border BackgroundColor="Aquamarine">
+                        <BoxView
+                            Grid.ColumnSpan="2"
+                            Margin="0,0,0,15"
+                            CornerRadius="50"
+                            HeightRequest="1"
+                            Color="#0f2b57" />
+
+                        <Border Grid.Row="1" BackgroundColor="Aquamarine">
                             <Label FontAttributes="Bold" Text="{Binding Orden}" />
                         </Border>
-
-                        <Label Grid.Column="1" Text="{Binding Material}" />
-
-                        <Label Grid.Row="1" Text="{Binding CodigoMaterial}" />
 
                         <Label
                             Grid.Row="1"
                             Grid.Column="1"
-                            Text="{Binding CodigoProduccion}" />
+                            Text="{Binding Material}" />
+
+                        <Label Grid.Row="2" Text="{Binding CodigoMaterial, StringFormat='({0}) - '}" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Text="{Binding CodigoProduccion, StringFormat=' {0}'}" />
 
                     </Grid>
 
@@ -86,50 +110,65 @@
             </CollectionView.GroupHeaderTemplate>
 
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="model:OrdenProduccionMp">
 
                     <Border Margin="3,2">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                        <Grid
+                            ColumnDefinitions="2*,*,Auto"
+                            ColumnSpacing="10"
+                            RowDefinitions="Auto,Auto">
 
-                            <Label Text="{Binding Producto}" />
-
-                            <Label Grid.Row="1">
+                            <Label>
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="{Binding CodigoProducto}" />
-                                        <Span Text="{Binding CodigoBodega, StringFormat=' - ({0})'}" />
+                                        <Span Text="{Binding CodigoBodega, StringFormat='  -  ({0})  -'}" />
+                                        <Span Text="{Binding Producto, StringFormat='  {0}'}" />
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
 
-                            <Label Grid.Row="2">
+                            <Label Grid.Row="1">
                                 <Label.FormattedText>
                                     <FormattedString>
-                                        <Span Text="{Binding Cantidad, StringFormat='x{0}. und/s.'}" />
-                                        <Span Text="{Binding CodigoUnidad, StringFormat=' - {0}'}" />
+                                        <Span Text="{Binding Cantidad, StringFormat='x{0}'}" />
+                                        <Span Text="{Binding CodigoUnidad, StringFormat='  -  {0}'}" />
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
 
                             <Border
-                                Grid.Row="3"
+                                Grid.RowSpan="2"
+                                Grid.Column="1"
                                 BackgroundColor="Beige"
                                 Stroke="#0f2b57"
                                 StrokeShape="{RoundRectangle CornerRadius='7'}">
-                                <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto">
+                                <Grid
+                                    ColumnDefinitions="Auto,Auto"
+                                    ColumnSpacing="10"
+                                    RowDefinitions="Auto,Auto">
                                     <Label Text="Notificado" />
                                     <Label Grid.Column="1" Text="Saldo" />
                                     <Entry
                                         Grid.Row="1"
                                         Text="{Binding Notificado}"
                                         VerticalTextAlignment="End" />
-                                    <Label
+                                    <Border
                                         Grid.Row="1"
                                         Grid.Column="1"
-                                        Text="{Binding Saldo}" />
+                                        Background="Gold"
+                                        StrokeShape="{RoundRectangle CornerRadius='10'}">
+                                        <Label Text="{Binding Saldo}" VerticalOptions="Center" />
+                                    </Border>
                                 </Grid>
                             </Border>
 
+                            <CheckBox
+                                Grid.RowSpan="2"
+                                Grid.Column="2"
+                                HeightRequest="18"
+                                IsChecked="{Binding IsSelected}"
+                                VerticalOptions="Center" />
 
                         </Grid>
                     </Border>
@@ -139,7 +178,7 @@
 
         </CollectionView>
 
-        <Grid
+        <!--<Grid
             Grid.Row="2"
             ColumnDefinitions="2*,*"
             ColumnSpacing="10">
@@ -148,7 +187,7 @@
                 CornerRadius="3"
                 FontAttributes="Bold"
                 Text="Notificar" />
-        </Grid>
+        </Grid>-->
 
     </Grid>
 

@@ -50,13 +50,13 @@ namespace ControYaApp.Services.SharedData
         }
 
 
-        private bool _notificarPtAuto;
-        public bool NotificarPtAuto
+        private bool _authorizedNotification;
+        public bool AuthorizedNotification
         {
-            get => _notificarPtAuto;
+            get => _authorizedNotification;
             set
             {
-                SetProperty(ref _notificarPtAuto, value);
+                SetProperty(ref _authorizedNotification, value);
             }
         }
 

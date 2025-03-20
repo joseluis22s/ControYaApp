@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Pdf;
+using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 
 namespace ControYaApp.ViewModels
@@ -23,6 +24,9 @@ namespace ControYaApp.ViewModels
         private readonly PtNotificadoRepo _ptNotificadoRepo;
 
         private readonly RestService _restService;
+
+
+        public ISharedData SharedData { get; set; }
 
 
 
@@ -130,7 +134,8 @@ namespace ControYaApp.ViewModels
 
 
         public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
-                                    OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo, PdfService pdfService)
+                                    OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo,
+                                    PdfService pdfService, ISharedData sharedData)
         {
 
             _pdfService = pdfService;
@@ -175,6 +180,8 @@ namespace ControYaApp.ViewModels
             };
             await Shell.Current.GoToAsync("..", navParameter);
         }
+
+
 
         private async Task NotificarPtAsync()
         {
@@ -276,7 +283,8 @@ namespace ControYaApp.ViewModels
                 Notificado = ordenProduccionPt.Notificado + notificado,
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
-                Usuario = ordenProduccionPt.CodigoUsuarioAprobar
+                Usuario = ordenProduccionPt.CodigoUsuarioAprobar,
+                NotificacionAutorizada = SharedData.AuthorizedNotification
             };
         }
 

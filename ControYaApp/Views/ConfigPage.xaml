@@ -36,7 +36,7 @@
                     <Grid
                         ColumnDefinitions="*,2*"
                         ColumnSpacing="7"
-                        RowDefinitions="Auto,Auto"
+                        RowDefinitions="Auto,Auto,Auto"
                         RowSpacing="15">
 
                         <urui:DropdownField
@@ -60,6 +60,14 @@
                             <v:RequiredValidation Message="El campo no debe estar vacío." />
                             <myval:IpAdressValidation />
                         </urui:TextField>
+
+                        <HorizontalStackLayout
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            Spacing="10">
+                            <Label Text="Validar notificación" />
+                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.AuthorizedNotification}" />
+                        </HorizontalStackLayout>
 
                         <Button
                             Grid.Row="2"

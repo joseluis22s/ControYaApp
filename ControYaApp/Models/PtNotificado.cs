@@ -13,7 +13,7 @@ namespace ControYaApp.Models
         public bool Sincronizado { get; set; }
 
         [JsonIgnore]
-        public bool Autorizado { get; set; }
+        public bool NotificacionAutorizada { get; set; }
 
         public string CodigoProduccion { get; set; }
 

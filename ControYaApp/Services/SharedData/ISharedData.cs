@@ -14,7 +14,7 @@ namespace ControYaApp.Services.SharedData
 
         string? Protocolo { get; set; }
 
-        bool NotificarPtAuto { get; set; }
+        bool AuthorizedNotification { get; set; }
 
         ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
 

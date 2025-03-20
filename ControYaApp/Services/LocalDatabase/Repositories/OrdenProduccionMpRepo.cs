@@ -51,7 +51,18 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return [];
             }
             catch (Exception) { throw; }
-            return null;
+        }
+
+        public async Task UpdateNotificadoAsync(OrdenProduccionMp ordenProduccionMp)
+        {
+            try
+            {
+                await InitAsync();
+
+                // TODO: En caso de error, buscar con Any y el argumento pra obtener la pk
+                await _database.UpdateAsync(ordenProduccionMp);
+            }
+            catch (Exception) { throw; }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace ControYaApp.Models
         [Ignore]
         public decimal? Saldo => ((decimal)Cantidad) - Notificado;
 
+
         public string Centro { get; set; }
 
         public string CodigoProduccion { get; set; }
@@ -30,6 +31,7 @@ namespace ControYaApp.Models
         public string CodigoUnidad { get; set; }
 
         public float Cantidad { get; set; }
+
 
         private decimal? _notificado;
         public decimal? Notificado
