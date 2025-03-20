@@ -83,15 +83,16 @@
 
                 <Label
                     FontSize="18"
-                    Text="{Binding PendingOrdenesProdCount, StringFormat='{0} orden/es pendiente/s'}"
-                    TextColor="#0f2b57">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="{Binding OrdenesProdCount, StringFormat='Tiene {0} orden/es. '}" />
-                            <Span Text="{Binding PendingOrdenesProdCount, StringFormat='{0} orden/es para notificar pt pendiente/s.'}" />
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
+                    Text="{Binding OrdenesProdCount, StringFormat='Tiene {0} orden/es. \n'}"
+                    TextColor="#0f2b57" />
+                <Label
+                    FontSize="18"
+                    Text="{Binding PendingOrdenesProdCount, StringFormat='\t{0} orden/es para notificar PT pendiente/s.\n'}"
+                    TextColor="#0f2b57" />
+                <Label
+                    FontSize="18"
+                    Text="{Binding OrdenesProdMpCount, StringFormat='\t{0} orden/es para notificar MP pendiente/s.\n'}"
+                    TextColor="#0f2b57" />
                 <Button
                     Padding="50,0"
                     Command="{Binding GoToOrdenesCommand}"

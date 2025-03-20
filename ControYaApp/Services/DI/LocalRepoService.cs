@@ -7,7 +7,9 @@ namespace ControYaApp.Services.DI
         OrdenProduccionPtRepo ordenProduccionPtRepo,
         PeriodoRepo periodoRepo,
         OrdenProduccionRepo ordenesProduccionRepo,
-        UsuarioRepo usuarioRepo)
+        UsuarioRepo usuarioRepo,
+        PtNotificadoRepo ptNotificadoRepo,
+        MpNotificadoRepo mpNotificadoRepo)
     {
         public EmpleadosRepo EmpleadosRepo { get; } = empleadosRepo;
 
@@ -20,5 +22,9 @@ namespace ControYaApp.Services.DI
         public OrdenProduccionRepo OrdenesProduccionRepo { get; } = ordenesProduccionRepo;
 
         public UsuarioRepo UsuarioRepo { get; } = usuarioRepo;
+
+        public PtNotificadoRepo PtNotificadoRepo { get; } = ptNotificadoRepo;
+
+        public MpNotificadoRepo MpNotificadoRepo { get; } = mpNotificadoRepo;
     }
 }

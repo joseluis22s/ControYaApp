@@ -64,6 +64,13 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _ordenesProdCount, value);
         }
 
+        private int _ordenesProdMpCount;
+        public int OrdenesProdMpCount
+        {
+            get => _ordenesProdMpCount;
+            set => SetProperty(ref _ordenesProdMpCount, value);
+        }
+
 
 
         public ICommand SincronizarOrdenesProduccionCommand { get; }
@@ -146,6 +153,7 @@ namespace ControYaApp.ViewModels
                 PendingOrdenesProdCount = SharedData.AllOrdenesProduccionGroups
                     .SelectMany(opg => opg)
                     .Count(op => op.Saldo > 0);
+                OrdenesProdMpCount = await GetCountPendingOrdenesProduccionMpPAsync();
                 return;
             }
             OrdenesGroupLoaded = !(OrdenesGroupIsNull = true);
@@ -184,6 +192,20 @@ namespace ControYaApp.ViewModels
             }
             return null;
         }
+
+        private async Task<int> GetCountPendingOrdenesProduccionMpPAsync()
+        {
+            var ordenesProduccionMpDb = await _localRepoService.OrdenProduccionMpRepo.GetAllOrdenesProduccionPendingAsync();
+            if (ordenesProduccionMpDb.Count == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return ordenesProduccionMpDb.Count;
+            }
+        }
+
 
         private ObservableCollection<OrdenProduccionGroup> MapOrdenesProduccionGrouped(ObservableCollection<OrdenProduccion> ordenesPrd, ObservableCollection<OrdenProduccionPt> ordenesProducciondPt)
         {

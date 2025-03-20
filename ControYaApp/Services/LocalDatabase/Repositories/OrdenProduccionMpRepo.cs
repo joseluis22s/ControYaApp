@@ -53,6 +53,25 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
+        public async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionPendingAsync()
+        {
+            try
+            {
+                await InitAsync();
+
+                var ordenesProduccionMp = await _database.Table<OrdenProduccionMp>().Where(opMp =>
+                    opMp.Saldo > 0
+                ).ToListAsync();
+
+                if (ordenesProduccionMp.Count != 0)
+                {
+                    return new ObservableCollection<OrdenProduccionMp>(ordenesProduccionMp);
+                }
+                return [];
+            }
+            catch (Exception) { throw; }
+        }
+
         public async Task<int> UpdateAllNotificadoAsync(List<OrdenProduccionMp> ordenesProduccionMp)
         {
             try

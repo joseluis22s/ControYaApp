@@ -65,7 +65,7 @@
                             Grid.Row="1"
                             Grid.ColumnSpan="2"
                             Spacing="10">
-                            <Label Text="Validar notificación" />
+                            <Label Text="Notificación autorizada" />
                             <Switch HeightRequest="17" IsToggled="{Binding SharedData.AuthorizedNotification}" />
                         </HorizontalStackLayout>
 
