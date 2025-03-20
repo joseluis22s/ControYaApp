@@ -7,6 +7,7 @@
     xmlns:model="clr-namespace:ControYaApp.Models"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+    xmlns:v="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     Title="NotificarPmPage"
     x:DataType="viewModel:NotificarPmViewModel"
@@ -15,7 +16,7 @@
 
     <Grid
         Padding="15,25,15,15"
-        RowDefinitions="Auto,*"
+        RowDefinitions="Auto,Auto,*"
         RowSpacing="10">
 
         <Grid
@@ -83,10 +84,36 @@
 
         </Grid>
 
+        <Grid Grid.Row="1" ColumnDefinitions="*,*">
+
+            <urui:DatePickerField
+                Title="Fecha"
+                AccentColor="#0f2b57"
+                AllowClear="False"
+                BorderColor="Transparent"
+                Date="{Binding FechaActual}"
+                MaximumDate="{Binding RangoPeriodos.FechaMax}"
+                MinimumDate="{Binding RangoPeriodos.FechaMin}" />
+
+            <urui:InputField
+                Title="Empleado"
+                Grid.Column="1"
+                AccentColor="#0f2b57"
+                BorderColor="Transparent">
+                <Picker
+                    ItemDisplayBinding="{Binding NombreEmpleado}"
+                    ItemsSource="{Binding Empleados}"
+                    SelectedItem="{Binding EmpleadoSelected}"
+                    VerticalOptions="Center" />
+                <urui:InputField.Validations>
+                    <v:RequiredValidation />
+                </urui:InputField.Validations>
+            </urui:InputField>
+        </Grid>
 
 
         <CollectionView
-            Grid.Row="1"
+            Grid.Row="2"
             Margin="0,0,0,10"
             IsGrouped="True"
             ItemsSource="{Binding OrdenesProduccionMaterialGroupSource}"

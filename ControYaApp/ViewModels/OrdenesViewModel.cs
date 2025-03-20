@@ -27,6 +27,7 @@ namespace ControYaApp.ViewModels
         public bool EsNotificado { get; set; }
 
         private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
+        private readonly PeriodoRepo _periodoRepo;
 
         private readonly EmpleadosRepo _empleadosRepo;
 
@@ -35,6 +36,8 @@ namespace ControYaApp.ViewModels
         private readonly AppShellViewModel _appShellViewModel;
 
         private readonly HomeViewModel _homeViewModel;
+
+        public Periodos RangoPeriodos { get; set; }
 
 
 
@@ -86,7 +89,8 @@ namespace ControYaApp.ViewModels
 
         public OrdenesViewModel(RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
                                 ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel,
-                                OrdenProduccionMpRepo ordenProduccionMpRepo, OrdenProduccionFilter ordenProduccionFilter)
+                                OrdenProduccionMpRepo ordenProduccionMpRepo, OrdenProduccionFilter ordenProduccionFilter,
+                                PeriodoRepo periodoRepo)
         {
 
             SharedData = sharedData;
@@ -94,6 +98,7 @@ namespace ControYaApp.ViewModels
             _ordenProduccionMpRepo = ordenProduccionMpRepo;
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _empleadosRepo = empleadosRepo;
+            _periodoRepo = periodoRepo;
 
             _ordenProduccionFilter = ordenProduccionFilter;
 
@@ -128,9 +133,17 @@ namespace ControYaApp.ViewModels
                 }
 
                 var ordenesProduccionMaterialGroup = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpDb);
+
+                var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+                empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
+
+                var rangosPeriodos = await GetRangosPeriodosAsync();
+
                 var navParameter = new ShellNavigationQueryParameters
                     {
-                        { "ordenesProdMpGrouped", ordenesProduccionMaterialGroup}
+                        { "ordenesProdMpGrouped", ordenesProduccionMaterialGroup},
+                        { "empleados", empleados},
+                        { "rangosPeriodos", rangosPeriodos}
                     };
                 await Shell.Current.GoToAsync("notificarPm", navParameter);
 
@@ -274,7 +287,6 @@ namespace ControYaApp.ViewModels
 
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
-
                 var navParameter = new ShellNavigationQueryParameters
                 {
                     { "ordenProduccionPt", OrdenProduccionPtSelected},
@@ -344,6 +356,11 @@ namespace ControYaApp.ViewModels
 
             // Retornar la colección observable
             return new ObservableCollection<OrdenProduccionMaterialGroup>(grupos);
+        }
+
+        private async Task<Periodos> GetRangosPeriodosAsync()
+        {
+            return await _periodoRepo.GetRangosPeriodosAsync();
         }
 
         internal async Task BackButtonPressed()

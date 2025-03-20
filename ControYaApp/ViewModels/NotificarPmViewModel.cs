@@ -13,6 +13,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(OrdenesProduccionMaterialGroupSource), "ordenesProdMpGrouped")]
     [QueryProperty(nameof(OrdenesProduccionMaterialGroup), "ordenesProdMpGrouped")]
     [QueryProperty(nameof(Empleados), "empleados")]
+    [QueryProperty(nameof(RangoPeriodos), "rangosPeriodos")]
     public partial class NotificarPmViewModel : BaseViewModel
     {
 
@@ -62,6 +63,14 @@ namespace ControYaApp.ViewModels
         {
             get => _empleados;
             set => SetProperty(ref _empleados, value);
+        }
+
+
+        private Periodos _rangoPeriodos;
+        public Periodos RangoPeriodos
+        {
+            get => _rangoPeriodos;
+            set => SetProperty(ref _rangoPeriodos, value);
         }
 
 
