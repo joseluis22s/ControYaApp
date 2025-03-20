@@ -4,6 +4,8 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 
 namespace ControYaApp.ViewModels
@@ -14,10 +16,20 @@ namespace ControYaApp.ViewModels
     public partial class NotificarPmViewModel : BaseViewModel
     {
 
+        private readonly OrdenProduccionMpRepo _ordenProduccionMpRepo;
+
+
+        private readonly PmNotificadoRepo _pmNotificadoRepo;
+
         public ISharedData SharedData { get; set; }
 
 
 
+        //private ObservableCollection<OrdenProduccionMaterialGroup> _ordenesProduccionMaterialGroup;
+        //public ObservableCollection<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroup
+        //{
+        //    get => _ordenesProduccionMaterialGroup;
+        //    set => SetProperty(ref _ordenesProduccionMaterialGroup, value);
         public ObservableCollection<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroup { get; set; }
 
 
@@ -57,37 +69,90 @@ namespace ControYaApp.ViewModels
 
         public ICommand NotificarPmCommand { get; }
 
+        public ICommand FilterOrdenesProduccionMpCommand { get; }
 
 
 
-
-        public NotificarPmViewModel(ISharedData sharedData)
+        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, PmNotificadoRepo pmNotificadoRepo)
         {
             SharedData = sharedData;
+
+            _ordenProduccionMpRepo = ordenProduccionMpRepo;
+            _pmNotificadoRepo = pmNotificadoRepo;
+
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
+            FilterOrdenesProduccionMpCommand = new AsyncRelayCommand(() => FilterOrdenesProduccionMpAsync(OrdenesProduccionMaterialGroup));
+        }
+
+
+        private readonly OrdenProduccionMpFilter _ordenProduccionMpFilter;
+
+        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, PmNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter)
+        {
+            SharedData = sharedData;
+
+            _ordenProduccionMpRepo = ordenProduccionMpRepo;
+            _pmNotificadoRepo = pmNotificadoRepo;
+            _ordenProduccionMpFilter = ordenProduccionMpFilter;
+
+            GoBackCommand = new AsyncRelayCommand(GoBackAsync);
+            NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
+        }
+
+        private async Task FilterOrdenesProduccionMpAsync(ObservableCollection<OrdenProduccionMaterialGroup> allOrdenesMpGrouped)
+        {
+            if (OrdenesProduccionMaterialGroupSource is not null)
+            {
+                OrdenesProduccionMaterialGroupSource.Clear();
+            }
+            string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes");
+
+            if (action == "Pendientes")
+            {
+                OrdenesProduccionMaterialGroupSource = _ordenProduccionMpFilter.FilteredOrdenesProduccionMpGroup(OrdenProduccionMpFilter.OrdenesProduccionMpFilters.Pending, allOrdenesMpGrouped);
+                return;
+            }
+
+            OrdenesProduccionMaterialGroupSource = allOrdenesMpGrouped;
         }
 
 
         private async Task NotificarPm()
         {
-            // Verifica si hay al menos un ítem seleccionado
-            int selectedItemsCount = OrdenesProduccionMaterialGroupSource
-                .Count(opmg => opmg.Any(opm => opm.IsSelected == true));
-
-            if (selectedItemsCount == 0)
+            try
             {
-                await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
-                return;
+                // Verifica si hay al menos un ítem seleccionado
+                int selectedItemsCount = OrdenesProduccionMaterialGroupSource
+                    .Count(opmg => opmg.Any(opm => opm.IsSelected == true));
+
+                if (selectedItemsCount == 0)
+                {
+                    await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
+                    return;
+                }
+
+                // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
+                List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
+
+                var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AuthorizedNotification, FechaActual,
+                                                    EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
+
+                int updatedCount = await _ordenProduccionMpRepo.UpdateAllNotificadoAsync(selectedItemsSource);
+
+                int savedOrdUpdateCount = 0;
+                foreach (var pmNotificado in pmNotificados)
+                {
+                    savedOrdUpdateCount += await _pmNotificadoRepo.SaveOrUpdatePtNotificadoAsync(pmNotificado);
+                }
+
+                await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
+
             }
-
-            // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
-            List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
-
-            var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AuthorizedNotification, FechaActual,
-                                                EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
-
-
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
         }
 
         private List<OrdenProduccionMp> MapOrdenProduccionMpSelected(ObservableCollection<OrdenProduccionMaterialGroup> selectedItemsGroupsSource, ObservableCollection<OrdenProduccionMaterialGroup> selectedItemsGroups)

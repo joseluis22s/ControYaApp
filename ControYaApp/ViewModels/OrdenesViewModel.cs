@@ -20,7 +20,7 @@ namespace ControYaApp.ViewModels
         public ISharedData SharedData { get; set; }
 
 
-        private OrdenProduccionFilter OrdenProduccionFilter { get; } = new();
+        private OrdenProduccionFilter _ordenProduccionFilter;
 
         public OrdenProduccionPt OrdenProduccionPt { get; set; }
 
@@ -84,7 +84,9 @@ namespace ControYaApp.ViewModels
         public ICommand NotificarPmCommand { get; }
 
 
-        public OrdenesViewModel(RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo, ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel, OrdenProduccionMpRepo ordenProduccionMpRepo)
+        public OrdenesViewModel(RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
+                                ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel,
+                                OrdenProduccionMpRepo ordenProduccionMpRepo, OrdenProduccionFilter ordenProduccionFilter)
         {
 
             SharedData = sharedData;
@@ -92,6 +94,8 @@ namespace ControYaApp.ViewModels
             _ordenProduccionMpRepo = ordenProduccionMpRepo;
             _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _empleadosRepo = empleadosRepo;
+
+            _ordenProduccionFilter = ordenProduccionFilter;
 
             _appShellViewModel = appShellViewModel;
             _homeViewModel = homeViewModel;
@@ -133,7 +137,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 
@@ -143,7 +147,7 @@ namespace ControYaApp.ViewModels
             {
                 if (SharedData.AllOrdenesProduccionGroups.Count != 0)
                 {
-                    OrdenesProduccionGroups = OrdenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, SharedData.AllOrdenesProduccionGroups);
+                    OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, SharedData.AllOrdenesProduccionGroups);
                     OrdenesGroupLoaded = true;
                 }
             }
@@ -245,12 +249,12 @@ namespace ControYaApp.ViewModels
             string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes", "Notificadas");
             if (action == "Pendientes")
             {
-                OrdenesProduccionGroups = OrdenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesGrouped);
+                OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesGrouped);
                 return;
             }
             if (action == "Notificadas")
             {
-                OrdenesProduccionGroups = OrdenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Notified, allOrdenesGrouped);
+                OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Notified, allOrdenesGrouped);
                 return;
             }
             OrdenesProduccionGroups = allOrdenesGrouped;

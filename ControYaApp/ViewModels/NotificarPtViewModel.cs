@@ -62,14 +62,11 @@ namespace ControYaApp.ViewModels
             get => _saldo;
             set
             {
-                if (SetProperty(ref _saldo, value))
-                {
-                    OnPropertyChanged(nameof(Saldo));
-                }
+                SetProperty(ref _saldo, value);
             }
         }
 
-
+        //public decimal? Saldo => Cantidad - Notificado;
 
 
         private DateTime _fechaActual = DateTime.Now;

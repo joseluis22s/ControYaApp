@@ -3,6 +3,7 @@
     x:Class="ControYaApp.Views.NotificarPmPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:model="clr-namespace:ControYaApp.Models"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
@@ -50,14 +51,32 @@
                 <Label Text="{Binding ModoNotificarText}" />
             </VerticalStackLayout>-->
 
-            <Button
+            <Grid
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
-                Command="{Binding NotificarPmCommand}"
-                CornerRadius="3"
-                FontAttributes="Bold"
-                HorizontalOptions="Center"
-                Text="Notificar selección" />
+                ColumnDefinitions="*,Auto">
+
+                <Button
+                    Command="{Binding NotificarPmCommand}"
+                    CornerRadius="3"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    Text="Notificar selección" />
+
+                <Button
+                    Grid.Column="1"
+                    Padding="5"
+                    BackgroundColor="#779bba"
+                    Command="{Binding FilterOrdenesProduccionMpCommand}"
+                    CornerRadius="5"
+                    FontAttributes="Bold"
+                    FontSize="Body"
+                    ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                                  Glyph={x:Static m:MaterialSharp.Filter_list},
+                                                  Color=#ffffff}"
+                    IsVisible="{Binding OrdenesGroupLoaded}"
+                    MaximumWidthRequest="200" />
+            </Grid>
 
             <Label Grid.Row="2" Text="Binding Count, StringFormat='{0} item/s seleccionados.'}" />
 
@@ -89,7 +108,10 @@
                             Color="#0f2b57" />
 
                         <Border Grid.Row="1" BackgroundColor="Aquamarine">
-                            <Label FontAttributes="Bold" Text="{Binding Orden}" />
+                            <Label
+                                FontAttributes="Bold"
+                                HorizontalTextAlignment="Center"
+                                Text="{Binding Orden}" />
                         </Border>
 
                         <Label
@@ -114,9 +136,9 @@
 
                     <Border Margin="3,2">
                         <Grid
-                            ColumnDefinitions="2*,*,Auto"
+                            ColumnDefinitions="3*,1.5*,*"
                             ColumnSpacing="10"
-                            RowDefinitions="Auto,Auto">
+                            RowDefinitions="Auto,*">
 
                             <Label>
                                 <Label.FormattedText>
@@ -140,22 +162,25 @@
                             <Border
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
+                                Padding="0,5"
                                 BackgroundColor="Beige"
                                 Stroke="#0f2b57"
                                 StrokeShape="{RoundRectangle CornerRadius='7'}">
                                 <Grid
                                     ColumnDefinitions="Auto,Auto"
-                                    ColumnSpacing="10"
+                                    ColumnSpacing="15"
+                                    HorizontalOptions="Center"
                                     RowDefinitions="Auto,Auto">
                                     <Label Text="Notificado" />
                                     <Label Grid.Column="1" Text="Saldo" />
                                     <Entry
                                         Grid.Row="1"
-                                        Text="{Binding Notificado}"
-                                        VerticalTextAlignment="End" />
+                                        HorizontalTextAlignment="Center"
+                                        Text="{Binding Notificado}" />
                                     <Border
                                         Grid.Row="1"
                                         Grid.Column="1"
+                                        Padding="4"
                                         Background="Gold"
                                         StrokeShape="{RoundRectangle CornerRadius='10'}">
                                         <Label Text="{Binding Saldo}" VerticalOptions="Center" />

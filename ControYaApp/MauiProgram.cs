@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.Pdf;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
@@ -90,9 +91,12 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
             mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<PmNotificadoRepo>();
             mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
             mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionFilter>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpFilter>();
 
             mauiAppBuilder.Services.AddTransient<PdfService>();
 

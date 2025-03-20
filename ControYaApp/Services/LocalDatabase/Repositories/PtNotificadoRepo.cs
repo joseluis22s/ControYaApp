@@ -30,6 +30,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 ).FirstOrDefaultAsync();
                 if (ptNotificadoSaved is not null)
                 {
+                    ptNotificadoSaved.NotificacionAutorizada = ptNotificado.NotificacionAutorizada;
                     ptNotificadoSaved.Fecha = ptNotificado.Fecha;
                     ptNotificadoSaved.Notificado = ptNotificado.Notificado;
                     ptNotificadoSaved.CodigoEmpleado = ptNotificado.CodigoEmpleado;
