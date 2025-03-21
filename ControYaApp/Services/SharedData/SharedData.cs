@@ -50,13 +50,23 @@ namespace ControYaApp.Services.SharedData
         }
 
 
-        private bool _authorizedNotification;
-        public bool AuthorizedNotification
+        private bool _autoApproveProduccion;
+        public bool AutoApproveProduccion
         {
-            get => _authorizedNotification;
+            get => _autoApproveProduccion;
             set
             {
-                SetProperty(ref _authorizedNotification, value);
+                SetProperty(ref _autoApproveProduccion, value);
+            }
+        }
+
+        private bool _autoApproveInventario;
+        public bool AutoApproveInventario
+        {
+            get => _autoApproveInventario;
+            set
+            {
+                SetProperty(ref _autoApproveInventario, value);
             }
         }
 

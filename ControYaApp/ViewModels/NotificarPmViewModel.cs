@@ -145,7 +145,8 @@ namespace ControYaApp.ViewModels
                 // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
                 List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
 
-                var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AuthorizedNotification, FechaActual,
+                var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AutoApproveProduccion,
+                                                    SharedData.AutoApproveInventario, FechaActual,
                                                     EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
 
                 int updatedCount = await _ordenProduccionMpRepo.UpdateAllNotificadoAsync(selectedItemsSource);
@@ -192,7 +193,7 @@ namespace ControYaApp.ViewModels
             return selectedItemsSource;
         }
 
-        private List<PmNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool authorizedNotification,
+        private List<PmNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool AutoApproveProduccion, bool AutoApproveInventario,
                                                    DateTime fecha, string codigoEmpleado, string codigoUsuario)
         {
             return ordenesProduccionMp
@@ -200,7 +201,8 @@ namespace ControYaApp.ViewModels
                 {
                     Id = item.Id,                // Mapea el Id
                     Notificado = item.Notificado, // Mapea el Notificado (usa 0 si es null)
-                    NotificacionAutorizada = authorizedNotification,
+                    AprobarAutoProduccion = AutoApproveProduccion,
+                    AprobarAutoInventario = AutoApproveInventario,
                     Fecha = fecha,
                     CodigoEmpleado = codigoEmpleado,
                     CodigoUsuario = codigoUsuario

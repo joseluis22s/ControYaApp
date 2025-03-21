@@ -67,13 +67,15 @@ namespace ControYaApp.ViewModels
             {
                 SharedData.IpAddress = "";
                 SharedData.Protocolo = "http://";
-                SharedData.AuthorizedNotification = false;
+                SharedData.AutoApproveProduccion = false;
+                SharedData.AutoApproveInventario = false;
             }
             else
             {
                 SharedData.IpAddress = dataConfig.Ip;
                 SharedData.Protocolo = dataConfig.Protocolo;
-                SharedData.AuthorizedNotification = dataConfig.AuthorizedNotification;
+                SharedData.AutoApproveProduccion = dataConfig.AutoApproveProduccion;
+                SharedData.AutoApproveInventario = dataConfig.AutoApproveInventario;
 
             }
         }

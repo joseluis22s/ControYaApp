@@ -64,12 +64,12 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _ordenesProdCount, value);
         }
 
-        private int _ordenesProdMpCount;
-        public int OrdenesProdMpCount
-        {
-            get => _ordenesProdMpCount;
-            set => SetProperty(ref _ordenesProdMpCount, value);
-        }
+        //private int _ordenesProdMpCount;
+        //public int OrdenesProdMpCount
+        //{
+        //    get => _ordenesProdMpCount;
+        //    set => SetProperty(ref _ordenesProdMpCount, value);
+        //}
 
 
 
@@ -153,7 +153,7 @@ namespace ControYaApp.ViewModels
                 PendingOrdenesProdCount = SharedData.AllOrdenesProduccionGroups
                     .SelectMany(opg => opg)
                     .Count(op => op.Saldo > 0);
-                OrdenesProdMpCount = await GetCountPendingOrdenesProduccionMpPAsync();
+                //OrdenesProdMpCount = await GetCountPendingOrdenesProduccionMpPAsync();
                 return;
             }
             OrdenesGroupLoaded = !(OrdenesGroupIsNull = true);

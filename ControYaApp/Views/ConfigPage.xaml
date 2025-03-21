@@ -36,7 +36,7 @@
                     <Grid
                         ColumnDefinitions="*,2*"
                         ColumnSpacing="7"
-                        RowDefinitions="Auto,Auto,Auto"
+                        RowDefinitions="Auto,Auto,Auto,Auto"
                         RowSpacing="15">
 
                         <urui:DropdownField
@@ -65,12 +65,19 @@
                             Grid.Row="1"
                             Grid.ColumnSpan="2"
                             Spacing="10">
-                            <Label Text="Notificación autorizada" />
-                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.AuthorizedNotification}" />
+                            <Label Text="Aprobar auto produccion" />
+                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.AutoApproveProduccion}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout
+                            Grid.Row="2"
+                            Grid.ColumnSpan="2"
+                            Spacing="10">
+                            <Label Text="Aprobar auto inventario" />
+                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.AutoApproveInventario}" />
                         </HorizontalStackLayout>
 
                         <Button
-                            Grid.Row="2"
+                            Grid.Row="3"
                             Grid.ColumnSpan="2"
                             input:FormView.IsSubmitButton="True"
                             Text="Guardar"

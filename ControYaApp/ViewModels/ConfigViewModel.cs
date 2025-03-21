@@ -48,7 +48,8 @@ namespace ControYaApp.ViewModels
         {
             _dataConfigSave.Protocolo = SharedData.Protocolo;
             _dataConfigSave.Ip = SharedData.IpAddress;
-            _dataConfigSave.AuthorizedNotification = SharedData.AuthorizedNotification;
+            _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
+            _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
         }
 
         private async void SelectedItemChanged(string selectedItem)
@@ -70,7 +71,8 @@ namespace ControYaApp.ViewModels
                 {
                     _dataConfigSave.Protocolo = SharedData.Protocolo;
                     _dataConfigSave.Ip = SharedData.IpAddress;
-                    _dataConfigSave.AuthorizedNotification = SharedData.AuthorizedNotification;
+                    _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
+                    _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
                     await _dataConfigRepo.SaveIpServidor(_dataConfigSave);
 
                     _isSaved = true;
@@ -102,7 +104,8 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    SharedData.AuthorizedNotification = _dataConfigSave.AuthorizedNotification;
+                    SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+                    SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -115,7 +118,8 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    SharedData.AuthorizedNotification = _dataConfigSave.AuthorizedNotification;
+                    SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+                    SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -127,7 +131,8 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    SharedData.AuthorizedNotification = _dataConfigSave.AuthorizedNotification;
+                    SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+                    SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
                     await Shell.Current.GoToAsync("..");
                 }
             }

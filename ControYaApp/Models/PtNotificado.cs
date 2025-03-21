@@ -12,8 +12,10 @@ namespace ControYaApp.Models
         [JsonIgnore]
         public bool Sincronizado { get; set; }
 
-        [JsonIgnore]
-        public bool NotificacionAutorizada { get; set; }
+        // TODO: Verificar si entra en conflicto con la deserializacion
+        public bool AprobarAutoProduccion { get; set; }
+
+        public bool AprobarAutoInventario { get; set; }
 
         public string CodigoProduccion { get; set; }
 

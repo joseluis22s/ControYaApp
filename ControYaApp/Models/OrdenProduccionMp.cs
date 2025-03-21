@@ -6,6 +6,7 @@ namespace ControYaApp.Models
 {
     public class OrdenProduccionMp : BaseViewModel
     {
+        [JsonIgnore]
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
@@ -16,6 +17,8 @@ namespace ControYaApp.Models
         [JsonIgnore]
         [Ignore]
         public bool IsSelected { get; set; }
+
+        public int IdMaterialProduccion { get; set; }
 
         public string Centro { get; set; }
 

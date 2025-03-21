@@ -14,7 +14,9 @@ namespace ControYaApp.Services.SharedData
 
         string? Protocolo { get; set; }
 
-        bool AuthorizedNotification { get; set; }
+        bool AutoApproveProduccion { get; set; }
+
+        bool AutoApproveInventario { get; set; }
 
         ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
 

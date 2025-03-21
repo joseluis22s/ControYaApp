@@ -281,7 +281,8 @@ namespace ControYaApp.ViewModels
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
                 Usuario = ordenProduccionPt.CodigoUsuarioAprobar,
-                NotificacionAutorizada = SharedData.AuthorizedNotification
+                AprobarAutoProduccion = SharedData.AutoApproveProduccion,
+                AprobarAutoInventario = SharedData.AutoApproveInventario
             };
         }
 

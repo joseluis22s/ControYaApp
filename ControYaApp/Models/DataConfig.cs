@@ -11,6 +11,8 @@ namespace ControYaApp.Models
 
         public string? Ip { get; set; }
 
-        public bool AuthorizedNotification { get; set; }
+        public bool AutoApproveProduccion { get; set; }
+
+        public bool AutoApproveInventario { get; set; }
     }
 }
