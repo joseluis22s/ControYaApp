@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using ControYaApp.Models;
 using ControYaApp.Services.SharedData;
-using ControYaApp.Services.WebService.RequestModels;
 
 namespace ControYaApp.Services.WebService
 {
@@ -59,7 +58,8 @@ namespace ControYaApp.Services.WebService
             return new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
-                WriteIndented = true
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
         }
 
@@ -300,15 +300,20 @@ namespace ControYaApp.Services.WebService
             }
             return false;
         }
-        public async Task NotificarManyPtAsync(PtNotificadosReq ptNotificados)
+        public async Task NotificarManyPtAsync(object ptNotificados)
         {
             string uri = GetIp() + _notificarPtUri;
+            //var req = new
+            //{
+            //    ptNotificados = ptNotificados
+            //};
 
             try
             {
                 string json = JsonSerializer.Serialize(ptNotificados, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(uri, content);
+                // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
             }
             catch (Exception ex)
             {

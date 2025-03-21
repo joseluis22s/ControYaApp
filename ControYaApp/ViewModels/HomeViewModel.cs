@@ -11,7 +11,6 @@ using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
-using ControYaApp.Services.WebService.RequestModels;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
@@ -119,11 +118,15 @@ namespace ControYaApp.ViewModels
                 {
                     // TODO: Implementar la lógica para obtener los mpNotificados y su Count.
                     int ptNotificadoCount = AllPtNotificados.Count;
-                    PtNotificadosReq ptNotificadosReq = new PtNotificadosReq
+                    //PtNotificadosReq ptNotificadosReq = new PtNotificadosReq
+                    //{
+                    //    PtNotificados = AllPtNotificados
+                    //};
+                    var req = new
                     {
-                        PtNotificados = AllPtNotificados
+                        ptNotificados = AllPtNotificados
                     };
-                    await _restService.NotificarManyPtAsync(ptNotificadosReq);
+                    await _restService.NotificarManyPtAsync(req);
                     //int mpNotificadoCount = ;
                     await Toast.Make("Se enviado PT notificados locales", ToastDuration.Long).Show();
 

@@ -62,7 +62,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             {
                 await InitAsync();
 
-                await _database.DeleteAllAsync<EmpleadoSistema>();
+                await _database.DeleteAllAsync<PtNotificado>();
             }
             catch (Exception) { throw; }
         }
