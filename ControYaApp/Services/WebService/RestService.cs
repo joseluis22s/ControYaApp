@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using ControYaApp.Models;
 using ControYaApp.Services.SharedData;
+using ControYaApp.Services.WebService.RequestModels;
 
 namespace ControYaApp.Services.WebService
 {
@@ -27,7 +28,9 @@ namespace ControYaApp.Services.WebService
 
         private readonly string _getAllOrdenesProduccionMpUri = "/ordenes-produccion/get-all-mp";
 
-        private readonly string _notificarPtUri = "/ordenes-produccion/sp-notificarpt";
+        private readonly string _SpNotificarPtUri = "/notificados/sp-notificarpt";
+
+        private readonly string _notificarPtUri = "/notificados/pt";
 
 
 
@@ -274,9 +277,9 @@ namespace ControYaApp.Services.WebService
         }
 
 
-        public async Task<bool> NotificarPtAsync(PtNotificado ptNotificado)
+        public async Task<bool> SpNotificarPtAsync(PtNotificado ptNotificado)
         {
-            string uri = GetIp() + _notificarPtUri;
+            string uri = GetIp() + _SpNotificarPtUri;
 
             try
             {
@@ -296,6 +299,23 @@ namespace ControYaApp.Services.WebService
                 throw;
             }
             return false;
+        }
+        public async Task NotificarManyPtAsync(PtNotificadosReq ptNotificados)
+        {
+            string uri = GetIp() + _notificarPtUri;
+
+            try
+            {
+                string json = JsonSerializer.Serialize(ptNotificados, _jsonSerializerOptions);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
+            }
+            catch (Exception ex)
+            {
+                // TODO: Eliminar esta línea.
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
+            }
         }
 
 

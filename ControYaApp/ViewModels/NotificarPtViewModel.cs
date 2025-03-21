@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
@@ -35,16 +36,16 @@ namespace ControYaApp.ViewModels
 
 
 
-        private decimal? _cantidad;
-        public decimal? Cantidad
+        private decimal _cantidad;
+        public decimal Cantidad
         {
             get => _cantidad;
             set => SetProperty(ref _cantidad, value);
         }
 
 
-        private decimal? _notificado;
-        public decimal? Notificado
+        private decimal _notificado;
+        public decimal Notificado
         {
             get => _notificado;
             set
@@ -116,7 +117,7 @@ namespace ControYaApp.ViewModels
             set
             {
                 SetProperty(ref _ordenProduccionPt, value);
-                Saldo = Notificado = Cantidad = _ordenProduccionPt?.Saldo;
+                Saldo = Notificado = Cantidad = _ordenProduccionPt.Saldo;
             }
         }
 
@@ -197,12 +198,13 @@ namespace ControYaApp.ViewModels
 
                 _isNotified = true;
 
-                var res = await Shell.Current.DisplayAlert($"Se ha notificado la cantidad {Notificado}", "¿Desea generar un pdf?", "Aceptar", "Salir");
+                var res = await Shell.Current.DisplayAlert($"Se ha notificado la cantidad {Notificado}", "¿Desea generar un pdf?", "Aceptar", "No generar");
                 if (res)
                 {
+                    //await Toast.Make("Aqui se genera un PDF", ToastDuration.Long).Show();
                     await GenerarPdf();
-                    // TODO: Poenr un go back aqui.
-                    return;
+                    // TODO: Poenr un go back aqui desepes del PDf.
+                    //return;
                 }
                 await GoBackAsync();
                 return;
@@ -261,7 +263,7 @@ namespace ControYaApp.ViewModels
             try
             {
                 // TODO: Controlar que notifique la menos una vez para poder generar
-                await Toast.Make($"Botón para generar un pdf").Show();
+                await Toast.Make($"Botón para generar un pdf", ToastDuration.Long).Show();
             }
             catch (Exception ex)
             {
@@ -269,7 +271,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serie, decimal? notificado)
+        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serie, decimal notificado)
         {
             return new PtNotificado
             {
@@ -280,7 +282,7 @@ namespace ControYaApp.ViewModels
                 Notificado = ordenProduccionPt.Notificado + notificado,
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
-                Usuario = ordenProduccionPt.CodigoUsuarioAprobar,
+                CodigoUsuario = ordenProduccionPt.CodigoUsuarioAprobar,
                 AprobarAutoProduccion = SharedData.AutoApproveProduccion,
                 AprobarAutoInventario = SharedData.AutoApproveInventario
             };

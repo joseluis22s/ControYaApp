@@ -60,7 +60,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task<decimal?> GetNotificadoValue(OrdenProduccionPt ordenProduccionpt)
+        public async Task<decimal> GetNotificadoValue(OrdenProduccionPt ordenProduccionpt)
         {
             try
             {

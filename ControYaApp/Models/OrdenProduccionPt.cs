@@ -13,7 +13,7 @@ namespace ControYaApp.Models
 
         [JsonIgnore]
         [Ignore]
-        public decimal? Saldo => ((decimal)Cantidad) - Notificado;
+        public decimal Saldo => ((decimal)Cantidad) - Notificado;
 
 
         public string Centro { get; set; }
@@ -33,8 +33,8 @@ namespace ControYaApp.Models
         public float Cantidad { get; set; }
 
 
-        private decimal? _notificado;
-        public decimal? Notificado
+        private decimal _notificado;
+        public decimal Notificado
         {
             get => _notificado;
             set

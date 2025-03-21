@@ -5,13 +5,13 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
+using ControYaApp.Services.WebService.RequestModels;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
@@ -101,10 +101,37 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
+                //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
+
+                //bool res = await Shell.Current.DisplayAlert("¿Desea sincronizar datos?", "Se notificaran PT y MP locales los que están actualmente guardados", "Aceptar", "Cancelar");
+
+                //if (!res)
+                //{
+                //    return;
+                //}
+                var AllPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
+
+                if (AllPtNotificados is null || AllPtNotificados.Count == 0)
+                {
+                    await Toast.Make("No se han encontrado PT Notificados", ToastDuration.Long).Show();
+                }
+                else
+                {
+                    // TODO: Implementar la lógica para obtener los mpNotificados y su Count.
+                    int ptNotificadoCount = AllPtNotificados.Count;
+                    PtNotificadosReq ptNotificadosReq = new PtNotificadosReq
+                    {
+                        PtNotificados = AllPtNotificados
+                    };
+                    await _restService.NotificarManyPtAsync(ptNotificadosReq);
+                    //int mpNotificadoCount = ;
+                    await Toast.Make("Se enviado PT notificados locales", ToastDuration.Long).Show();
+
+                    await _localRepoService.PtNotificadoRepo.DeleteAllPtNotificado();
+                }
 
 
-                await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
+
 
                 var usuarios = await _restService.GetAllUsuariosAsync();
                 var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);
@@ -114,6 +141,7 @@ namespace ControYaApp.ViewModels
                 var empleados = await _restService.GetAllEmpleadosAsync();
 
 
+
                 await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
                 await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
                 await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
@@ -121,7 +149,10 @@ namespace ControYaApp.ViewModels
                 await _localRepoService.OrdenesProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
                 await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
 
+
+
                 InitData();
+
             }
             catch (Exception ex)
             {

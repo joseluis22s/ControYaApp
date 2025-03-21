@@ -26,7 +26,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                     pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
                     pt.Orden == ptNotificado.Orden &&
                     pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
-                    pt.Usuario == ptNotificado.Usuario
+                    pt.CodigoUsuario == ptNotificado.CodigoUsuario
                 ).FirstOrDefaultAsync();
                 if (ptNotificadoSaved is not null)
                 {
@@ -46,87 +46,26 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        //public async Task SavePtNotificadoAsync(PtNotificado ptNotificado)
-        //{
-        //    try
-        //    {
-        //        await InitAsync();
-        //        await _database.InsertAsync(ptNotificado);
+        public async Task<List<PtNotificado>> GetAllPtNotificadoAsync()
+        {
+            try
+            {
+                await InitAsync();
+                return await _database.Table<PtNotificado>().ToListAsync();
+            }
+            catch (Exception) { throw; }
+        }
 
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+        public async Task DeleteAllPtNotificado()
+        {
+            try
+            {
+                await InitAsync();
 
-        //public async Task SynchronizedFalsePtNotificadoAsync(PtNotificado ptNotificado)
-        //{
-        //    try
-        //    {
-        //        await InitAsync();
-        //        var producto = await _database.Table<PtNotificadoReq>().Where(pt =>
-        //            pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
-        //            pt.Orden == ptNotificado.Orden &&
-        //            pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
-        //            pt.Usuario == pt.Usuario
-        //        ).FirstOrDefaultAsync();
-        //        if (producto is not null)
-        //        {
-        //            producto.Sincronizado = false;
-        //            await _database.UpdateAsync(producto);
-        //            return;
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public async Task UpdateSincPtNotificadoAsync()
-        //{
-        //    try
-        //    {
-        //        await InitAsync();
-        //        var productos = await _database.Table<PtNotificadoReq>().Where(pt => pt.Sincronizado == false).ToListAsync();
-        //        foreach (var producto in productos)
-        //        {
-        //            producto.Sincronizado = true;
-        //            await _database.UpdateAsync(producto);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public async Task SynchronizedTruePtNotificadoAsync(PtNotificado ptNotificado)
-        //{
-        //    try
-        //    {
-        //        await InitAsync();
-        //        var producto = await _database.Table<PtNotificado>().Where(pt =>
-        //            pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
-        //            pt.Orden == ptNotificado.Orden &&
-        //            pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
-        //            pt.Usuario == pt.Usuario
-        //        ).FirstOrDefaultAsync();
-
-        //        if (producto is not null)
-        //        {
-        //            producto.Notificado = ptNotificado.Notificado;
-        //            producto.Sincronizado = true;
-
-        //            await _database.UpdateAsync(producto);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+                await _database.DeleteAllAsync<EmpleadoSistema>();
+            }
+            catch (Exception) { throw; }
+        }
 
     }
 }

@@ -65,7 +65,7 @@ namespace ControYaApp.ViewModels
             {
                 string ip = SharedData.Protocolo + SharedData.IpAddress;
 
-                var res = await Shell.Current.DisplayAlert("Nueva conexión", $"¿Está seguro que desea guardar la siguiente ip?:\n{ip}", "Aceptar", "Cancelar");
+                var res = await Shell.Current.DisplayAlert("Guardar", "¿Desea guardar la configuración?", "Aceptar", "Cancelar");
 
                 if (res)
                 {
@@ -104,8 +104,8 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-                    SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
+                    //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+                    //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -118,8 +118,8 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-                    SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
+                    //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+                    //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
                     await Shell.Current.GoToAsync("..");
                     return;
                 }
@@ -131,8 +131,8 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-                    SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
+                    //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+                    //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
                     await Shell.Current.GoToAsync("..");
                 }
             }

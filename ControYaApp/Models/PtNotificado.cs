@@ -12,11 +12,6 @@ namespace ControYaApp.Models
         [JsonIgnore]
         public bool Sincronizado { get; set; }
 
-        // TODO: Verificar si entra en conflicto con la deserializacion
-        public bool AprobarAutoProduccion { get; set; }
-
-        public bool AprobarAutoInventario { get; set; }
-
         public string CodigoProduccion { get; set; }
 
         public int Orden { get; set; }
@@ -25,12 +20,17 @@ namespace ControYaApp.Models
 
         public DateTime Fecha { get; set; }
 
-        public decimal? Notificado { get; set; }
+        public decimal Notificado { get; set; }
+
+        public string CodigoUsuario { get; set; }
 
         public string CodigoEmpleado { get; set; }
 
-        public string Serie { get; set; }
+        // TODO: Verificar si entra en conflicto con la deserializacion
+        public bool AprobarAutoProduccion { get; set; }
 
-        public string Usuario { get; set; }
+        public bool AprobarAutoInventario { get; set; }
+
+        public string Serie { get; set; }
     }
 }

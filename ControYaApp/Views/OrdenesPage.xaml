@@ -55,7 +55,7 @@
                 FontAttributes="Bold"
                 FontSize="Body"
                 HorizontalOptions="Center"
-                Text="Cargar órdenes de producción" />
+                Text="Recargar todas" />
             <Button
                 Grid.Column="1"
                 Padding="5"

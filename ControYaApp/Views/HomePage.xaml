@@ -61,7 +61,10 @@
                 TextColor="#ffffff" />
         </VerticalStackLayout>
 
-        <VerticalStackLayout Grid.Row="1" Padding="10,10,10,0">
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="10,10,10,0"
+            Spacing="15">
             <VerticalStackLayout IsVisible="{Binding OrdenesGroupIsNull}">
 
                 <Label
@@ -104,7 +107,14 @@
                     Text="Ir" />
 
             </VerticalStackLayout>
+
+            <Button
+                Command="{Binding SincronizarOrdenesProduccionCommand}"
+                IsVisible="{Binding OrdenesGroupLoaded}"
+                Text="Sincronizar" />
         </VerticalStackLayout>
+
+
     </Grid>
 
     <!--<ContentPage.BackgroundColor>
