@@ -141,6 +141,7 @@ namespace ControYaApp.ViewModels
                     await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
                 }
+                //TODO: Agregar control para validar que se ahaya eleigo un empleado
 
                 // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
                 List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
@@ -193,11 +194,11 @@ namespace ControYaApp.ViewModels
             return selectedItemsSource;
         }
 
-        private List<PmNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool AutoApproveProduccion, bool AutoApproveInventario,
+        private List<MpNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool AutoApproveProduccion, bool AutoApproveInventario,
                                                    DateTime fecha, string codigoEmpleado, string codigoUsuario)
         {
             return ordenesProduccionMp
-                .Select(item => new PmNotificado
+                .Select(item => new MpNotificado
                 {
                     Id = item.Id,                // Mapea el Id
                     Notificado = item.Notificado, // Mapea el Notificado (usa 0 si es null)

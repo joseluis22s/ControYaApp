@@ -31,6 +31,8 @@ namespace ControYaApp.Services.WebService
 
         private readonly string _notificarPtUri = "/notificados/pt";
 
+        private readonly string _notificarMpUri = "/notificados/mp";
+
 
 
         private readonly HttpClient _client = new();
@@ -300,19 +302,16 @@ namespace ControYaApp.Services.WebService
             }
             return false;
         }
+
         public async Task NotificarManyPtAsync(object ptNotificados)
         {
             string uri = GetIp() + _notificarPtUri;
-            //var req = new
-            //{
-            //    ptNotificados = ptNotificados
-            //};
 
             try
             {
                 string json = JsonSerializer.Serialize(ptNotificados, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync(uri, content);
+                var response = await _client.PutAsync(uri, content);
                 // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
             }
             catch (Exception ex)
@@ -323,6 +322,24 @@ namespace ControYaApp.Services.WebService
             }
         }
 
+        public async Task NotificarManyMpAsync(object mpNotificados)
+        {
+            string uri = GetIp() + _notificarMpUri;
+
+            try
+            {
+                string json = JsonSerializer.Serialize(mpNotificados, _jsonSerializerOptions);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _client.PutAsync(uri, content);
+                // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
+            }
+            catch (Exception ex)
+            {
+                // TODO: Eliminar esta línea.
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                throw;
+            }
+        }
 
     }
 }

@@ -13,15 +13,15 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return;
 
             _database = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            await _database.CreateTableAsync<PmNotificado>();
+            await _database.CreateTableAsync<MpNotificado>();
         }
 
-        public async Task<int> SaveOrUpdatePtNotificadoAsync(PmNotificado pmNotificado)
+        public async Task<int> SaveOrUpdatePtNotificadoAsync(MpNotificado pmNotificado)
         {
             try
             {
                 await InitAsync();
-                var pmNotificadoSaved = await _database.Table<PmNotificado>().Where(pm =>
+                var pmNotificadoSaved = await _database.Table<MpNotificado>().Where(pm =>
                     pm.Id == pmNotificado.Id
                 ).FirstOrDefaultAsync();
                 if (pmNotificadoSaved is not null)
@@ -42,24 +42,45 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task AuthorizeAllMpNotificado()
+        public async Task<List<PtNotificado>> GetAllMpNotificadoAsync()
+        {
+            try
+            {
+                await InitAsync();
+                return await _database.Table<PtNotificado>().ToListAsync();
+            }
+            catch (Exception) { throw; }
+        }
+
+        public async Task DeleteAllMpNotificado()
         {
             try
             {
                 await InitAsync();
 
-                // Actualiza todos los registros en una sola operación
-                await _database.ExecuteAsync(
-                    "UPDATE PmNotificado SET NotificacionAutorizada = ? WHERE NotificacionAutorizada = ?",
-                    true, false);
+                await _database.DeleteAllAsync<MpNotificado>();
             }
-            catch (Exception ex)
-            {
-                // Maneja otras excepciones
-                Console.WriteLine($"Error inesperado: {ex.Message}");
-                throw;
-            }
+            catch (Exception) { throw; }
         }
+
+        //public async Task AuthorizeAllMpNotificado()
+        //{
+        //    try
+        //    {
+        //        await InitAsync();
+
+        //        // Actualiza todos los registros en una sola operación
+        //        await _database.ExecuteAsync(
+        //            "UPDATE PmNotificado SET NotificacionAutorizada = ? WHERE NotificacionAutorizada = ?",
+        //            true, false);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Maneja otras excepciones
+        //        Console.WriteLine($"Error inesperado: {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
         //public async Task AuthorizeAllMpNotificado()
         //{

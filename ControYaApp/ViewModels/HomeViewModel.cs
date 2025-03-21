@@ -101,39 +101,34 @@ namespace ControYaApp.ViewModels
             try
             {
                 //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-
-                //bool res = await Shell.Current.DisplayAlert("¿Desea sincronizar datos?", "Se notificaran PT y MP locales los que están actualmente guardados", "Aceptar", "Cancelar");
-
-                //if (!res)
-                //{
-                //    return;
-                //}
                 var AllPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
+                var AllMpNotificados = await _localRepoService.MpNotificadoRepo.GetAllMpNotificadoAsync();
 
-                if (AllPtNotificados is null || AllPtNotificados.Count == 0)
+                // Cuando haya PT notficados (que AllPtNotificados no sea nullo y cuando no es nulo que al menos haya uno)
+                // notifica los que esten con `NotificarManyPtAsync()` y luego los elimina con `DeleteAllPtNotificado()`.
+                //
+                // Lo mismo ocurre con MP notificados.
+                if (AllPtNotificados is not null && AllPtNotificados.Count != 0)
                 {
-                    await Toast.Make("No se han encontrado PT Notificados", ToastDuration.Long).Show();
-                }
-                else
-                {
-                    // TODO: Implementar la lógica para obtener los mpNotificados y su Count.
-                    int ptNotificadoCount = AllPtNotificados.Count;
-                    //PtNotificadosReq ptNotificadosReq = new PtNotificadosReq
-                    //{
-                    //    PtNotificados = AllPtNotificados
-                    //};
                     var req = new
                     {
                         ptNotificados = AllPtNotificados
                     };
                     await _restService.NotificarManyPtAsync(req);
-                    //int mpNotificadoCount = ;
-                    await Toast.Make("Se enviado PT notificados locales", ToastDuration.Long).Show();
-
+                    await Toast.Make("Se ha enviado PT notificados locales", ToastDuration.Long).Show();
                     await _localRepoService.PtNotificadoRepo.DeleteAllPtNotificado();
                 }
 
-
+                if (AllMpNotificados is not null && AllMpNotificados.Count != 0)
+                {
+                    var req = new
+                    {
+                        mpNotificados = AllMpNotificados
+                    };
+                    await _restService.NotificarManyMpAsync(req);
+                    await Toast.Make("Se ha enviado MP notificados locales", ToastDuration.Long).Show();
+                    await _localRepoService.MpNotificadoRepo.DeleteAllMpNotificado();
+                }
 
 
                 var usuarios = await _restService.GetAllUsuariosAsync();

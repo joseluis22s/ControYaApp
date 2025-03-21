@@ -3,7 +3,7 @@ using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class PmNotificado
+    public class MpNotificado
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]
