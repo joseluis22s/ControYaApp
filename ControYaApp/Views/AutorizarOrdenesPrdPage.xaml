@@ -6,7 +6,7 @@
     xmlns:viewModel="clr-namespace:ControYaApp.ViewModels"
     Title="AutorizarOrdenesPrdPage"
     x:DataType="viewModel:AutorizarOrdenesPrdViewModel">
-    <VerticalStackLayout>
+    <VerticalStackLayout Padding="10">
         <Label
             HorizontalOptions="Center"
             Text="Página para autorizar órdenes"
@@ -14,7 +14,11 @@
 
         <Label Text="{Binding PtNotificadoCount, StringFormat='{0} productos terminados por autorizar.'}" />
         <Label Text="{Binding MpNotificadoCount, StringFormat='{0} materiales para producción por autorizar.'}" />
-        <Button Command="{Binding AuthorizeAllCommand}" Text="Autorizar todo" />
+        <Button
+            Command="{Binding AuthorizeAllCommand}"
+            CornerRadius="3"
+            HorizontalOptions="Center"
+            Text="Autorizar todo" />
 
     </VerticalStackLayout>
 </ContentPage>

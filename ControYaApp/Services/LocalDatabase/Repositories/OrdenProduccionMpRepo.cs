@@ -53,7 +53,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionPendingAsync()
+        public async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionMpAsync()
         {
             try
             {

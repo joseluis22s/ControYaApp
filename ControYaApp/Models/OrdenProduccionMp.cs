@@ -12,11 +12,16 @@ namespace ControYaApp.Models
 
         [JsonIgnore]
         [Ignore]
-        public decimal? Saldo => ((decimal)Cantidad) - Notificado;
+        public decimal Saldo => ((decimal)Cantidad) - Notificado;
 
+        private bool _isSelected;
         [JsonIgnore]
         [Ignore]
-        public bool IsSelected { get; set; }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => SetProperty(ref _isSelected, value);
+        }
 
         public int IdMaterialProduccion { get; set; }
 

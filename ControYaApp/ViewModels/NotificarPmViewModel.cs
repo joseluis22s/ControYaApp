@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
@@ -10,8 +11,7 @@ using ControYaApp.Services.SharedData;
 
 namespace ControYaApp.ViewModels
 {
-    [QueryProperty(nameof(OrdenesProduccionMaterialGroupSource), "ordenesProdMpGrouped")]
-    [QueryProperty(nameof(OrdenesProduccionMaterialGroup), "ordenesProdMpGrouped")]
+    [QueryProperty(nameof(OrdenesProduccionMaterialGroupSource), "ordenesProdMpGroupedSource")]
     [QueryProperty(nameof(RangoPeriodos), "rangosPeriodos")]
     [QueryProperty(nameof(Empleados), "empleados")]
     public partial class NotificarPmViewModel : BaseViewModel
@@ -31,14 +31,25 @@ namespace ControYaApp.ViewModels
         //{
         //    get => _ordenesProduccionMaterialGroup;
         //    set => SetProperty(ref _ordenesProduccionMaterialGroup, value);
-        public ObservableCollection<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroup { get; set; }
+        public List<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroup { get; set; }
 
 
         private ObservableCollection<OrdenProduccionMaterialGroup> _ordenesProduccionMaterialGroupSource;
         public ObservableCollection<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroupSource
         {
             get => _ordenesProduccionMaterialGroupSource;
-            set => SetProperty(ref _ordenesProduccionMaterialGroupSource, value);
+            set
+            {
+                SetProperty(ref _ordenesProduccionMaterialGroupSource, value);
+
+                foreach (var group in _ordenesProduccionMaterialGroupSource)
+                {
+                    foreach (var item in group)
+                    {
+                        item.Notificado = item.Saldo;
+                    }
+                }
+            }
         }
 
 
@@ -77,6 +88,8 @@ namespace ControYaApp.ViewModels
 
         public ICommand FilterOrdenesProduccionMpCommand { get; }
 
+        public ICommand SeleccionarTodosCommand { get; }
+
 
 
         public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo)
@@ -89,10 +102,14 @@ namespace ControYaApp.ViewModels
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
             FilterOrdenesProduccionMpCommand = new AsyncRelayCommand(() => FilterOrdenesProduccionMpAsync(OrdenesProduccionMaterialGroup));
+
         }
 
 
         private readonly OrdenProduccionMpFilter _ordenProduccionMpFilter;
+
+
+
 
         public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter)
         {
@@ -104,9 +121,24 @@ namespace ControYaApp.ViewModels
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
+            SeleccionarTodosCommand = new AsyncRelayCommand(SeleccionarTodosAsync);
         }
 
-        private async Task FilterOrdenesProduccionMpAsync(ObservableCollection<OrdenProduccionMaterialGroup> allOrdenesMpGrouped)
+        private async Task SeleccionarTodosAsync()
+        {
+            if (OrdenesProduccionMaterialGroupSource is not null)
+            {
+                foreach (var itemGroup in OrdenesProduccionMaterialGroupSource)
+                {
+                    foreach (var item in itemGroup)
+                    {
+                        item.IsSelected = true;
+                    }
+                }
+            }
+        }
+
+        private async Task FilterOrdenesProduccionMpAsync(List<OrdenProduccionMaterialGroup> allOrdenesMpGrouped)
         {
             if (OrdenesProduccionMaterialGroupSource is not null)
             {
@@ -116,11 +148,11 @@ namespace ControYaApp.ViewModels
 
             if (action == "Pendientes")
             {
-                OrdenesProduccionMaterialGroupSource = _ordenProduccionMpFilter.FilteredOrdenesProduccionMpGroup(OrdenProduccionMpFilter.OrdenesProduccionMpFilters.Pending, allOrdenesMpGrouped);
+                OrdenesProduccionMaterialGroupSource = _ordenProduccionMpFilter.FilteredOrdenesProduccionMpGroup(OrdenProduccionMpFilter.OrdenesProduccionMpFilters.Pending, allOrdenesMpGrouped.ToObservableCollection());
                 return;
             }
 
-            OrdenesProduccionMaterialGroupSource = allOrdenesMpGrouped;
+            OrdenesProduccionMaterialGroupSource = allOrdenesMpGrouped.ToObservableCollection();
         }
 
 
@@ -146,8 +178,8 @@ namespace ControYaApp.ViewModels
                 }
 
                 // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
-                List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
-
+                //List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
+                List<OrdenProduccionMp> selectedItemsSource = OrdenesProduccionMaterialGroupSource.SelectMany(g => g.Where(pm => pm.IsSelected == true)).ToList();
                 var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AutoApproveProduccion,
                                                     SharedData.AutoApproveInventario, FechaActual,
                                                     EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
@@ -169,31 +201,30 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private List<OrdenProduccionMp> MapOrdenProduccionMpSelected(ObservableCollection<OrdenProduccionMaterialGroup> selectedItemsGroupsSource, ObservableCollection<OrdenProduccionMaterialGroup> selectedItemsGroups)
+        private List<OrdenProduccionMp> MapOrdenProduccionMpSelected(ObservableCollection<OrdenProduccionMaterialGroup> itemsGroupSource, List<OrdenProduccionMaterialGroup> itemsGroup)
         {
-            var selectedItemsSource = selectedItemsGroupsSource
-                .SelectMany(opmg => opmg.Where(opm => opm.IsSelected == true))
-                .ToList();
+            var selectedItems = new List<OrdenProduccionMp>();
 
-            var selectedItemsOriginal = selectedItemsGroups
-                .SelectMany(opmg => opmg
-                    .Where(opm => selectedItemsSource
-                        .Any(itemSource => itemSource.Id == opm.Id)))
-                .ToList();
-
-            for (int i = 0; i < selectedItemsSource.Count; i++)
+            foreach (var itemGroupSource in itemsGroupSource)
             {
-                var itemSource = selectedItemsSource[i];
-                var itemOriginal = selectedItemsOriginal
-                    .FirstOrDefault(opm => opm.Id == itemSource.Id);
-
-                if (itemOriginal != null)
+                foreach (var uiItem in itemGroupSource.Where(item => item.IsSelected))
                 {
-                    // Suma el valor de "Notificado" del ítem original al ítem de OrdenesProduccionMaterialGroupSource
-                    itemOriginal.Notificado += itemSource.Notificado;
+                    // Busca el mismo item en la copia "original"
+                    var originalItem = itemsGroup
+                        .SelectMany(group => group)
+                        .FirstOrDefault(item => item.Id == uiItem.Id);
+
+                    if (originalItem != null)
+                    {
+                        // Calcula la diferencia entre el valor nuevo (UI) y el original
+                        var incremento = uiItem.Notificado - originalItem.Notificado;
+                        originalItem.Notificado += incremento; // Actualiza solo si es necesario
+                        selectedItems.Add(originalItem);
+                    }
                 }
             }
-            return selectedItemsOriginal;
+
+            return selectedItems;
         }
 
         private List<MpNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool AutoApproveProduccion, bool AutoApproveInventario,

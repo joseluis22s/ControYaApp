@@ -182,7 +182,10 @@ namespace ControYaApp.ViewModels
                 PendingOrdenesProdCount = SharedData.AllOrdenesProduccionGroups
                     .SelectMany(opg => opg)
                     .Count(op => op.Saldo > 0);
-                OrdenesProdMpCount = await GetCountPendingOrdenesProduccionMpPAsync();
+                var ordenesProduccionMp = await GetAllOrdenesProduccionMpAsync();
+                OrdenesProdMpCount = ordenesProduccionMp
+                    .Select(opg => opg)
+                    .Count(op => op.Saldo > 0);
                 return;
             }
             OrdenesGroupLoaded = !(OrdenesGroupIsNull = true);
@@ -222,17 +225,15 @@ namespace ControYaApp.ViewModels
             return null;
         }
 
-        private async Task<int> GetCountPendingOrdenesProduccionMpPAsync()
+        private async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionMpAsync()
         {
-            var ordenesProduccionMpDb = await _localRepoService.OrdenProduccionMpRepo.GetAllOrdenesProduccionPendingAsync();
+            var ordenesProduccionMpDb = await _localRepoService.OrdenProduccionMpRepo.GetAllOrdenesProduccionMpAsync();
             if (ordenesProduccionMpDb.Count == 0)
             {
-                return 0;
+                //await Toast.Make("No se han encontrado ordenes de producción", ToastDuration.Long).Show();
+                return [];
             }
-            else
-            {
-                return ordenesProduccionMpDb.Count;
-            }
+            return ordenesProduccionMpDb;
         }
 
 

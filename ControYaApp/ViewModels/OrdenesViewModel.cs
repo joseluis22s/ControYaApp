@@ -143,7 +143,7 @@ namespace ControYaApp.ViewModels
 
                 var navParameter = new ShellNavigationQueryParameters
                     {
-                        { "ordenesProdMpGrouped", ordenesProduccionMaterialGroup},
+                        { "ordenesProdMpGroupedSource", ordenesProduccionMaterialGroup},
                         { "empleados", empleados},
                         { "rangosPeriodos", rangosPeriodos}
                     };
@@ -374,7 +374,7 @@ namespace ControYaApp.ViewModels
                     g.Key.Orden,           // Orden del grupo
                     g.Key.CodigoMaterial,   // CodigoMaterial del grupo
                     g.Key.Material,         // Material del grupo
-                    g.ToObservableCollection()              // Lista de OrdenProduccionMp del grupo
+                    g.ToList()              // Lista de OrdenProduccionMp del grupo
                 ))
                 .ToList();
 

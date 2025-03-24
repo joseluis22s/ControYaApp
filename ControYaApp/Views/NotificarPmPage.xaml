@@ -84,13 +84,13 @@
 
         </Grid>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,*">
+        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
 
             <urui:DatePickerField
                 Title="Fecha"
                 AccentColor="#0f2b57"
                 AllowClear="False"
-                BorderColor="Transparent"
+                BorderColor="Gray"
                 Date="{Binding FechaActual}"
                 MaximumDate="{Binding RangoPeriodos.FechaMax}"
                 MinimumDate="{Binding RangoPeriodos.FechaMin}" />
@@ -99,7 +99,7 @@
                 Title="Empleado"
                 Grid.Column="1"
                 AccentColor="#0f2b57"
-                BorderColor="Transparent">
+                BorderColor="Gray">
                 <Picker
                     ItemDisplayBinding="{Binding NombreEmpleado}"
                     ItemsSource="{Binding Empleados}"
@@ -109,6 +109,14 @@
                     <v:RequiredValidation />
                 </urui:InputField.Validations>
             </urui:InputField>
+
+            <Button
+                Grid.Column="2"
+                Command="{Binding SeleccionarTodosCommand}"
+                CornerRadius="3"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="Seleccionar todos" />
 
         </Grid>
 

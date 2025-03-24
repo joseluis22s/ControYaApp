@@ -30,8 +30,11 @@
         ContentTemplate="{DataTemplate views:OrdenesPage}"
         Route="ordenes"
         Shell.NavBarIsVisible="False" />
-
-
+    <ShellContent
+        Title="Autorizar órdenes producción"
+        ContentTemplate="{DataTemplate views:AutorizarOrdenesPrdPage}"
+        Route="autorizarOrdenesPrd"
+        Shell.NavBarIsVisible="False" />
 
     <!--
         "NotificarPtPage"

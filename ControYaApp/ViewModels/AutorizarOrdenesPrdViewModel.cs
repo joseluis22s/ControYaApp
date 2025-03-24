@@ -1,4 +1,6 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using ControYaApp.Services.DI;
 
 namespace ControYaApp.ViewModels
@@ -16,8 +18,8 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private string _mpNotificadoCount;
-        public string MpNotificadoCount
+        private int _mpNotificadoCount;
+        public int MpNotificadoCount
         {
             get { return _mpNotificadoCount; }
             set { _mpNotificadoCount = value; }
@@ -33,11 +35,25 @@ namespace ControYaApp.ViewModels
             _localRepoService = localRepoService;
         }
 
+        private async void InitData()
+        {
+            try
+            {
+                PtNotificadoCount = 0;
+                MpNotificadoCount = 0;
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
+        }
 
-        //private async Task AuthorizeAllAsync()
-        //{
-        //    await _localRepoService.MpNotificadoRepo
-        //}
+
+        private async Task AuthorizeAllAsync()
+        {
+            //await _localRepoService.MpNotificadoRepo
+        }
+
 
 
 
