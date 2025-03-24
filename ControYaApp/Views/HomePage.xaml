@@ -77,8 +77,6 @@
                     CornerRadius="3"
                     FontSize="17"
                     HorizontalOptions="Center"
-                    Shadow="{Shadow Opacity=0.18,
-                                    Offset='0,10'}"
                     Text="Sincronizar órdenes" />
 
             </VerticalStackLayout>
@@ -102,14 +100,16 @@
                     CornerRadius="3"
                     FontSize="17"
                     HorizontalOptions="Center"
-                    Shadow="{Shadow Opacity=0.18,
-                                    Offset='0,10'}"
                     Text="Ir" />
 
             </VerticalStackLayout>
 
             <Button
+                Padding="50,0"
                 Command="{Binding SincronizarOrdenesProduccionCommand}"
+                CornerRadius="3"
+                FontSize="17"
+                HorizontalOptions="Center"
                 IsVisible="{Binding OrdenesGroupLoaded}"
                 Text="Sincronizar" />
         </VerticalStackLayout>

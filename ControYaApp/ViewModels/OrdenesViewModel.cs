@@ -108,10 +108,13 @@ namespace ControYaApp.ViewModels
             InitData();
 
             GetOrdenesCommand = new AsyncRelayCommand(GetOrdenesProduccionAsync);
-            NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
+            //NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
+            //NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
             SincronizarOrdenesProduccionCommand = new RelayCommand(SincronizarOrdenesProduccion);
-            NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPm);
+            //NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPm);
+
+            NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionPt>(NotificarPtAsync);
             VaciarOrdenes();
         }
 
@@ -273,34 +276,56 @@ namespace ControYaApp.ViewModels
             OrdenesProduccionGroups = allOrdenesGrouped;
         }
 
-
-        public async Task NotificarPtAsync()
+        public async Task NotificarPtAsync(OrdenProduccionPt ordenProduccionPt)
         {
             try
             {
-                if (OrdenProduccionPtSelected.Saldo == 0)
-                {
-                    await Toast.Make("Esta orden no tiene saldo para notificar", ToastDuration.Long).Show();
-                    return;
-                }
                 var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
 
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
                 var navParameter = new ShellNavigationQueryParameters
                 {
-                    { "ordenProduccionPt", OrdenProduccionPtSelected},
+                    { "ordenProduccionPt", ordenProduccionPt},
                     { "empleados", empleados}
                 };
 
                 await Shell.Current.GoToAsync("notificarPt", navParameter);
-                OrdenProduccionPtSelected = null;
+
             }
             catch (Exception ex)
             {
                 await Toast.Make(ex.Message).Show();
             }
         }
+
+        //public async Task NotificarPtAsync()
+        //{
+        //    try
+        //    {
+        //        if (OrdenProduccionPtSelected.Saldo == 0)
+        //        {
+        //            await Toast.Make("Esta orden no tiene saldo para notificar", ToastDuration.Long).Show();
+        //            return;
+        //        }
+        //        var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+
+        //        empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
+
+        //        var navParameter = new ShellNavigationQueryParameters
+        //        {
+        //            { "ordenProduccionPt", OrdenProduccionPtSelected},
+        //            { "empleados", empleados}
+        //        };
+
+        //        await Shell.Current.GoToAsync("notificarPt", navParameter);
+        //        OrdenProduccionPtSelected = null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await Toast.Make(ex.Message).Show();
+        //    }
+        //}
 
         private ObservableCollection<OrdenProduccionGroup> MapOrdenesProduccionGrouped(ObservableCollection<OrdenProduccion> ordenesPrd, ObservableCollection<OrdenProduccionPt> ordenesProducciondPt)
         {

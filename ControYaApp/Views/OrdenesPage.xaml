@@ -77,10 +77,11 @@
             ItemsSource="{Binding OrdenesProduccionGroups}"
             SelectedItem="{Binding OrdenProduccionPtSelected}"
             SelectionChangedCommand="{Binding NotificarPtCommand}"
-            SelectionMode="Single">
+            SelectionMode="None">
 
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:OrdenProduccionGroup">
+
 
                     <Grid
                         Margin="5,15,5,0"
@@ -186,79 +187,105 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:OrdenProduccionPt">
 
-                    <Border Margin="3,2" Style="{StaticResource Border_OrdenesDetalle}">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                    <SwipeView>
 
-                            <Label Style="{StaticResource Label_titulos}" Text="{Binding Producto}" />
+                        <SwipeView.LeftItems>
+                            <SwipeItem
+                                BackgroundColor="#66b396"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPtCommand}"
+                                CommandParameter="{Binding}"
+                                IconImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                                                  Glyph={x:Static m:MaterialSharp.List_alt},
+                                                                  Color=#0f2b57}"
+                                Text="PT" />
+                        </SwipeView.LeftItems>
 
-                            <Grid
-                                Grid.Row="1"
-                                ColumnDefinitions="*,Auto"
-                                RowDefinitions="Auto,Auto"
-                                Style="{StaticResource Grid_DatosOrdenes}">
-                                <Label Style="{StaticResource Label_PropiedadOrden}" Text="Codigo producto" />
-                                <Label
+                        <!--<SwipeView.LeftItems>
+                            <SwipeItems>
+                                <SwipeItem
+                                    BackgroundColor="#66b396"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPtCommand}"
+                                    CommandParameter="{Binding}"
+                                    IconImageSource="dotnet_bot.png"
+                                    Text="Notificar PT" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>-->
+
+                        <Border Margin="3,2" Style="{StaticResource Border_OrdenesDetalle}">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+
+                                <Label Style="{StaticResource Label_titulos}" Text="{Binding Producto}" />
+
+                                <Grid
                                     Grid.Row="1"
-                                    Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding CodigoProducto}" />
+                                    ColumnDefinitions="*,Auto"
+                                    RowDefinitions="Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Codigo producto" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding CodigoProducto}" />
 
-                                <Label
-                                    Grid.Column="1"
-                                    Style="{StaticResource Label_PropiedadOrden}"
-                                    Text="Codigo Material" />
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding CodigoMaterial}" />
-                            </Grid>
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Codigo Material" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding CodigoMaterial}" />
+                                </Grid>
 
-                            <Grid
-                                Grid.Row="2"
-                                ColumnDefinitions="*,*"
-                                RowDefinitions="Auto,Auto,Auto,Auto"
-                                Style="{StaticResource Grid_DatosOrdenes}">
-
-                                <Label Style="{StaticResource Label_PropiedadOrden}" Text="Cantidad" />
-                                <Label
-                                    Grid.Row="1"
-                                    Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding Cantidad}" />
-
-                                <Label
-                                    Grid.Column="1"
-                                    Style="{StaticResource Label_PropiedadOrden}"
-                                    Text="Codigo unidad" />
-                                <Label
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding CodigoUnidad}" />
-
-                                <Label
+                                <Grid
                                     Grid.Row="2"
-                                    Style="{StaticResource Label_PropiedadOrden}"
-                                    Text="Notificado" />
-                                <Label
-                                    Grid.Row="3"
-                                    Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding Notificado}" />
+                                    ColumnDefinitions="*,*"
+                                    RowDefinitions="Auto,Auto,Auto,Auto"
+                                    Style="{StaticResource Grid_DatosOrdenes}">
+
+                                    <Label Style="{StaticResource Label_PropiedadOrden}" Text="Cantidad" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Cantidad}" />
+
+                                    <Label
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Codigo unidad" />
+                                    <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding CodigoUnidad}" />
+
+                                    <Label
+                                        Grid.Row="2"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Notificado" />
+                                    <Label
+                                        Grid.Row="3"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Notificado}" />
 
 
-                                <Label
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Style="{StaticResource Label_PropiedadOrden}"
-                                    Text="Saldo" />
-                                <Label
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    Style="{StaticResource Label_ValorPropiedadOrden}"
-                                    Text="{Binding Saldo}" />
+                                    <Label
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_PropiedadOrden}"
+                                        Text="Saldo" />
+                                    <Label
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Label_ValorPropiedadOrden}"
+                                        Text="{Binding Saldo}" />
 
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Border>
+                        </Border>
+                    </SwipeView>
+
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
