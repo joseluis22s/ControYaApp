@@ -79,7 +79,7 @@
                     MaximumWidthRequest="200" />
             </Grid>
 
-            <Label Grid.Row="2" Text="Binding Count, StringFormat='{0} item/s seleccionados.'}" />
+            <!--<Label Grid.Row="2" Text="Binding Count, StringFormat='{0} item/s seleccionados.'}" />-->
 
 
         </Grid>
@@ -109,6 +109,7 @@
                     <v:RequiredValidation />
                 </urui:InputField.Validations>
             </urui:InputField>
+
         </Grid>
 
 

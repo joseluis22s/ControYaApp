@@ -30,7 +30,6 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                     pmNotificadoSaved.AprobarAutoInventario = pmNotificado.AprobarAutoInventario;
                     pmNotificadoSaved.Fecha = pmNotificado.Fecha;
                     pmNotificadoSaved.Notificado = pmNotificado.Notificado;
-                    pmNotificadoSaved.CodigoEmpleado = pmNotificado.CodigoEmpleado;
                     pmNotificadoSaved.CodigoUsuario = pmNotificado.CodigoUsuario;
                     return await _database.UpdateAsync(pmNotificadoSaved);
                 }
@@ -42,12 +41,12 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task<List<PtNotificado>> GetAllMpNotificadoAsync()
+        public async Task<List<MpNotificado>> GetAllMpNotificadoAsync()
         {
             try
             {
                 await InitAsync();
-                return await _database.Table<PtNotificado>().ToListAsync();
+                return await _database.Table<MpNotificado>().ToListAsync();
             }
             catch (Exception) { throw; }
         }

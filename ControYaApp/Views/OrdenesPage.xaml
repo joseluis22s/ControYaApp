@@ -82,104 +82,119 @@
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:OrdenProduccionGroup">
 
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItem
+                                BackgroundColor="#b2b366"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPmCommand}"
+                                CommandParameter="{Binding}"
+                                IconImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                                                  Glyph={x:Static m:MaterialSharp.Orders},
+                                                                  Color=#0f2b57}"
+                                Text="MP" />
+                        </SwipeView.RightItems>
 
-                    <Grid
-                        Margin="5,15,5,0"
-                        ColumnDefinitions="*,Auto"
-                        RowDefinitions="Auto,Auto,Auto,Auto"
-                        RowSpacing="6">
-
-                        <BoxView
-                            Grid.ColumnSpan="2"
-                            Margin="0,0,0,5"
-                            CornerRadius="50"
-                            HeightRequest="1"
-                            Color="#0f2b57" />
-
-                        <Grid
-                            Grid.Row="1"
-                            ColumnDefinitions="Auto,*"
-                            ColumnSpacing="10"
-                            RowDefinitions="Auto,Auto"
-                            Style="{StaticResource Grid_DatosOrdenes}">
-                            <Border
-                                Grid.RowSpan="2"
-                                Padding="4"
-                                BackgroundColor="#181f34"
-                                StrokeShape="{RoundRectangle CornerRadius=10}"
-                                VerticalOptions="Center">
-                                <Label
-                                    FontSize="20"
-                                    TextColor="#ffffff"
-                                    VerticalOptions="Center">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span FontAttributes="Bold" Text="#" />
-                                            <Span FontAttributes="Bold" Text="{Binding OrdenProduccion.Orden}" />
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
-                            </Border>
-                            <Label
-                                Grid.Column="1"
-                                LineBreakMode="WordWrap"
-                                Style="{StaticResource Label_titulos}"
-                                Text="{Binding OrdenProduccion.Centro}" />
-                            <Label
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Style="{StaticResource Label_titulos}"
-                                Text="{Binding OrdenProduccion.Fecha, StringFormat='{0:dd/MM/yyyy}'}" />
-                        </Grid>
 
                         <Grid
-                            Grid.Row="2"
-                            ColumnDefinitions="*,*"
+                            Margin="5,15,5,0"
+                            ColumnDefinitions="*,Auto"
                             RowDefinitions="Auto,Auto,Auto,Auto"
-                            Style="{StaticResource Grid_DatosOrdenes}">
-                            <Label Style="{StaticResource Label_PropiedadOrden}" Text="Código producción" />
-                            <Label
+                            RowSpacing="6">
+
+                            <BoxView
+                                Grid.ColumnSpan="2"
+                                Margin="0,0,0,5"
+                                CornerRadius="50"
+                                HeightRequest="1"
+                                Color="#0f2b57" />
+
+                            <Grid
                                 Grid.Row="1"
-                                Style="{StaticResource Label_ValorPropiedadOrden}"
-                                Text="{Binding OrdenProduccion.CodigoProduccion}" />
-                            <Label
-                                Grid.Column="1"
-                                Style="{StaticResource Label_PropiedadOrden}"
-                                Text="Referencia" />
-                            <Label
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Style="{StaticResource Label_ValorPropiedadOrden}"
-                                Text="{Binding OrdenProduccion.Referencia}" />
-                            <Label
+                                ColumnDefinitions="Auto,*"
+                                ColumnSpacing="10"
+                                RowDefinitions="Auto,Auto"
+                                Style="{StaticResource Grid_DatosOrdenes}">
+                                <Border
+                                    Grid.RowSpan="2"
+                                    Padding="4"
+                                    BackgroundColor="#181f34"
+                                    StrokeShape="{RoundRectangle CornerRadius=10}"
+                                    VerticalOptions="Center">
+                                    <Label
+                                        FontSize="20"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold" Text="#" />
+                                                <Span FontAttributes="Bold" Text="{Binding OrdenProduccion.Orden}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </Border>
+                                <Label
+                                    Grid.Column="1"
+                                    LineBreakMode="WordWrap"
+                                    Style="{StaticResource Label_titulos}"
+                                    Text="{Binding OrdenProduccion.Centro}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Style="{StaticResource Label_titulos}"
+                                    Text="{Binding OrdenProduccion.Fecha, StringFormat='{0:dd/MM/yyyy}'}" />
+                            </Grid>
+
+                            <Grid
                                 Grid.Row="2"
-                                Grid.ColumnSpan="2"
-                                HorizontalOptions="Start"
-                                Style="{StaticResource Label_PropiedadOrden}"
-                                Text="Detalle" />
-                            <Label
-                                Grid.Row="3"
-                                Grid.ColumnSpan="2"
-                                HorizontalOptions="Start"
-                                Style="{StaticResource Label_ValorPropiedadOrden}"
-                                Text="{Binding OrdenProduccion.Detalle}" />
+                                ColumnDefinitions="*,*"
+                                RowDefinitions="Auto,Auto,Auto,Auto"
+                                Style="{StaticResource Grid_DatosOrdenes}">
+                                <Label Style="{StaticResource Label_PropiedadOrden}" Text="Código producción" />
+                                <Label
+                                    Grid.Row="1"
+                                    Style="{StaticResource Label_ValorPropiedadOrden}"
+                                    Text="{Binding OrdenProduccion.CodigoProduccion}" />
+                                <Label
+                                    Grid.Column="1"
+                                    Style="{StaticResource Label_PropiedadOrden}"
+                                    Text="Referencia" />
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Style="{StaticResource Label_ValorPropiedadOrden}"
+                                    Text="{Binding OrdenProduccion.Referencia}" />
+                                <Label
+                                    Grid.Row="2"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource Label_PropiedadOrden}"
+                                    Text="Detalle" />
+                                <Label
+                                    Grid.Row="3"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalOptions="Start"
+                                    Style="{StaticResource Label_ValorPropiedadOrden}"
+                                    Text="{Binding OrdenProduccion.Detalle}" />
+                            </Grid>
+
+                            <!--<Button
+                                Grid.RowSpan="4"
+                                Grid.Column="1"
+                                Padding="11"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPmCommand}"
+                                CommandParameter="{Binding}"
+                                CornerRadius="5"
+                                HeightRequest="50"
+                                HorizontalOptions="Center"
+                                ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                                              Glyph={x:Static m:MaterialSharp.Inventory},
+                                                              Color=#ffffff}"
+                                WidthRequest="50" />-->
+
                         </Grid>
 
-                        <Button
-                            Grid.RowSpan="4"
-                            Grid.Column="1"
-                            Padding="11"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPmCommand}"
-                            CommandParameter="{Binding}"
-                            CornerRadius="5"
-                            HeightRequest="50"
-                            HorizontalOptions="Center"
-                            ImageSource="{FontImageSource FontFamily=MaterialSharp,
-                                                          Glyph={x:Static m:MaterialSharp.Inventory},
-                                                          Color=#ffffff}"
-                            WidthRequest="50" />
+                    </SwipeView>
 
-                    </Grid>
 
                 </DataTemplate>
             </CollectionView.GroupHeaderTemplate>
@@ -199,17 +214,6 @@
                                                                   Color=#0f2b57}"
                                 Text="PT" />
                         </SwipeView.LeftItems>
-
-                        <!--<SwipeView.LeftItems>
-                            <SwipeItems>
-                                <SwipeItem
-                                    BackgroundColor="#66b396"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPtCommand}"
-                                    CommandParameter="{Binding}"
-                                    IconImageSource="dotnet_bot.png"
-                                    Text="Notificar PT" />
-                            </SwipeItems>
-                        </SwipeView.LeftItems>-->
 
                         <Border Margin="3,2" Style="{StaticResource Border_OrdenesDetalle}">
                             <Grid RowDefinitions="Auto,Auto,Auto,Auto">

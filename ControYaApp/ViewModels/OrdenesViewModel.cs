@@ -112,7 +112,7 @@ namespace ControYaApp.ViewModels
             //NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
             SincronizarOrdenesProduccionCommand = new RelayCommand(SincronizarOrdenesProduccion);
-            //NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPm);
+            NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPm);
 
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionPt>(NotificarPtAsync);
             VaciarOrdenes();
@@ -136,7 +136,6 @@ namespace ControYaApp.ViewModels
                 }
 
                 var ordenesProduccionMaterialGroup = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpDb);
-
                 var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 

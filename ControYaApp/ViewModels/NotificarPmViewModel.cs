@@ -12,8 +12,8 @@ namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(OrdenesProduccionMaterialGroupSource), "ordenesProdMpGrouped")]
     [QueryProperty(nameof(OrdenesProduccionMaterialGroup), "ordenesProdMpGrouped")]
-    [QueryProperty(nameof(Empleados), "empleados")]
     [QueryProperty(nameof(RangoPeriodos), "rangosPeriodos")]
+    [QueryProperty(nameof(Empleados), "empleados")]
     public partial class NotificarPmViewModel : BaseViewModel
     {
 
@@ -48,8 +48,6 @@ namespace ControYaApp.ViewModels
             get => _fechaActual;
             set => SetProperty(ref _fechaActual, value);
         }
-
-
         private EmpleadoSistema? _empleadoSelected;
         public EmpleadoSistema? EmpleadoSelected
         {
@@ -64,7 +62,6 @@ namespace ControYaApp.ViewModels
             get => _empleados;
             set => SetProperty(ref _empleados, value);
         }
-
 
         private Periodos _rangoPeriodos;
         public Periodos RangoPeriodos
@@ -141,7 +138,12 @@ namespace ControYaApp.ViewModels
                     await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
                 }
-                //TODO: Agregar control para validar que se ahaya eleigo un empleado
+
+                if (EmpleadoSelected is null)
+                {
+                    await Toast.Make("Ningún empleado seleccionado.", ToastDuration.Long).Show();
+                    return;
+                }
 
                 // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
                 List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
@@ -188,10 +190,10 @@ namespace ControYaApp.ViewModels
                 if (itemOriginal != null)
                 {
                     // Suma el valor de "Notificado" del ítem original al ítem de OrdenesProduccionMaterialGroupSource
-                    itemSource.Notificado += itemOriginal.Notificado;
+                    itemOriginal.Notificado += itemSource.Notificado;
                 }
             }
-            return selectedItemsSource;
+            return selectedItemsOriginal;
         }
 
         private List<MpNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool AutoApproveProduccion, bool AutoApproveInventario,
@@ -200,12 +202,16 @@ namespace ControYaApp.ViewModels
             return ordenesProduccionMp
                 .Select(item => new MpNotificado
                 {
+                    CodigoMaterial = item.CodigoMaterial,
+                    CodigoProduccion = item.CodigoProduccion,
+                    Orden = item.Orden,
+                    IdMaterialProduccion = item.IdMaterialProduccion,
                     Id = item.Id,                // Mapea el Id
                     Notificado = item.Notificado, // Mapea el Notificado (usa 0 si es null)
                     AprobarAutoProduccion = AutoApproveProduccion,
                     AprobarAutoInventario = AutoApproveInventario,
-                    Fecha = fecha,
                     CodigoEmpleado = codigoEmpleado,
+                    Fecha = fecha,
                     CodigoUsuario = codigoUsuario
                 })
                 .ToList();

@@ -7,22 +7,29 @@ namespace ControYaApp.Models
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [JsonIgnore]
         public bool Sincronizado { get; set; }
 
-        // TODO: Verificar si entra en conflicto con la deserializacion
-        public bool AprobarAutoProduccion { get; set; }
+        public string CodigoProduccion { get; set; }
 
-        public bool AprobarAutoInventario { get; set; }
+        public int Orden { get; set; }
 
-        public DateTime Fecha { get; set; }
+        public string CodigoMaterial { get; set; }
+
+        public int IdMaterialProduccion { get; set; }
 
         public decimal Notificado { get; set; }
 
-        public string CodigoEmpleado { get; set; }
+        public DateTime Fecha { get; set; }
 
         public string CodigoUsuario { get; set; }
+
+        public string CodigoEmpleado { get; set; }
+
+        public bool AprobarAutoProduccion { get; set; }
+
+        public bool AprobarAutoInventario { get; set; }
     }
 }
