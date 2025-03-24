@@ -115,7 +115,6 @@ namespace ControYaApp.ViewModels
                         ptNotificados = AllPtNotificados
                     };
                     await _restService.NotificarManyPtAsync(req);
-                    await Toast.Make("Se ha enviado PT notificados locales", ToastDuration.Long).Show();
                     await _localRepoService.PtNotificadoRepo.DeleteAllPtNotificado();
                 }
 
@@ -126,7 +125,6 @@ namespace ControYaApp.ViewModels
                         mpNotificados = AllMpNotificados
                     };
                     await _restService.NotificarManyMpAsync(req);
-                    await Toast.Make("Se ha enviado MP notificados locales", ToastDuration.Long).Show();
                     await _localRepoService.MpNotificadoRepo.DeleteAllMpNotificado();
                 }
 
@@ -256,34 +254,6 @@ namespace ControYaApp.ViewModels
                     )
                 )
             );
-            //var ordenProducciondPtDic = ordenesProducciondPt
-            //    .GroupBy(d => new
-            //    {
-            //        d.Centro,
-            //        d.CodigoProduccion,
-            //        d.Orden
-            //    }
-            //    ).ToDictionary(g => g.Key, g => g.ToList());
-
-
-            //var ordenesProduccionGrouped = ordenesPrd
-            //    .Select(ordenProduccion =>
-            //    {
-            //        var key = new
-            //        {
-            //            ordenProduccion.Centro,
-            //            ordenProduccion.CodigoProduccion,
-            //            ordenProduccion.Orden
-            //        };
-
-            //        return new OrdenProduccionGroup(
-            //            ordenProduccion,
-            //            ordenProducciondPtDic.TryGetValue(key, out var ordenesProducciondPtGrouped) ? ordenesProducciondPtGrouped : new List<OrdenProduccionPt>()
-            //        );
-            //    })
-            //    .ToList();
-
-            //return new ObservableCollection<OrdenProduccionGroup>(ordenesProduccionGrouped);
         }
 
         public ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)

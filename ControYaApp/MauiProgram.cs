@@ -22,16 +22,8 @@ namespace ControYaApp
             builder
                 .UseMauiApp<App>().UseUraniumUI()
                 .UseUraniumUIMaterial()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("Aileron-Regular", "AileronRegular");
-                    fonts.AddFont("Aileron-Semibol", "OpenSansRegular");
-                    fonts.AddMaterialSymbolsFonts();
-
-                }).UseMauiCommunityToolkit()
-                .RegisterAppServices()
-                .RegisterViews()
-                .RegisterViewModels()
+                .ConfigureFonts(RegisterAppFonts).UseMauiCommunityToolkit()
+                .RegisterProduccionModule()
                 .ConfigureMauiHandlers(handlers =>
                 {
 #if ANDROID
@@ -45,12 +37,43 @@ namespace ControYaApp
             return builder.Build();
         }
 
+        public static void RegisterAppFonts(IFontCollection fonts)
+        {
+            fonts.AddFont("Aileron-Regular", "AileronRegular");
+            fonts.AddFont("Aileron-Semibol", "OpenSansRegular");
+            fonts.AddMaterialSymbolsFonts();
+        }
+
         // AddSingleton: Una sola instancia para la App. Debe durar. Generlamente a servicios
         // AddTransient: Cada vez que se solicita una instancia, se crea una nueva. Generalmente a Views y ViewModels
-        public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+        public static MauiAppBuilder RegisterProduccionModule(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.RegisterProduccionViews();
+            mauiAppBuilder.RegisterProduccionViewModels();
+            mauiAppBuilder.RegisterProduccionServices();
+
+            return mauiAppBuilder;
+        }
+
+        public static MauiAppBuilder RegisterProduccionViews(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<AppShell>();
+            mauiAppBuilder.Services.AddTransient<LoadingPopUp>();
+            mauiAppBuilder.Services.AddTransient<LoginPage>();
+            mauiAppBuilder.Services.AddTransient<OrdenesPage>();
+            mauiAppBuilder.Services.AddTransient<NotificarPtPage>();
+            mauiAppBuilder.Services.AddTransient<ConfigPage>();
+            mauiAppBuilder.Services.AddTransient<HomePage>();
+            mauiAppBuilder.Services.AddTransient<NotificarPmPage>();
+            mauiAppBuilder.Services.AddTransient<NotificarPtPdfPage>();
+            mauiAppBuilder.Services.AddTransient<AutorizarOrdenesPrdPage>();
+
+            return mauiAppBuilder;
+        }
+
+        public static MauiAppBuilder RegisterProduccionViewModels(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
-
             mauiAppBuilder.Services.AddTransient<LoadingPopUpViewModel>();
             mauiAppBuilder.Services.AddTransient<LoginViewModel>();
             mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
@@ -59,32 +82,12 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<HomeViewModel>();
             mauiAppBuilder.Services.AddTransient<NotificarPmViewModel>();
             mauiAppBuilder.Services.AddTransient<AutorizarOrdenesPrdViewModel>();
-
-            //mauiAppBuilder.Services.AddSingleton<HomeViewModel>();
-
-
             mauiAppBuilder.Services.AddSingleton<NotificarPtPdfViewModel>();
 
             return mauiAppBuilder;
         }
-        public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
-        {
-            mauiAppBuilder.Services.AddSingleton<AppShell>();
 
-            mauiAppBuilder.Services.AddTransient<LoadingPopUp>();
-            mauiAppBuilder.Services.AddTransient<LoginPage>();
-            mauiAppBuilder.Services.AddTransient<OrdenesPage>();
-            mauiAppBuilder.Services.AddTransient<NotificarPtPage>();
-            mauiAppBuilder.Services.AddTransient<ConfigPage>();
-            mauiAppBuilder.Services.AddTransient<HomePage>();
-            mauiAppBuilder.Services.AddTransient<NotificarPmPage>();
-            //mauiAppBuilder.Services.AddSingleton<HomePage>();
-            mauiAppBuilder.Services.AddTransient<NotificarPtPdfPage>();
-            mauiAppBuilder.Services.AddTransient<AutorizarOrdenesPrdPage>();
-
-            return mauiAppBuilder;
-        }
-        public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
+        public static MauiAppBuilder RegisterProduccionServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
@@ -100,16 +103,15 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionFilter>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpFilter>();
-
             mauiAppBuilder.Services.AddTransient<PdfService>();
 
             return mauiAppBuilder;
         }
 
-        public static void ConfigureMauiHandlers()
-        {
+        //public static void ConfigureMauiHandlers()
+        //{
 
-        }
+        //}
     }
 
 }
