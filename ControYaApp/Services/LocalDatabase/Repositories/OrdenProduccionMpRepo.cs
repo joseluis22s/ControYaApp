@@ -59,10 +59,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             {
                 await InitAsync();
 
-                var ordenesProduccionMp = await _database.Table<OrdenProduccionMp>().Where(opMp =>
-                    opMp.Saldo > 0
-                ).ToListAsync();
-
+                var ordenesProduccionMp = await _database.Table<OrdenProduccionMp>().ToListAsync();
                 if (ordenesProduccionMp.Count != 0)
                 {
                     return new ObservableCollection<OrdenProduccionMp>(ordenesProduccionMp);
@@ -70,6 +67,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 return [];
             }
             catch (Exception) { throw; }
+
         }
 
         public async Task<int> UpdateAllNotificadoAsync(List<OrdenProduccionMp> ordenesProduccionMp)

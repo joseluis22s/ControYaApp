@@ -90,10 +90,10 @@
                     FontSize="18"
                     Text="{Binding PendingOrdenesProdCount, StringFormat='Total Notificación PT = {0}'}"
                     TextColor="#0f2b57" />
-                <!--<Label
+                <Label
                     FontSize="18"
                     Text="{Binding OrdenesProdMpCount, StringFormat='Total Notificación MP = {0}'}"
-                    TextColor="#0f2b57" />-->
+                    TextColor="#0f2b57" />
                 <Button
                     Padding="50,0"
                     Command="{Binding GoToOrdenesCommand}"
