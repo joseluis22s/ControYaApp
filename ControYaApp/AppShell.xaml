@@ -15,9 +15,7 @@
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="login"
         Shell.FlyoutBehavior="Disabled"
-        Shell.FlyoutItemIsVisible="False">
-        <ShellNavigationQueryParameters />
-    </ShellContent>
+        Shell.FlyoutItemIsVisible="False" />
 
     <ShellContent
         Title="Inicio"
@@ -36,8 +34,10 @@
         Route="autorizarOrdenesPrd" />
 
     <!--
-        "NotificarPtPage"
-        "ConfigPage"
+        'NotificarPtPage' - "notificarPt"
+        'NotificarPmPage' - "notificarPm"
+        'ConfigPage' - "config"
+        'NotificarPtPdfPage' - "notificarPtPdf"
         
         Agregadas como 'ruta global' y se llama/navega como 'ruta relativa'.
         INFO:https://learn.microsoft.com/es-es/dotnet/maui/fundamentals/shell/navigation?view=net-maui-9.0#relative-routes

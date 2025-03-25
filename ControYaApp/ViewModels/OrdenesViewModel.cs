@@ -175,7 +175,7 @@ namespace ControYaApp.ViewModels
 
         private void SincronizarOrdenesProduccion()
         {
-            _appShellViewModel.ExtraerDatosCommand.Execute(null);
+            _appShellViewModel.GetAndSaveDataCommand.Execute(null);
             _homeViewModel.InitData();
             if (SharedData.AllOrdenesProduccionGroups.Count != 0)
             {

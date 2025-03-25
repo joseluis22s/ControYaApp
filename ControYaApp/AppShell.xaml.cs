@@ -15,6 +15,7 @@ namespace ControYaApp
 
             BindingContext = _vm = vm;
 
+            // Registro de rutas globales.
             Routing.RegisterRoute("notificarPt", typeof(NotificarPtPage));
             Routing.RegisterRoute("notificarPm", typeof(NotificarPmPage));
             Routing.RegisterRoute("config", typeof(ConfigPage));

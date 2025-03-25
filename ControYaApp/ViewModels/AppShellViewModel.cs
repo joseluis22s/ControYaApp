@@ -3,7 +3,6 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.SharedData;
@@ -14,7 +13,6 @@ namespace ControYaApp.ViewModels
 {
     public partial class AppShellViewModel : BaseViewModel
     {
-
         private readonly RestService _restService;
 
         private readonly LocalRepoService _localRepoService;
@@ -40,23 +38,26 @@ namespace ControYaApp.ViewModels
 
         public ICommand FlyoutShellCommand { get; }
 
-        public ICommand ExtraerDatosCommand { get; }
+        public ICommand GetAndSaveDataCommand { get; }
+
+
+
 
         public AppShellViewModel(DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService, ISharedData sharedData)
         {
-
-            SharedData = sharedData; //No mover.
-
             _restService = restService;
             _localRepoService = localRepoService;
             _dataConfigRepo = dataConfigRepo;
+
+            SharedData = sharedData;
 
             InitIpAddress();
 
             GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
-            ExtraerDatosCommand = new AsyncRelayCommand(ExtraerDatosAsync);
+            GetAndSaveDataCommand = new AsyncRelayCommand(GetAndSaveDataAsync);
         }
+
 
 
 
@@ -80,38 +81,26 @@ namespace ControYaApp.ViewModels
             }
         }
 
-
-
         private async Task GoToLoginAsync()
         {
             await Shell.Current.GoToAsync("//login");
-
         }
 
 
         private void FlyoutShell()
         {
             Shell.Current.FlyoutIsPresented = !Shell.Current.FlyoutIsPresented;
-
-            NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-
-            IsConected = false;
-            if (accessType == NetworkAccess.Internet)
-            {
-                IsConected = true;
-            }
+            IsConected = Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
         }
 
-        private async Task ExtraerDatosAsync()
+        private async Task GetAndSaveDataAsync()
         {
-
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
 
             try
             {
-                WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-
+                //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
 
                 await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
@@ -122,15 +111,12 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
                 var empleados = await _restService.GetAllEmpleadosAsync();
 
-
                 await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
                 await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
                 await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
                 await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
                 await _localRepoService.OrdenesProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
                 await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
-
-
             }
             catch (Exception ex)
             {
@@ -138,13 +124,11 @@ namespace ControYaApp.ViewModels
             }
             finally
             {
-                Shell.Current.FlyoutIsPresented = false;
-
                 await loadingPopUpp.CloseAsync();
             }
-
-
         }
+
+        //private async Task
 
 
 

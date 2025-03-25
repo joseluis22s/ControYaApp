@@ -2,14 +2,16 @@
 
 namespace ControYaApp.Services.DI
 {
-    public class LocalRepoService(EmpleadosRepo empleadosRepo,
+    public class LocalRepoService(
+        EmpleadosRepo empleadosRepo,
         OrdenProduccionMpRepo ordenProduccionMpRepo,
         OrdenProduccionPtRepo ordenProduccionPtRepo,
         PeriodoRepo periodoRepo,
         OrdenProduccionRepo ordenesProduccionRepo,
         UsuarioRepo usuarioRepo,
         PtNotificadoRepo ptNotificadoRepo,
-        MpNotificadoRepo mpNotificadoRepo)
+        MpNotificadoRepo mpNotificadoRepo
+        )
     {
         public EmpleadosRepo EmpleadosRepo { get; } = empleadosRepo;
 
