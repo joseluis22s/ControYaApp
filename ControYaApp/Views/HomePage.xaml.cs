@@ -16,12 +16,8 @@ public partial class HomePage : ContentPage
 
     protected override bool OnBackButtonPressed()
     {
-        // return true: Deshabilita comportamiento
-        // return false: Mantiene comportamiento 
-        // Use the line above if you want to just disable the Back action. 
-        // If you want to instead bind it to the same command as 
-        // the BackButtonBehavior, use something like this :
-
+        // `return true`: Deshabilita comportamiento
+        // `return false`: Mantiene comportamiento 
         if (BindingContext is HomeViewModel vm)
         {
             vm.BackButtonPressed().GetAwaiter();

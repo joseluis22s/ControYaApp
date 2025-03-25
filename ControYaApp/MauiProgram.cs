@@ -46,6 +46,18 @@ namespace ControYaApp
 
         // AddSingleton: Una sola instancia para la App. Debe durar. Generlamente a servicios
         // AddTransient: Cada vez que se solicita una instancia, se crea una nueva. Generalmente a Views y ViewModels
+        public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddSingleton<RestService>();
+            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
+            mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
+            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
+            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
+            mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
+            mauiAppBuilder.Services.AddTransient<PdfService>();
+            return mauiAppBuilder;
+        }
+
         public static MauiAppBuilder RegisterProduccionModule(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.RegisterProduccionViews();
@@ -89,20 +101,22 @@ namespace ControYaApp
 
         public static MauiAppBuilder RegisterProduccionServices(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<RestService>();
-            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
-            mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionPtRepo>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
-            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
             mauiAppBuilder.Services.AddSingleton<MpNotificadoRepo>();
-            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
             mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
-            mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionFilter>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpFilter>();
+
+
+            mauiAppBuilder.Services.AddSingleton<RestService>();
+            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
+            mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
+            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
+            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
+            mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
             mauiAppBuilder.Services.AddTransient<PdfService>();
 
             return mauiAppBuilder;

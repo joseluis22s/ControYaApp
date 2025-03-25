@@ -26,7 +26,7 @@
     <ShellContent
         Title="Ordenes de Producción"
         ContentTemplate="{DataTemplate views:OrdenesPage}"
-        Route="ordenes"
+        Route="ordenesProduccion"
         Shell.NavBarIsVisible="False" />
     <ShellContent
         Title="Autorizar órdenes producción"

@@ -166,7 +166,7 @@ namespace ControYaApp.ViewModels
 
         private async Task GoToOrdenes()
         {
-            await Shell.Current.GoToAsync("//ordenes");
+            await Shell.Current.GoToAsync("//ordenesProduccion");
         }
 
 

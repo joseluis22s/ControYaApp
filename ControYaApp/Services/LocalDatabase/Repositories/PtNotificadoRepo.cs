@@ -17,31 +17,13 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<PtNotificado>();
         }
 
-        public async Task SaveOrUpdatePtNotificadoAsync(PtNotificado ptNotificado)
+        public async Task SavePtNotificadoAsync(PtNotificado ptNotificado)
         {
             try
             {
                 await InitAsync();
-                var ptNotificadoSaved = await _database.Table<PtNotificado>().Where(pt =>
-                    pt.CodigoProduccion == ptNotificado.CodigoProduccion &&
-                    pt.Orden == ptNotificado.Orden &&
-                    pt.CodigoMaterial == ptNotificado.CodigoMaterial &&
-                    pt.CodigoUsuario == ptNotificado.CodigoUsuario
-                ).FirstOrDefaultAsync();
-                if (ptNotificadoSaved is not null)
-                {
-                    ptNotificadoSaved.AprobarAutoProduccion = ptNotificado.AprobarAutoProduccion;
-                    ptNotificadoSaved.AprobarAutoInventario = ptNotificado.AprobarAutoInventario;
-                    ptNotificadoSaved.Fecha = ptNotificado.Fecha;
-                    ptNotificadoSaved.Notificado = ptNotificado.Notificado;
-                    ptNotificadoSaved.CodigoEmpleado = ptNotificado.CodigoEmpleado;
-                    ptNotificadoSaved.Serie = ptNotificado.Serie;
-                    await _database.UpdateAsync(ptNotificadoSaved);
-                }
-                else
-                {
-                    await _database.InsertAsync(ptNotificado);
-                }
+
+                await _database.InsertAsync(ptNotificado);
             }
             catch (Exception) { throw; }
         }

@@ -191,10 +191,10 @@ namespace ControYaApp.ViewModels
                 }
 
                 var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado);
-                OrdenProduccionPt.Notificado = ptNotificado.Notificado;
+                OrdenProduccionPt.Notificado += ptNotificado.Notificado;
                 await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
-                await _ptNotificadoRepo.SaveOrUpdatePtNotificadoAsync(ptNotificado);
+                await _ptNotificadoRepo.SavePtNotificadoAsync(ptNotificado);
 
                 _isNotified = true;
 
@@ -279,7 +279,9 @@ namespace ControYaApp.ViewModels
                 Orden = ordenProduccionPt.Orden,
                 CodigoMaterial = ordenProduccionPt.CodigoMaterial,
                 Fecha = FechaActual,
-                Notificado = ordenProduccionPt.Notificado + notificado,
+                // TODO: Eliminar esat linea
+                // Notificado = ordenProduccionPt.Notificado + notificado,
+                Notificado = notificado,
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,
                 CodigoUsuario = ordenProduccionPt.CodigoUsuarioAprobar,
