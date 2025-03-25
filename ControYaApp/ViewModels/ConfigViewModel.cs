@@ -110,20 +110,6 @@ namespace ControYaApp.ViewModels
                     return;
                 }
             }
-
-            if (_dataConfigSave.Ip != SharedData.IpAddress)
-            {
-                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
-                if (res)
-                {
-                    SharedData.IpAddress = _dataConfigSave.Ip;
-                    SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-                    //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
-                    await Shell.Current.GoToAsync("..");
-                    return;
-                }
-            }
             else
             {
                 var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
@@ -136,6 +122,31 @@ namespace ControYaApp.ViewModels
                     await Shell.Current.GoToAsync("..");
                 }
             }
+            //if (_dataConfigSave.Ip != SharedData.IpAddress)
+            //{
+            //    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
+            //    if (res)
+            //    {
+            //        SharedData.IpAddress = _dataConfigSave.Ip;
+            //        SharedData.Protocolo = _dataConfigSave.Protocolo;
+            //        //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+            //        //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
+            //        await Shell.Current.GoToAsync("..");
+            //        return;
+            //    }
+            //}
+            //else
+            //{
+            //    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
+            //    if (res)
+            //    {
+            //        SharedData.IpAddress = _dataConfigSave.Ip;
+            //        SharedData.Protocolo = _dataConfigSave.Protocolo;
+            //        //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
+            //        //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
+            //        await Shell.Current.GoToAsync("..");
+            //    }
+            //}
         }
 
 

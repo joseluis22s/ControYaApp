@@ -184,13 +184,9 @@ namespace ControYaApp.ViewModels
                                                     SharedData.AutoApproveInventario, FechaActual,
                                                     EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
 
-                int updatedCount = await _ordenProduccionMpRepo.UpdateAllNotificadoAsync(selectedItemsSource);
+                int updatedCount = await _ordenProduccionMpRepo.UpdateSelectedNotificadoAsync(selectedItemsSource);
 
-                int savedOrdUpdateCount = 0;
-                foreach (var pmNotificado in pmNotificados)
-                {
-                    savedOrdUpdateCount += await _pmNotificadoRepo.SaveOrUpdatePtNotificadoAsync(pmNotificado);
-                }
+                int savedOrdUpdateCount = await _pmNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
 
                 await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
 
@@ -252,50 +248,6 @@ namespace ControYaApp.ViewModels
         {
             await Shell.Current.GoToAsync("..");
         }
-
-        //private async Task NotificarPm()
-        //{
-        //    // Verifica si hay al menos un ítem seleccionado
-        //    int selectedItemsCount = OrdenesProduccionMaterialGroupSource
-        //        .Count(opmg => opmg.Any(opm => opm.IsSelected == true));
-
-        //    if (selectedItemsCount == 0)
-        //    {
-        //        await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
-        //        return;
-        //    }
-
-        //    // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
-        //    List<OrdenProduccionMp> selectedItemsSource = OrdenesProduccionMaterialGroupSource
-        //        .SelectMany(opmg => opmg.Where(opm => opm.IsSelected == true))
-        //        .ToList();
-
-        //    // Obtén los ítems correspondientes de OrdenesProduccionMaterialGroup
-        //    List<OrdenProduccionMp> selectedItemsOriginal = OrdenesProduccionMaterialGroup
-        //        .SelectMany(opmg => opmg
-        //            .Where(opm => selectedItemsSource
-        //                .Any(itemSource => itemSource.Id == opm.Id)))
-        //        .ToList();
-
-        //    // Compara y actualiza el valor de "Notificado"
-        //    for (int i = 0; i < selectedItemsSource.Count; i++)
-        //    {
-        //        var itemSource = selectedItemsSource[i];
-        //        var itemOriginal = selectedItemsOriginal
-        //            .FirstOrDefault(opm => opm.Id == itemSource.Id);
-
-        //        if (itemOriginal != null)
-        //        {
-        //            // Suma el valor de "Notificado" del ítem original al ítem de OrdenesProduccionMaterialGroupSource
-        //            itemSource.Notificado += itemOriginal.Notificado;
-        //        }
-        //    }
-
-        //    var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AuthorizedNotification, FechaActual,
-        //                                        EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
-
-
-        //}
 
     }
 }

@@ -70,7 +70,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
 
         }
 
-        public async Task<int> UpdateAllNotificadoAsync(List<OrdenProduccionMp> ordenesProduccionMp)
+        public async Task<int> UpdateSelectedNotificadoAsync(List<OrdenProduccionMp> ordenesProduccionMp)
         {
             try
             {
