@@ -43,7 +43,7 @@ namespace ControYaApp.Models
 
         public string CodigoUnidad { get; set; }
 
-        public float Cantidad { get; set; }
+        public decimal Cantidad { get; set; }
 
 
         private decimal _notificado;

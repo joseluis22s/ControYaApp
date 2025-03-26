@@ -112,18 +112,19 @@ namespace ControYaApp.ViewModels
             //NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
             SincronizarOrdenesProduccionCommand = new RelayCommand(SincronizarOrdenesProduccion);
-            NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPm);
+            NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPmAsync);
 
             NotificarPtCommand = new AsyncRelayCommand<OrdenProduccionPt>(NotificarPtAsync);
             VaciarOrdenes();
         }
 
 
-        private async Task NotificarPm(OrdenProduccionGroup ordenProduccion)
+        private async Task NotificarPmAsync(OrdenProduccionGroup ordenProduccion)
         {
             try
             {
                 var ordenesProduccionMpDb = await _ordenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
+                var ordenesProduccionMpSourceDb = await _ordenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
                 if (ordenesProduccionMpDb is null)
                 {
                     await Toast.Make("Problemas al recuperar datos.", ToastDuration.Long).Show();
@@ -135,7 +136,8 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                var ordenesProduccionMaterialGroup = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpDb);
+                List<OrdenProduccionMaterialGroup> ordenesProduccionMaterialGroup = new(MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpDb));
+                var ordenesProduccionMaterialGroupSource = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpSourceDb);
                 var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
@@ -143,7 +145,8 @@ namespace ControYaApp.ViewModels
 
                 var navParameter = new ShellNavigationQueryParameters
                     {
-                        { "ordenesProdMpGroupedSource", ordenesProduccionMaterialGroup},
+                        { "ordenesProdMpGrouped", ordenesProduccionMaterialGroup},
+                        { "ordenesProdMpGroupedSource", ordenesProduccionMaterialGroupSource},
                         { "empleados", empleados},
                         { "rangosPeriodos", rangosPeriodos}
                     };
@@ -298,65 +301,6 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        //public async Task NotificarPtAsync()
-        //{
-        //    try
-        //    {
-        //        if (OrdenProduccionPtSelected.Saldo == 0)
-        //        {
-        //            await Toast.Make("Esta orden no tiene saldo para notificar", ToastDuration.Long).Show();
-        //            return;
-        //        }
-        //        var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
-
-        //        empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
-
-        //        var navParameter = new ShellNavigationQueryParameters
-        //        {
-        //            { "ordenProduccionPt", OrdenProduccionPtSelected},
-        //            { "empleados", empleados}
-        //        };
-
-        //        await Shell.Current.GoToAsync("notificarPt", navParameter);
-        //        OrdenProduccionPtSelected = null;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        await Toast.Make(ex.Message).Show();
-        //    }
-        //}
-
-        private ObservableCollection<OrdenProduccionGroup> MapOrdenesProduccionGrouped(ObservableCollection<OrdenProduccion> ordenesPrd, ObservableCollection<OrdenProduccionPt> ordenesProducciondPt)
-        {
-            var ordenProducciondPtDic = ordenesProducciondPt
-                .GroupBy(d => new
-                {
-                    d.Centro,
-                    d.CodigoProduccion,
-                    d.Orden
-                }
-                ).ToDictionary(g => g.Key, g => g.ToList());
-
-
-            var ordenesProduccionGrouped = ordenesPrd
-                .Select(ordenProduccion =>
-                                {
-                                    var key = new
-                                    {
-                                        ordenProduccion.Centro,
-                                        ordenProduccion.CodigoProduccion,
-                                        ordenProduccion.Orden
-                                    };
-
-                                    return new OrdenProduccionGroup(
-                                        ordenProduccion,
-                                        ordenProducciondPtDic.TryGetValue(key, out var ordenesProducciondPtGrouped) ? ordenesProducciondPtGrouped : new List<OrdenProduccionPt>()
-                                    );
-                                })
-                .ToList();
-
-            return new ObservableCollection<OrdenProduccionGroup>(ordenesProduccionGrouped);
-        }
 
         private ObservableCollection<OrdenProduccionMaterialGroup> MapOrdenesProduccionMaterialGrouped(ObservableCollection<OrdenProduccionMp> ordenesProducciondMp)
         {

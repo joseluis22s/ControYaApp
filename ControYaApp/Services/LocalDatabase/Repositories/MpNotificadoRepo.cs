@@ -31,7 +31,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             try
             {
                 await InitAsync();
-                return await _database.Table<MpNotificado>().ToListAsync();
+                return await _database.Table<MpNotificado>().Where(mp => mp.Sincronizado == false).ToListAsync();
             }
             catch (Exception) { throw; }
         }

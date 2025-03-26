@@ -60,13 +60,15 @@
                             <v:RequiredValidation Message="El campo no debe estar vacío." />
                             <myval:IpAdressValidation />
                         </urui:TextField>
-
                         <HorizontalStackLayout
                             Grid.Row="1"
                             Grid.ColumnSpan="2"
                             Spacing="10">
                             <Label Text="Aprobar auto produccion" />
-                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.AutoApproveProduccion}" />
+                            <Switch
+                                x:Name="produccionSwitch"
+                                HeightRequest="17"
+                                IsToggled="{Binding SharedData.AutoApproveProduccion}" />
                         </HorizontalStackLayout>
                         <HorizontalStackLayout
                             Grid.Row="2"

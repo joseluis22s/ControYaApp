@@ -50,25 +50,29 @@ namespace ControYaApp.Services.SharedData
         }
 
 
-        private bool _autoApproveProduccion;
-        public bool AutoApproveProduccion
-        {
-            get => _autoApproveProduccion;
-            set
-            {
-                SetProperty(ref _autoApproveProduccion, value);
-            }
-        }
-
         private bool _autoApproveInventario;
         public bool AutoApproveInventario
         {
             get => _autoApproveInventario;
             set
             {
-                SetProperty(ref _autoApproveInventario, value);
+                if (SetProperty(ref _autoApproveInventario, value))
+                {
+                    if (value && !AutoApproveProduccion)
+                    {
+                        AutoApproveProduccion = true;
+                    }
+                }
             }
         }
+
+        private bool _autoApproveProduccion;
+        public bool AutoApproveProduccion
+        {
+            get => _autoApproveProduccion;
+            set => SetProperty(ref _autoApproveProduccion, value);
+        }
+
 
         public ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
 

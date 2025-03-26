@@ -12,11 +12,11 @@
     HideSoftInputOnTapped="True">
 
 
-    <Grid RowDefinitions="Auto,Auto" RowSpacing="10">
+    <Grid RowDefinitions="*,1.8*" RowSpacing="10">
 
         <RoundRectangle BackgroundColor="#091a36" CornerRadius="0,0,50,50" />
 
-        <VerticalStackLayout Padding="10,10,10,25" Spacing="25">
+        <VerticalStackLayout Padding="10,10,10,25" Spacing="15">
             <HorizontalStackLayout Spacing="10">
                 <Button
                     x:Name="ImageButton_FlyoutShell"
@@ -60,65 +60,94 @@
                 Text="PÁGINA DE INICIO"
                 TextColor="#ffffff" />
         </VerticalStackLayout>
+        <ScrollView Grid.Row="1" Padding="10,10,10,0">
+            <VerticalStackLayout Spacing="15">
+                <VerticalStackLayout IsVisible="{Binding OrdenesGroupIsNull}">
 
-        <VerticalStackLayout
-            Grid.Row="1"
-            Padding="10,10,10,0"
-            Spacing="15">
-            <VerticalStackLayout IsVisible="{Binding OrdenesGroupIsNull}">
+                    <Label
+                        FontSize="18"
+                        Text="No se han sincronizado órdenes"
+                        TextColor="#0f2b57" />
+                    <Button
+                        Padding="50,0"
+                        Command="{Binding SincronizarOrdenesProduccionCommand}"
+                        CornerRadius="3"
+                        FontSize="17"
+                        HorizontalOptions="Center"
+                        Text="Sincronizar órdenes" />
 
-                <Label
-                    FontSize="18"
-                    Text="No se han sincronizado órdenes"
-                    TextColor="#0f2b57" />
+                </VerticalStackLayout>
+                <VerticalStackLayout IsVisible="{Binding OrdenesGroupLoaded}">
+                    <Label
+                        FontSize="18"
+                        Text="{Binding OrdenesProdCount, StringFormat='Total Órdenes de Produccion = {0}'}"
+                        TextColor="#0f2b57" />
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Producto Terminado (PT)"
+                        TextColor="#0f2b57" />
+                    <Border Padding="10" StrokeShape="{RoundRectangle CornerRadius='10'}">
+
+                        <VerticalStackLayout>
+
+                            <Label
+                                FontSize="18"
+                                Text="{Binding PendingOrdenesProdCount, StringFormat='Total Notificación PT = {0}'}"
+                                TextColor="#0f2b57" />
+                            <Label
+                                FontSize="18"
+                                Text="{Binding PtNotificadoCount, StringFormat='Por sincronizar = {0}'}"
+                                TextColor="#0f2b57" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="18"
+                        Text="Material para producción (MP)"
+                        TextColor="#0f2b57" />
+                    <Border Padding="10" StrokeShape="{RoundRectangle CornerRadius='10'}">
+
+                        <VerticalStackLayout>
+                            <Label
+                                FontSize="18"
+                                Text="{Binding OrdenesProdMpCount, StringFormat='Total Notificación MP = {0}'}"
+                                TextColor="#0f2b57" />
+                            <Label
+                                FontSize="18"
+                                Text="{Binding MpNotificadoCount, StringFormat='Por sincronizar = {0}'}"
+                                TextColor="#0f2b57" />
+                            <Label
+                                FontSize="18"
+                                Text="{Binding MpNotificadoCount, StringFormat='Por aprobar = {0}'}"
+                                TextColor="#0f2b57" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Button
+                        Padding="50,0"
+                        Command="{Binding GoToOrdenesCommand}"
+                        CornerRadius="3"
+                        FontSize="17"
+                        HorizontalOptions="Center"
+                        Text="Ir" />
+
+                </VerticalStackLayout>
+
                 <Button
                     Padding="50,0"
                     Command="{Binding SincronizarOrdenesProduccionCommand}"
                     CornerRadius="3"
                     FontSize="17"
                     HorizontalOptions="Center"
-                    Text="Sincronizar órdenes" />
-
+                    IsVisible="{Binding OrdenesGroupLoaded}"
+                    Text="Sincronizar" />
             </VerticalStackLayout>
-            <VerticalStackLayout IsVisible="{Binding OrdenesGroupLoaded}">
+        </ScrollView>
 
-                <Label
-                    FontSize="18"
-                    Text="{Binding OrdenesProdCount, StringFormat='Total Órdenes de Produccion = {0}'}"
-                    TextColor="#0f2b57" />
-                <Label
-                    FontSize="18"
-                    Text="{Binding PendingOrdenesProdCount, StringFormat='Total Notificación PT = {0}'}"
-                    TextColor="#0f2b57" />
-                <Label
-                    FontSize="18"
-                    Text="{Binding OrdenesProdMpCount, StringFormat='Total Notificación MP = {0}'}"
-                    TextColor="#0f2b57" />
-                <Button
-                    Padding="50,0"
-                    Command="{Binding GoToOrdenesCommand}"
-                    CornerRadius="3"
-                    FontSize="17"
-                    HorizontalOptions="Center"
-                    Text="Ir" />
-
-            </VerticalStackLayout>
-
-            <Button
-                Padding="50,0"
-                Command="{Binding SincronizarOrdenesProduccionCommand}"
-                CornerRadius="3"
-                FontSize="17"
-                HorizontalOptions="Center"
-                IsVisible="{Binding OrdenesGroupLoaded}"
-                Text="Sincronizar" />
-        </VerticalStackLayout>
 
 
     </Grid>
-
-    <!--<ContentPage.BackgroundColor>
-        <Color>#8db3d6</Color>
-    </ContentPage.BackgroundColor>-->
 
 </ContentPage>

@@ -33,7 +33,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             try
             {
                 await InitAsync();
-                return await _database.Table<PtNotificado>().ToListAsync();
+                return await _database.Table<PtNotificado>().Where(pt => pt.Sincronizado == false).ToListAsync();
             }
             catch (Exception) { throw; }
         }

@@ -11,6 +11,7 @@ using ControYaApp.Services.SharedData;
 
 namespace ControYaApp.ViewModels
 {
+    [QueryProperty(nameof(OrdenesProduccionMaterialGroup), "ordenesProdMpGrouped")]
     [QueryProperty(nameof(OrdenesProduccionMaterialGroupSource), "ordenesProdMpGroupedSource")]
     [QueryProperty(nameof(RangoPeriodos), "rangosPeriodos")]
     [QueryProperty(nameof(Empleados), "empleados")]
@@ -25,12 +26,6 @@ namespace ControYaApp.ViewModels
         public ISharedData SharedData { get; set; }
 
 
-
-        //private ObservableCollection<OrdenProduccionMaterialGroup> _ordenesProduccionMaterialGroup;
-        //public ObservableCollection<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroup
-        //{
-        //    get => _ordenesProduccionMaterialGroup;
-        //    set => SetProperty(ref _ordenesProduccionMaterialGroup, value);
         public List<OrdenProduccionMaterialGroup> OrdenesProduccionMaterialGroup { get; set; }
 
 
@@ -41,12 +36,12 @@ namespace ControYaApp.ViewModels
             set
             {
                 SetProperty(ref _ordenesProduccionMaterialGroupSource, value);
-
                 foreach (var group in _ordenesProduccionMaterialGroupSource)
                 {
                     foreach (var item in group)
                     {
-                        item.Notificado = item.Saldo;
+                        var saldo = item.Saldo;
+                        item.Notificado = item.Cantidad = saldo;
                     }
                 }
             }
@@ -102,8 +97,8 @@ namespace ControYaApp.ViewModels
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
             FilterOrdenesProduccionMpCommand = new AsyncRelayCommand(() => FilterOrdenesProduccionMpAsync(OrdenesProduccionMaterialGroup));
-
         }
+
 
 
         private readonly OrdenProduccionMpFilter _ordenProduccionMpFilter;
@@ -161,11 +156,11 @@ namespace ControYaApp.ViewModels
             try
             {
                 // Verifica si hay al menos un ítem seleccionado
-                int selectedItemsCount = OrdenesProduccionMaterialGroupSource
-                .SelectMany(opmg => opmg.Where(opm => opm.IsSelected == true))
-                .ToList().Count;
+                var selectedItems = OrdenesProduccionMaterialGroupSource
+                    .SelectMany(g => g.Where(i => i.IsSelected))
+                    .ToList();
 
-                if (selectedItemsCount == 0)
+                if (selectedItems == null || selectedItems.Count == 0)
                 {
                     await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
@@ -177,14 +172,23 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                // Obtén los ítems seleccionados de OrdenesProduccionMaterialGroupSource
-                //List<OrdenProduccionMp> selectedItemsSource = MapOrdenProduccionMpSelected(OrdenesProduccionMaterialGroupSource, OrdenesProduccionMaterialGroup);
-                List<OrdenProduccionMp> selectedItemsSource = OrdenesProduccionMaterialGroupSource.SelectMany(g => g.Where(pm => pm.IsSelected == true)).ToList();
-                var pmNotificados = MapPmNotificado(selectedItemsSource, SharedData.AutoApproveProduccion,
-                                                    SharedData.AutoApproveInventario, FechaActual,
-                                                    EmpleadoSelected.CodigoEmpleado, SharedData.UsuarioSistema);
+                // Actualizamos los valores originales
+                ActualizarNotificadosEnOriginales();
 
-                int updatedCount = await _ordenProduccionMpRepo.UpdateSelectedNotificadoAsync(selectedItemsSource);
+                // Obtenemos los items originales seleccionados
+                var selectedOriginalItems = OrdenesProduccionMaterialGroup
+                    .SelectMany(g => g.Where(i => selectedItems.Any(si => si.Id == i.Id)))
+                    .ToList();
+
+                // Mapeamos a PmNotificado
+                var pmNotificados = MapPmNotificado(selectedItems,
+                                                  SharedData.AutoApproveProduccion,
+                                                  SharedData.AutoApproveInventario,
+                                                  FechaActual,
+                                                  EmpleadoSelected.CodigoEmpleado,
+                                                  SharedData.UsuarioSistema);
+
+                int updatedCount = await _ordenProduccionMpRepo.UpdateSelectedNotificadoAsync(selectedOriginalItems);
 
                 int savedOrdUpdateCount = await _pmNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
 
@@ -194,6 +198,28 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
+        }
+
+        private void ActualizarNotificadosEnOriginales()
+        {
+            if (OrdenesProduccionMaterialGroup == null || OrdenesProduccionMaterialGroupSource == null)
+                return;
+
+            foreach (var sourceGroup in OrdenesProduccionMaterialGroupSource)
+            {
+                foreach (var sourceItem in sourceGroup.Where(i => i.IsSelected))
+                {
+                    var originalItem = OrdenesProduccionMaterialGroup
+                        .SelectMany(g => g)
+                        .FirstOrDefault(i => i.Id == sourceItem.Id);
+
+                    if (originalItem != null)
+                    {
+                        // Sumamos el Notificado del source al Notificado original
+                        originalItem.Notificado += sourceItem.Notificado;
+                    }
+                }
             }
         }
 
@@ -233,8 +259,7 @@ namespace ControYaApp.ViewModels
                     CodigoProduccion = item.CodigoProduccion,
                     Orden = item.Orden,
                     IdMaterialProduccion = item.IdMaterialProduccion,
-                    Id = item.Id,                // Mapea el Id
-                    Notificado = item.Notificado, // Mapea el Notificado (usa 0 si es null)
+                    Notificado = item.Notificado,
                     AprobarAutoProduccion = AutoApproveProduccion,
                     AprobarAutoInventario = AutoApproveInventario,
                     CodigoEmpleado = codigoEmpleado,

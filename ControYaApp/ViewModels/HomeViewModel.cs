@@ -110,6 +110,10 @@ namespace ControYaApp.ViewModels
                 // Lo mismo ocurre con MP notificados.
                 if (AllPtNotificados is not null && AllPtNotificados.Count != 0)
                 {
+                    foreach (var item in AllPtNotificados)
+                    {
+                        item.Sincronizado = true;
+                    }
                     var req = new
                     {
                         ptNotificados = AllPtNotificados
@@ -120,6 +124,10 @@ namespace ControYaApp.ViewModels
 
                 if (AllMpNotificados is not null && AllMpNotificados.Count != 0)
                 {
+                    foreach (var item in AllMpNotificados)
+                    {
+                        item.Sincronizado = true;
+                    }
                     var req = new
                     {
                         mpNotificados = AllMpNotificados
