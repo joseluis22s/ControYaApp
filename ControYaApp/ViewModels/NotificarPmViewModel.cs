@@ -194,6 +194,8 @@ namespace ControYaApp.ViewModels
 
                 await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
 
+                await GoBackAsync();
+
             }
             catch (Exception ex)
             {
@@ -210,15 +212,15 @@ namespace ControYaApp.ViewModels
             {
                 foreach (var sourceItem in sourceGroup.Where(i => i.IsSelected))
                 {
-                    var originalItem = OrdenesProduccionMaterialGroup
+                    OrdenesProduccionMaterialGroup
                         .SelectMany(g => g)
-                        .FirstOrDefault(i => i.Id == sourceItem.Id);
+                        .FirstOrDefault(i => i.Id == sourceItem.Id).Notificado += sourceItem.Notificado;
 
-                    if (originalItem != null)
-                    {
-                        // Sumamos el Notificado del source al Notificado original
-                        originalItem.Notificado += sourceItem.Notificado;
-                    }
+                    //if (originalItem != null)
+                    //{
+                    //    // Sumamos el Notificado del source al Notificado original
+                    //    originalItem.Notificado += sourceItem.Notificado;
+                    //}
                 }
             }
         }

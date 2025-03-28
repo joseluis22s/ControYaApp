@@ -17,6 +17,17 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<PtNotificado>();
         }
 
+        public async Task SaveAllUnapprPtNotficado(List<PtNotificado> unapprPtNotificados)
+        {
+            try
+            {
+                await InitAsync();
+
+                await _database.InsertAllAsync(unapprPtNotificados);
+            }
+            catch (Exception) { throw; }
+        }
+
         public async Task SavePtNotificadoAsync(PtNotificado ptNotificado)
         {
             try
@@ -33,7 +44,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             try
             {
                 await InitAsync();
-                return await _database.Table<PtNotificado>().Where(pt => pt.Sincronizado == false).ToListAsync();
+                return await _database.Table<PtNotificado>().ToListAsync();
             }
             catch (Exception) { throw; }
         }
@@ -45,6 +56,19 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
                 await InitAsync();
 
                 await _database.DeleteAllAsync<PtNotificado>();
+            }
+            catch (Exception) { throw; }
+        }
+
+        public async Task<List<PtNotificado>> GetUnapprPtNotificadosPrd()
+        {
+            try
+            {
+                await InitAsync();
+                return await _database.Table<PtNotificado>().Where(ptNotificado =>
+                    ptNotificado.Sincronizado == true &&
+                    ptNotificado.AprobarAutoProduccion == false
+                ).ToListAsync();
             }
             catch (Exception) { throw; }
         }

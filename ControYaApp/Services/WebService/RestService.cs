@@ -33,6 +33,9 @@ namespace ControYaApp.Services.WebService
 
         private readonly string _notificarMpUri = "/notificados/mp";
 
+        private readonly string _getUnAprrovedPtPrdInv = "/notificados/get-unapproved-pt";
+
+        private readonly string _getUnAprrovedMpPrdInv = "/notificados/get-unapproved-mp";
 
 
         private readonly HttpClient _client = new();
@@ -46,9 +49,7 @@ namespace ControYaApp.Services.WebService
 
         public RestService(ISharedData sharedData)
         {
-
             SharedData = sharedData; // Debe ir primero, no mover.
-
 
             _jsonSerializerOptions = SettingJsonSerializerOptions();
         }
@@ -311,7 +312,7 @@ namespace ControYaApp.Services.WebService
             {
                 string json = JsonSerializer.Serialize(ptNotificados, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _client.PutAsync(uri, content);
+                var response = await _client.PostAsync(uri, content);
                 // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
             }
             catch (Exception ex)
@@ -330,7 +331,7 @@ namespace ControYaApp.Services.WebService
             {
                 string json = JsonSerializer.Serialize(mpNotificados, _jsonSerializerOptions);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _client.PutAsync(uri, content);
+                var response = await _client.PostAsync(uri, content);
                 // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
             }
             catch (Exception ex)
@@ -339,6 +340,49 @@ namespace ControYaApp.Services.WebService
                 Debug.WriteLine(@"\tERROR {0}", ex.Message);
                 throw;
             }
+        }
+
+        public async Task<List<PtNotificado>> GetUnapproveddPtPrdInv()
+        {
+            string uri = GetIp() + _getUnAprrovedPtPrdInv;
+            List<PtNotificado> items = [];
+            try
+            {
+                StringContent content = new("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    items = JsonSerializer.Deserialize<List<PtNotificado>>(resContent, _jsonSerializerOptions);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return items;
+        }
+        public async Task<List<MpNotificado>> GetUnapproveddMpPrdInv()
+        {
+            string uri = GetIp() + _getUnAprrovedMpPrdInv;
+            List<MpNotificado> items = [];
+            try
+            {
+                StringContent content = new("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    items = JsonSerializer.Deserialize<List<MpNotificado>>(resContent, _jsonSerializerOptions);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return items;
         }
 
     }

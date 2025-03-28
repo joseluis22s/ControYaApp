@@ -67,8 +67,6 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        //public decimal? Saldo => Cantidad - Notificado;
-
 
         private DateTime _fechaActual = DateTime.Now;
         public DateTime FechaActual
@@ -279,6 +277,8 @@ namespace ControYaApp.ViewModels
                 Orden = ordenProduccionPt.Orden,
                 CodigoMaterial = ordenProduccionPt.CodigoMaterial,
                 Fecha = FechaActual,
+                Producto = ordenProduccionPt.Producto,
+                NombreEmpleado = EmpleadoSelected.NombreEmpleado,
                 // TODO: Eliminar esat linea
                 // Notificado = ordenProduccionPt.Notificado + notificado,
                 Notificado = notificado,

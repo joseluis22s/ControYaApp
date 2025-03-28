@@ -7,12 +7,19 @@ namespace ControYaApp.Models
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]
-        public int? IdPtNotificado { get; set; }
+        public int IdPtNotificado { get; set; }
 
         [JsonIgnore]
-        public bool Sincronizado { get; set; }
+        public string Producto { get; set; }
 
-        public int? Id { get; set; }
+        [JsonIgnore]
+        public string NombreEmpleado { get; set; }
+
+        [Ignore]
+        [JsonIgnore]
+        public bool IsSelected { get; set; }
+
+        public int Id { get; set; }
 
         public string CodigoProduccion { get; set; }
 
@@ -34,5 +41,7 @@ namespace ControYaApp.Models
         public bool AprobarAutoInventario { get; set; }
 
         public string Serie { get; set; }
+
+        public bool Sincronizado { get; set; }
     }
 }

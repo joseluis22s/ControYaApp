@@ -102,6 +102,12 @@
 	  <MauiXaml Update="Modules\Produccion\Views\ProduccionHomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\AprobarOrdenesPrdInvPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\AprobarOrdenesPrdPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\AutorizarOrdenesPrdPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -179,7 +179,8 @@ namespace ControYaApp.ViewModels
         private void SincronizarOrdenesProduccion()
         {
             _appShellViewModel.GetAndSaveDataCommand.Execute(null);
-            _homeViewModel.InitData();
+            // TODO: Averiguar por que se debe llamar a este metodo aqui
+            //_homeViewModel.InitData();
             if (SharedData.AllOrdenesProduccionGroups.Count != 0)
             {
                 OrdenesGroupLoaded = true;

@@ -16,6 +16,17 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             await _database.CreateTableAsync<MpNotificado>();
         }
 
+        public async Task SaveAllUnapprMpNotficado(List<MpNotificado> unapprMpNotificados)
+        {
+            try
+            {
+                await InitAsync();
+
+                await _database.InsertAllAsync(unapprMpNotificados);
+            }
+            catch (Exception) { throw; }
+        }
+
         public async Task<int> SaveMpNotificadosAsync(List<MpNotificado> pmNotificados)
         {
             try
@@ -31,7 +42,7 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             try
             {
                 await InitAsync();
-                return await _database.Table<MpNotificado>().Where(mp => mp.Sincronizado == false).ToListAsync();
+                return await _database.Table<MpNotificado>().ToListAsync();
             }
             catch (Exception) { throw; }
         }
@@ -47,40 +58,17 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        //public async Task AuthorizeAllMpNotificado()
-        //{
-        //    try
-        //    {
-        //        await InitAsync();
-
-        //        // Actualiza todos los registros en una sola operación
-        //        await _database.ExecuteAsync(
-        //            "UPDATE PmNotificado SET NotificacionAutorizada = ? WHERE NotificacionAutorizada = ?",
-        //            true, false);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Maneja otras excepciones
-        //        Console.WriteLine($"Error inesperado: {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
-        //public async Task AuthorizeAllMpNotificado()
-        //{
-        //    try
-        //    {
-        //        await InitAsync();
-        //        var mpNotificados = await _database.Table<PmNotificado>().Where(mp =>
-        //            mp.NotificacionAutorizada == false
-        //        ).ToListAsync();
-        //        foreach (var mpNotificado in mpNotificados)
-        //        {
-        //            mpNotificado.NotificacionAutorizada = true;
-        //            await _database.UpdateAsync(mpNotificado);
-        //        }
-        //    }
-        //    catch (Exception) { throw; }
-        //}
+        public async Task<List<MpNotificado>> GetUnapprMpNotificadosPrd()
+        {
+            try
+            {
+                await InitAsync();
+                return await _database.Table<MpNotificado>().Where(mp =>
+                    mp.Sincronizado == true &&
+                    mp.AprobarAutoProduccion == false
+                ).ToListAsync();
+            }
+            catch (Exception) { throw; }
+        }
     }
 }

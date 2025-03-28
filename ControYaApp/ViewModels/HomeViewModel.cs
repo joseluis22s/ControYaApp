@@ -32,6 +32,48 @@ namespace ControYaApp.ViewModels
         public ISharedData SharedData { get; set; }
 
 
+        private int _ptNotificadoDesyncCount;
+        public int PtNotificadoDesyncCount
+        {
+            get => _ptNotificadoDesyncCount;
+            set => SetProperty(ref _ptNotificadoDesyncCount, value);
+        }
+
+        private int _unapprovPtNotificadoPrdCount;
+        public int UnapprovPtNotificadoPrdCount
+        {
+            get => _unapprovPtNotificadoPrdCount;
+            set => SetProperty(ref _unapprovPtNotificadoPrdCount, value);
+        }
+        private int _unapprovPtNotificadoInvCount;
+        public int UnapprovPtNotificadoInvCount
+        {
+            get => _unapprovPtNotificadoInvCount;
+            set => SetProperty(ref _unapprovPtNotificadoInvCount, value);
+        }
+
+
+        private int _mpNotificadoDesyncCount;
+        public int MpNotificadoDesyncCount
+        {
+            get => _mpNotificadoDesyncCount;
+            set => SetProperty(ref _mpNotificadoDesyncCount, value);
+        }
+
+
+        private int _unapprovMpNotificadoPrdCount;
+        public int UnapprovMpNotificadoPrdCount
+        {
+            get => _unapprovMpNotificadoPrdCount;
+            set => SetProperty(ref _unapprovMpNotificadoPrdCount, value);
+        }
+        private int _unapprovMpNotificadoInvCount;
+        public int UnapprovMpNotificadoInvCount
+        {
+            get => _unapprovMpNotificadoInvCount;
+            set => SetProperty(ref _unapprovMpNotificadoInvCount, value);
+        }
+
 
         private bool _ordenesGroupLoaded;
         public bool OrdenesGroupLoaded
@@ -43,6 +85,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
+
         private bool _ordenesGroupIsNull;
         public bool OrdenesGroupIsNull
         {
@@ -50,18 +93,22 @@ namespace ControYaApp.ViewModels
             set => SetProperty(ref _ordenesGroupIsNull, value);
         }
 
+
         private int _pendingOrdenesProdCount;
         public int PendingOrdenesProdCount
         {
             get => _pendingOrdenesProdCount;
             set => SetProperty(ref _pendingOrdenesProdCount, value);
         }
+
+
         private int _ordenesProdCount;
         public int OrdenesProdCount
         {
             get => _ordenesProdCount;
             set => SetProperty(ref _ordenesProdCount, value);
         }
+
 
         private int _ordenesProdMpCount;
         public int OrdenesProdMpCount
@@ -101,38 +148,42 @@ namespace ControYaApp.ViewModels
             try
             {
                 //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-                var AllPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
-                var AllMpNotificados = await _localRepoService.MpNotificadoRepo.GetAllMpNotificadoAsync();
+                var allPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
+                var allMpNotificados = await _localRepoService.MpNotificadoRepo.GetAllMpNotificadoAsync();
 
                 // Cuando haya PT notficados (que AllPtNotificados no sea nullo y cuando no es nulo que al menos haya uno)
                 // notifica los que esten con `NotificarManyPtAsync()` y luego los elimina con `DeleteAllPtNotificado()`.
                 //
                 // Lo mismo ocurre con MP notificados.
-                if (AllPtNotificados is not null && AllPtNotificados.Count != 0)
+                if (allPtNotificados is not null && allPtNotificados.Count != 0)
                 {
-                    foreach (var item in AllPtNotificados)
+                    var ptNotificadosDesync = allPtNotificados.Where(pt => pt.Sincronizado == false).ToList();
+                    foreach (var item in ptNotificadosDesync)
                     {
                         item.Sincronizado = true;
                     }
                     var req = new
                     {
-                        ptNotificados = AllPtNotificados
+                        ptNotificados = ptNotificadosDesync
                     };
                     await _restService.NotificarManyPtAsync(req);
+
                     await _localRepoService.PtNotificadoRepo.DeleteAllPtNotificado();
                 }
 
-                if (AllMpNotificados is not null && AllMpNotificados.Count != 0)
+                if (allMpNotificados is not null && allMpNotificados.Count != 0)
                 {
-                    foreach (var item in AllMpNotificados)
+                    var mpNotificadosDesync = allMpNotificados.Where(mp => mp.Sincronizado == false).ToList();
+                    foreach (var item in mpNotificadosDesync)
                     {
                         item.Sincronizado = true;
                     }
                     var req = new
                     {
-                        mpNotificados = AllMpNotificados
+                        mpNotificados = mpNotificadosDesync
                     };
                     await _restService.NotificarManyMpAsync(req);
+
                     await _localRepoService.MpNotificadoRepo.DeleteAllMpNotificado();
                 }
 
@@ -143,9 +194,11 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionPt = await _restService.GetAllOrdenesProduccionPtAsync(SharedData.UsuarioSistema);
                 var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
                 var empleados = await _restService.GetAllEmpleadosAsync();
+                var unapprovedPtNoticados = await _restService.GetUnapproveddPtPrdInv();
+                var unapprovedMpNoticados = await _restService.GetUnapproveddMpPrdInv();
 
-
-
+                await _localRepoService.MpNotificadoRepo.SaveAllUnapprMpNotficado(unapprovedMpNoticados);
+                await _localRepoService.PtNotificadoRepo.SaveAllUnapprPtNotficado(unapprovedPtNoticados);
                 await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
                 await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
                 await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
@@ -171,7 +224,6 @@ namespace ControYaApp.ViewModels
         }
 
 
-
         private async Task GoToOrdenes()
         {
             await Shell.Current.GoToAsync("//ordenesProduccion");
@@ -192,6 +244,37 @@ namespace ControYaApp.ViewModels
                 OrdenesProdMpCount = ordenesProduccionMp
                     .Select(opg => opg)
                     .Count(op => op.Saldo > 0);
+
+                var allPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
+                var allMpNotificados = await _localRepoService.MpNotificadoRepo.GetAllMpNotificadoAsync();
+
+                // Informe de PT
+                PtNotificadoDesyncCount = allPtNotificados is not null ? allPtNotificados.Count(pt => pt.Sincronizado == false) : 0;
+                UnapprovPtNotificadoPrdCount = allPtNotificados is not null ? allPtNotificados.Count(pt =>
+                    pt.Sincronizado == true &&
+                    pt.AprobarAutoProduccion == false &&
+                    pt.AprobarAutoInventario == false
+                    ) : 0;
+                UnapprovPtNotificadoInvCount = allPtNotificados is not null ? allPtNotificados.Count(pt =>
+                    pt.Sincronizado == true &&
+                    pt.AprobarAutoProduccion == true &&
+                    pt.AprobarAutoInventario == false
+                    ) : 0;
+
+                //Informes de MP
+                MpNotificadoDesyncCount = allMpNotificados is not null ? allMpNotificados.Count(pt => pt.Sincronizado == false) : 0;
+                UnapprovMpNotificadoPrdCount = allMpNotificados is not null ? allMpNotificados.Count(pt =>
+                    pt.Sincronizado == true &&
+                    pt.AprobarAutoProduccion == false &&
+                    pt.AprobarAutoInventario == false
+                    ) : 0;
+                UnapprovMpNotificadoInvCount = allMpNotificados is not null ? allMpNotificados.Count(pt =>
+                    pt.Sincronizado == true &&
+                    pt.AprobarAutoProduccion == true &&
+                    pt.AprobarAutoInventario == false
+                    ) : 0;
+
+
                 return;
             }
             OrdenesGroupLoaded = !(OrdenesGroupIsNull = true);

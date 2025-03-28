@@ -97,7 +97,15 @@
                                 TextColor="#0f2b57" />
                             <Label
                                 FontSize="18"
-                                Text="{Binding PtNotificadoCount, StringFormat='Por sincronizar = {0}'}"
+                                Text="{Binding PtNotificadoDesyncCount, StringFormat='Por sincronizar = {0}'}"
+                                TextColor="#0f2b57" />
+                            <Label
+                                FontSize="18"
+                                Text="{Binding UnapprovPtNotificadoPrdCount, StringFormat='Por aprobar PRD = {0}'}"
+                                TextColor="#0f2b57" />
+                            <Label
+                                FontSize="18"
+                                Text="{Binding UnapprovPtNotificadoInvCount, StringFormat='Por aprobar INV = {0}'}"
                                 TextColor="#0f2b57" />
                         </VerticalStackLayout>
                     </Border>
@@ -116,11 +124,15 @@
                                 TextColor="#0f2b57" />
                             <Label
                                 FontSize="18"
-                                Text="{Binding MpNotificadoCount, StringFormat='Por sincronizar = {0}'}"
+                                Text="{Binding MpNotificadoDesyncCount, StringFormat='Por sincronizar = {0}'}"
                                 TextColor="#0f2b57" />
                             <Label
                                 FontSize="18"
-                                Text="{Binding MpNotificadoCount, StringFormat='Por aprobar = {0}'}"
+                                Text="{Binding UnapprovMpNotificadoPrdCount, StringFormat='Por aprobar PRD = {0}'}"
+                                TextColor="#0f2b57" />
+                            <Label
+                                FontSize="18"
+                                Text="{Binding UnapprovMpNotificadoInvCount, StringFormat='Por aprobar INV = {0}'}"
                                 TextColor="#0f2b57" />
                         </VerticalStackLayout>
                     </Border>
