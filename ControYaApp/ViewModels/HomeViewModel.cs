@@ -121,8 +121,6 @@ namespace ControYaApp.ViewModels
 
         public ICommand SincronizarOrdenesProduccionCommand { get; }
 
-        public ICommand GoToOrdenesCommand { get; }
-
 
         public HomeViewModel(ISharedData sharedData, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, LocalRepoService localRepoService, RestService restService)
         {
@@ -134,7 +132,6 @@ namespace ControYaApp.ViewModels
             _localRepoService = localRepoService;
 
             SincronizarOrdenesProduccionCommand = new AsyncRelayCommand(SincronizarOrdenesProduccionAsync);
-            GoToOrdenesCommand = new AsyncRelayCommand(GoToOrdenes);
 
             InitData();
         }
@@ -221,12 +218,6 @@ namespace ControYaApp.ViewModels
             }
 
 
-        }
-
-
-        private async Task GoToOrdenes()
-        {
-            await Shell.Current.GoToAsync("//ordenesProduccion");
         }
 
 
