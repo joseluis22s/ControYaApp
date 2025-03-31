@@ -7,67 +7,101 @@
     xmlns:viewModels="clr-namespace:ControYaApp.ViewModels"
     Title="AprobarOrdenesPrdPage"
     x:DataType="viewModels:AprobarOrdenesPrdViewModel">
-    <VerticalStackLayout>
-        <Label
-            FontSize="20"
-            HorizontalOptions="Center"
-            Text="Welcome to AprobarOrdenesPrdPage!"
-            VerticalOptions="Center" />
+    <Grid Padding="10" RowDefinitions="Auto,*">
+        <Grid RowDefinitions="Auto,Auto">
+            <Label
+                FontSize="20"
+                HorizontalOptions="Center"
+                Text="Welcome to AprobarOrdenesPrdPage!"
+                VerticalOptions="Center" />
 
-        <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,*">
+            <Button
+                Grid.Row="1"
+                Command="{Binding ApproveSelectedCommand}"
+                Text="Aprobar selección" />
+        </Grid>
+
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="10"
+            RowDefinitions="Auto,Auto,*">
 
             <Label Text="Aprobar PT" />
             <Label Grid.Column="1" Text="Aprobar MP" />
-            <CollectionView Grid.Row="1" ItemsSource="{Binding UnpprPtNotificadosPrd}">
+
+            <Button
+                Grid.Row="1"
+                Command="{Binding SelectAllPtCommand}"
+                CornerRadius="3"
+                HorizontalOptions="Center"
+                Text="Seleccionar todo PT" />
+            <Button
+                Grid.Row="1"
+                Grid.Column="1"
+                Command="{Binding SelectAllMpCommand}"
+                CornerRadius="3"
+                HorizontalOptions="Center"
+                Text="Seleccionar todo MP" />
+
+            <CollectionView Grid.Row="2" ItemsSource="{Binding UnapprPtNotificadosPrd}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:PtNotificado">
-                        <VerticalStackLayout>
+                        <Border>
 
-                            <Label FontSize="18">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding CodigoProduccion}" />
-                                        <Span Text="{Binding Orden}" />
-                                        <Span Text="{Binding Producto}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label Grid.Row="1" Text="{Binding Fecha, StringFormat='Fecha: {0}'}" />
-                            <Label Grid.Row="2" Text="{Binding NombreEmpleado, StringFormat='Por: {0}'}" />
-                            <Label Grid.Row="3" Text="{Binding Notificado, StringFormat='{0} x.'}" />
-                            <Label Grid.Row="4" Text="{Binding Serie, StringFormat='Serie'}" />
+                            <VerticalStackLayout>
 
-                        </VerticalStackLayout>
+                                <Label FontSize="18">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding CodigoProduccion, StringFormat='{0} - '}" />
+                                            <Span Text="{Binding Orden, StringFormat='{0} - '}" />
+                                            <Span Text="{Binding Producto}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding Fecha, StringFormat='Fecha: {0}'}" />
+                                <Label Text="{Binding NombreEmpleado, StringFormat='Por: {0}'}" />
+                                <Label Text="{Binding Notificado, StringFormat='{0} x.'}" />
+                                <Label Text="{Binding Serie, StringFormat='Serie'}" />
+                                <CheckBox IsChecked="{Binding IsSelected}" Color="Green" />
+
+                            </VerticalStackLayout>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
             <CollectionView
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
-                ItemsSource="{Binding UnpprMpNotificadosPrd}">
+                ItemsSource="{Binding UnapprMpNotificadosPrd}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:PtNotificado">
-                        <VerticalStackLayout>
+                    <DataTemplate x:DataType="models:MpNotificado">
+                        <Border>
 
-                            <Label FontSize="18">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding CodigoProduccion}" />
-                                        <Span Text="{Binding Orden}" />
-                                        <Span Text="{Binding Producto}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label Grid.Row="1" Text="{Binding Fecha, StringFormat='Fecha: {0}'}" />
-                            <Label Grid.Row="2" Text="{Binding NombreEmpleado, StringFormat='Por: {0}'}" />
-                            <Label Grid.Row="3" Text="{Binding Notificado, StringFormat='{0} x.'}" />
-                            <Label Grid.Row="4" Text="{Binding Serie, StringFormat='Serie'}" />
+                            <VerticalStackLayout>
 
-                        </VerticalStackLayout>
+                                <Label FontSize="18">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding CodigoProduccion, StringFormat='{0} - '}" />
+                                            <Span Text="{Binding Orden, StringFormat='{0} - '}" />
+                                            <Span Text="{Binding Producto}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding Fecha, StringFormat='Fecha: {0}'}" />
+                                <Label Text="{Binding NombreEmpleado, StringFormat='Por: {0}'}" />
+                                <Label Text="{Binding Notificado, StringFormat='{0} x.'}" />
+                                <Label Text="{Binding Serie, StringFormat='Serie'}" />
+                                <CheckBox IsChecked="{Binding IsSelected}" Color="Green" />
+
+                            </VerticalStackLayout>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
         </Grid>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

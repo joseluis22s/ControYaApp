@@ -70,5 +70,18 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
             catch (Exception) { throw; }
         }
+        public async Task<List<MpNotificado>> GetUnapprMpNotificadosInv()
+        {
+            try
+            {
+                await InitAsync();
+                return await _database.Table<MpNotificado>().Where(mp =>
+                    mp.Sincronizado == true &&
+                    mp.AprobarAutoProduccion == true &&
+                    mp.AprobarAutoInventario == false
+                ).ToListAsync();
+            }
+            catch (Exception) { throw; }
+        }
     }
 }

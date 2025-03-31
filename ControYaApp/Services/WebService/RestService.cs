@@ -9,10 +9,6 @@ namespace ControYaApp.Services.WebService
 {
     public class RestService
     {
-        private string? _protocol;
-
-        private string? _ipAddress;
-
         private readonly string _loginUsuarioUri = "/usuarios/login-usuario";
 
         private readonly string _getAllUsuariosUri = "/usuarios/get-all";
@@ -36,6 +32,8 @@ namespace ControYaApp.Services.WebService
         private readonly string _getUnAprrovedPtPrdInv = "/notificados/get-unapproved-pt";
 
         private readonly string _getUnAprrovedMpPrdInv = "/notificados/get-unapproved-mp";
+
+        private readonly string _approvePtMpPrdInv = "/notificados/approve-ptmp-prdinv";
 
 
         private readonly HttpClient _client = new();
@@ -304,6 +302,7 @@ namespace ControYaApp.Services.WebService
             return false;
         }
 
+
         public async Task NotificarManyPtAsync(object ptNotificados)
         {
             string uri = GetIp() + _notificarPtUri;
@@ -323,6 +322,7 @@ namespace ControYaApp.Services.WebService
             }
         }
 
+
         public async Task NotificarManyMpAsync(object mpNotificados)
         {
             string uri = GetIp() + _notificarMpUri;
@@ -341,6 +341,7 @@ namespace ControYaApp.Services.WebService
                 throw;
             }
         }
+
 
         public async Task<List<PtNotificado>> GetUnapproveddPtPrdInv()
         {
@@ -363,6 +364,8 @@ namespace ControYaApp.Services.WebService
             }
             return items;
         }
+
+
         public async Task<List<MpNotificado>> GetUnapproveddMpPrdInv()
         {
             string uri = GetIp() + _getUnAprrovedMpPrdInv;
@@ -383,6 +386,25 @@ namespace ControYaApp.Services.WebService
                 throw;
             }
             return items;
+        }
+
+        public async Task ApprovePtMpNotificados(object ptMpNotificados)
+        {
+            // option = 0 -> PRD
+            // option = 1 -> INV
+            string uri = GetIp() + _approvePtMpPrdInv;
+
+            try
+            {
+                string json = JsonSerializer.Serialize(ptMpNotificados, _jsonSerializerOptions);
+                StringContent content = new(json, Encoding.UTF8, "application/json");
+                var response = await _client.PutAsync(uri, content);
+                // TODO: ver si es internal server error y tirar la excepcion
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }

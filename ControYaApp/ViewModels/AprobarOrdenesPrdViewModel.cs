@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
@@ -60,13 +62,18 @@ namespace ControYaApp.ViewModels
 
         private async void InitData()
         {
-            //UnpprPtNotificadosPrd = new(await GetUnapprPtNotificadosPrd());
-            //UnpprMpNotificadosPrd = new(await GetUnapprMpNotificadosPrd());
+            UnapprPtNotificadosPrd = new(await GetUnapprPtNotificadosPrd());
+            UnapprMpNotificadosPrd = new(await GetUnapprMpNotificadosPrd());
         }
 
 
         private void SelectAllPt()
         {
+            if (UnapprPtNotificadosPrd is null || UnapprPtNotificadosPrd.Count == 0)
+            {
+                //await Toast.Make("No existen registros de PT").Show();
+                return;
+            }
             foreach (var notificado in UnapprPtNotificadosPrd)
             {
                 notificado.IsSelected = true;
@@ -76,6 +83,11 @@ namespace ControYaApp.ViewModels
 
         private void SelectAllMp()
         {
+            if (UnapprMpNotificadosPrd is null || UnapprMpNotificadosPrd.Count == 0)
+            {
+                //await Toast.Make("No existen registros de PT").Show();
+                return;
+            }
             foreach (var notificado in UnapprMpNotificadosPrd)
             {
                 notificado.IsSelected = true;
@@ -84,7 +96,37 @@ namespace ControYaApp.ViewModels
 
         private async Task ApproveSelectedAsync()
         {
+            NetworkAccess accessType = Connectivity.Current.NetworkAccess;
 
+            if (accessType != NetworkAccess.Internet)
+            {
+                await Toast.Make("Sin conexión para realizar esta acción", ToastDuration.Long).Show();
+                return;
+            }
+            List<PtNotificado> approvedPtNotificados = [];
+            List<MpNotificado> approvedMpNotificados = [];
+            if (UnapprPtNotificadosPrd is not null && UnapprPtNotificadosPrd.Count != 0)
+            {
+                approvedPtNotificados = UnapprPtNotificadosPrd.Where(pt => pt.IsSelected == true).ToList();
+                foreach (var notificado in UnapprPtNotificadosPrd)
+                {
+                    notificado.AprobarAutoProduccion = true;
+                }
+            }
+            if (UnapprMpNotificadosPrd is not null && UnapprMpNotificadosPrd.Count != 0)
+            {
+                approvedMpNotificados = UnapprMpNotificadosPrd.Where(mp => mp.IsSelected == true).ToList();
+                foreach (var notificado in UnapprMpNotificadosPrd)
+                {
+                    notificado.AprobarAutoProduccion = true;
+                }
+            }
+            var req = new
+            {
+                approvedPtNotificados = approvedPtNotificados,
+                approvedMpNotificados = approvedMpNotificados
+            };
+            await _restService.ApprovePtMpNotificados(req);
         }
 
 

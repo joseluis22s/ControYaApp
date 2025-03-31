@@ -260,6 +260,7 @@ namespace ControYaApp.ViewModels
                     CodigoMaterial = item.CodigoMaterial,
                     CodigoProduccion = item.CodigoProduccion,
                     Orden = item.Orden,
+                    Producto = item.Producto,
                     IdMaterialProduccion = item.IdMaterialProduccion,
                     Notificado = item.Notificado,
                     AprobarAutoProduccion = AutoApproveProduccion,
