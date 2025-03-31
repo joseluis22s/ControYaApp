@@ -86,5 +86,17 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
+        public async Task DeleteSyncApprovedPtNotificado()
+        {
+            try
+            {
+                await InitAsync();
+                await _database.Table<PtNotificado>().DeleteAsync(pt =>
+                    pt.Sincronizado == true
+                );
+            }
+            catch (Exception) { throw; }
+
+        }
     }
 }

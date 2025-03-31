@@ -101,12 +101,25 @@ namespace ControYaApp.ViewModels
 
             if (accessType != NetworkAccess.Internet)
             {
-                await Toast.Make("Sin conexión para realizar esta acción", ToastDuration.Long).Show();
+                await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
                 return;
+            }
+
+            if ((UnapprPtNotificadosInv is not null && UnapprPtNotificadosInv.Count != 0) &&
+                (UnapprMpNotificadosInv is not null && UnapprMpNotificadosInv.Count != 0))
+            {
+                var selectedPtNotificados = UnapprPtNotificadosInv.Where(pt => pt.IsSelected == true).ToList();
+                var selectedMpNotificados = UnapprMpNotificadosInv.Where(mp => mp.IsSelected == true).ToList();
+                if (selectedPtNotificados.Count == 0 && selectedMpNotificados.Count == 0)
+                {
+                    await Toast.Make("Ningún registro seleccionado").Show();
+                    return;
+                }
             }
 
             List<PtNotificado> approvedPtNotificados = [];
             List<MpNotificado> approvedMpNotificados = [];
+
             if (UnapprPtNotificadosInv is not null && UnapprPtNotificadosInv.Count != 0)
             {
                 approvedPtNotificados = UnapprPtNotificadosInv.Where(pt => pt.IsSelected == true).ToList();
@@ -128,7 +141,29 @@ namespace ControYaApp.ViewModels
                 approvedPtNotificados = approvedPtNotificados,
                 approvedMpNotificados = approvedMpNotificados
             };
-            await _restService.ApprovePtMpNotificados(req);
+            try
+            {
+                await _restService.ApprovePtMpNotificados(req);
+
+                // PARA QUE EL USUARIO TENGA FEEDBACK DE LO QUE OCURRE
+                // - Se eliminan todos los PT y MP "sincronizados" de la DB local.
+                await _localRepoService.PtNotificadoRepo.DeleteSyncApprovedPtNotificado();
+                await _localRepoService.MpNotificadoRepo.DeleteSyncApprovedMpNotificado();
+
+                // - Se consultan todos los PT y MP no aprobados pero si sincronizados a la API.
+                var ptNotificados = await _restService.GetUnapproveddPtPrdInv();
+                var mpNotificados = await _restService.GetUnapproveddMpPrdInv();
+
+                // - Se guardan de nuevo a la DB
+                await _localRepoService.PtNotificadoRepo.SaveAllUnapprPtNotficado(ptNotificados);
+                await _localRepoService.MpNotificadoRepo.SaveAllUnapprMpNotficado(mpNotificados);
+
+                InitData();
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
         }
 
 

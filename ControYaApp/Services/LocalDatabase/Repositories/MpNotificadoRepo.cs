@@ -83,5 +83,19 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             }
             catch (Exception) { throw; }
         }
+
+        public async Task DeleteSyncApprovedMpNotificado()
+        {
+            try
+            {
+                await InitAsync();
+                await _database.Table<MpNotificado>().DeleteAsync(mp =>
+                    mp.Sincronizado == true
+                );
+            }
+            catch (Exception) { throw; }
+
+        }
+
     }
 }

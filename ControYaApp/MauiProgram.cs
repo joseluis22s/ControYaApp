@@ -78,7 +78,6 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<HomePage>();
             mauiAppBuilder.Services.AddTransient<NotificarPmPage>();
             mauiAppBuilder.Services.AddTransient<NotificarPtPdfPage>();
-            mauiAppBuilder.Services.AddSingleton<AutorizarOrdenesPrdPage>();
             mauiAppBuilder.Services.AddTransient<AprobarOrdenesPrdPage>();
             mauiAppBuilder.Services.AddTransient<AprobarOrdenesPrdInvPage>();
 

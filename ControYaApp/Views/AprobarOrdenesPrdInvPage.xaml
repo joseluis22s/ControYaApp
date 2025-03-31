@@ -8,6 +8,7 @@
     Title="AprobarOrdenesPrdInvPage"
     x:DataType="viewModels:AprobarOrdenesPrdInvViewModel">
     <Grid Padding="10" RowDefinitions="Auto,*">
+
         <Grid RowDefinitions="Auto,Auto">
             <Label
                 FontSize="20"
@@ -23,7 +24,7 @@
 
         <Grid
             Grid.Row="1"
-            ColumnDefinitions="Auto,Auto"
+            ColumnDefinitions="*,*"
             ColumnSpacing="10"
             RowDefinitions="Auto,Auto,*">
 
@@ -42,7 +43,7 @@
                 CornerRadius="3"
                 HorizontalOptions="Center"
                 Text="Seleccionar todo MP" />
-            <CollectionView Grid.Row="1" ItemsSource="{Binding UnapprPtNotificadosInv}">
+            <CollectionView Grid.Row="2" ItemsSource="{Binding UnapprPtNotificadosInv}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:PtNotificado">
                         <VerticalStackLayout>
@@ -67,7 +68,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
             <CollectionView
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
                 ItemsSource="{Binding UnapprMpNotificadosInv}">
                 <CollectionView.ItemTemplate>

@@ -100,25 +100,41 @@ namespace ControYaApp.ViewModels
 
             if (accessType != NetworkAccess.Internet)
             {
-                await Toast.Make("Sin conexión para realizar esta acción", ToastDuration.Long).Show();
+                await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
                 return;
             }
+
+
+            if ((UnapprPtNotificadosPrd is not null && UnapprPtNotificadosPrd.Count != 0) &&
+                (UnapprMpNotificadosPrd is not null && UnapprMpNotificadosPrd.Count != 0))
+            {
+                var selectedPtNotificados = UnapprPtNotificadosPrd.Where(pt => pt.IsSelected == true).ToList();
+                var selectedMpNotificados = UnapprMpNotificadosPrd.Where(mp => mp.IsSelected == true).ToList();
+                if (selectedPtNotificados.Count == 0 && selectedMpNotificados.Count == 0)
+                {
+                    await Toast.Make("Ningún registro seleccionado").Show();
+                    return;
+                }
+            }
+
             List<PtNotificado> approvedPtNotificados = [];
             List<MpNotificado> approvedMpNotificados = [];
+
             if (UnapprPtNotificadosPrd is not null && UnapprPtNotificadosPrd.Count != 0)
             {
                 approvedPtNotificados = UnapprPtNotificadosPrd.Where(pt => pt.IsSelected == true).ToList();
-                foreach (var notificado in UnapprPtNotificadosPrd)
+                foreach (var ptNotificado in approvedPtNotificados)
                 {
-                    notificado.AprobarAutoProduccion = true;
+                    ptNotificado.AprobarAutoProduccion = true;
                 }
             }
             if (UnapprMpNotificadosPrd is not null && UnapprMpNotificadosPrd.Count != 0)
             {
                 approvedMpNotificados = UnapprMpNotificadosPrd.Where(mp => mp.IsSelected == true).ToList();
-                foreach (var notificado in UnapprMpNotificadosPrd)
+
+                foreach (var mpNotificado in UnapprMpNotificadosPrd)
                 {
-                    notificado.AprobarAutoProduccion = true;
+                    mpNotificado.AprobarAutoProduccion = true;
                 }
             }
             var req = new
@@ -126,7 +142,32 @@ namespace ControYaApp.ViewModels
                 approvedPtNotificados = approvedPtNotificados,
                 approvedMpNotificados = approvedMpNotificados
             };
-            await _restService.ApprovePtMpNotificados(req);
+            try
+            {
+
+                await _restService.ApprovePtMpNotificados(req);
+
+                // PARA QUE EL USUARIO TENGA FEEDBACK DE LO QUE OCURRE
+                // - Se eliminan todos los PT y MP "sincronizados" de la DB local.
+                await _localRepoService.PtNotificadoRepo.DeleteSyncApprovedPtNotificado();
+                await _localRepoService.MpNotificadoRepo.DeleteSyncApprovedMpNotificado();
+
+                // - Se consultan todos los PT y MP no aprobados pero si sincronizados a la API.
+                var ptNotificados = await _restService.GetUnapproveddPtPrdInv();
+                var mpNotificados = await _restService.GetUnapproveddMpPrdInv();
+
+                // - Se guardan de nuevo a la DB
+                await _localRepoService.PtNotificadoRepo.SaveAllUnapprPtNotficado(ptNotificados);
+                await _localRepoService.MpNotificadoRepo.SaveAllUnapprMpNotficado(mpNotificados);
+
+                InitData();
+
+            }
+            catch (Exception ex)
+            {
+                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+            }
+
         }
 
 
