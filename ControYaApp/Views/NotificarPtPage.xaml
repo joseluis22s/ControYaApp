@@ -178,9 +178,12 @@
             ColumnDefinitions="2*,*"
             ColumnSpacing="10">
             <Button
+                Grid.ColumnSpan="2"
+                Padding="80,0"
                 Command="{Binding NotificarPtCommand}"
                 CornerRadius="3"
                 FontAttributes="Bold"
+                HorizontalOptions="Center"
                 Text="Notificar" />
             <!--<Button
                 Grid.Column="1"
