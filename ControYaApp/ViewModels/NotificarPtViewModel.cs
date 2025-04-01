@@ -278,7 +278,6 @@ namespace ControYaApp.ViewModels
                 CodigoMaterial = ordenProduccionPt.CodigoMaterial,
                 Fecha = FechaActual,
                 Producto = ordenProduccionPt.Producto,
-                NombreEmpleado = EmpleadoSelected.NombreEmpleado,
                 // TODO: Eliminar esat linea
                 // Notificado = ordenProduccionPt.Notificado + notificado,
                 Notificado = notificado,

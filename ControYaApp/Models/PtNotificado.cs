@@ -10,9 +10,6 @@ namespace ControYaApp.Models
         [PrimaryKey, AutoIncrement]
         public int IdPtNotificado { get; set; }
 
-        [JsonIgnore]
-        public string NombreEmpleado { get; set; }
-
         private bool _isSelected;
         [Ignore]
         [JsonIgnore]
