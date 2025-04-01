@@ -32,7 +32,8 @@
     <ShellContent
         Title="Aprobar órdenes producción"
         ContentTemplate="{DataTemplate views:AprobarOrdenesPrdPage}"
-        Route="aprobarOrdenesPrd" />
+        Route="aprobarOrdenesPrd"
+        Shell.NavBarIsVisible="False" />
 
     <ShellContent
         Title="Aprobar órdenes producción para inventario"

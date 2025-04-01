@@ -15,6 +15,9 @@ namespace ControYaApp.Models
         [Ignore]
         public decimal Saldo => ((decimal)Cantidad) - Notificado;
 
+        [JsonIgnore]
+        [Ignore]
+        public decimal Porcentaje => (Notificado / ((decimal)Cantidad)) * 100;
 
         public string Centro { get; set; }
 
@@ -42,7 +45,7 @@ namespace ControYaApp.Models
                 if (SetProperty(ref _notificado, value))
                 {
                     OnPropertyChanged(nameof(Saldo));
-
+                    OnPropertyChanged(nameof(Porcentaje));
                 }
             }
         }

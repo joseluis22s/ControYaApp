@@ -138,6 +138,13 @@ namespace ControYaApp.ViewModels
 
         private async Task SincronizarOrdenesProduccionAsync()
         {
+            NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+
+            if (accessType != NetworkAccess.Internet)
+            {
+                await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
+                return;
+            }
 
             var loadingPopUpp = new LoadingPopUp();
             _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
