@@ -3,98 +3,197 @@
     x:Class="ControYaApp.Views.AprobarOrdenesPrdInvPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:models="clr-namespace:ControYaApp.Models"
     xmlns:viewModels="clr-namespace:ControYaApp.ViewModels"
     Title="AprobarOrdenesPrdInvPage"
     x:DataType="viewModels:AprobarOrdenesPrdInvViewModel">
     <Grid Padding="10" RowDefinitions="Auto,*">
-
-        <Grid RowDefinitions="Auto,Auto">
-            <Label
-                FontSize="20"
-                HorizontalOptions="Center"
-                Text="Welcome to AprobarOrdenesPrdInvPage!"
-                VerticalOptions="Center" />
+        <HorizontalStackLayout Spacing="10">
 
             <Button
-                Grid.Row="1"
-                Command="{Binding ApproveSelectedCommand}"
-                Text="Aprobar selección" />
-        </Grid>
+                x:Name="ImageButton_FlyoutShell"
+                Padding="11"
+                BackgroundColor="Transparent"
+                BorderColor="#0f2b57"
+                CornerRadius="5"
+                HeightRequest="50"
+                ImageSource="{FontImageSource FontFamily=MaterialSharp,
+                                              Glyph={x:Static m:MaterialSharp.Menu},
+                                              Color=#0f2b57}"
+                WidthRequest="50" />
+            <Label
+                FontAttributes="Bold"
+                FontSize="20"
+                Text="Aprobar Órdenes de Producción para Inventario"
+                TextColor="#0f2b57"
+                VerticalOptions="Center" />
+
+        </HorizontalStackLayout>
+
 
         <Grid
             Grid.Row="1"
             ColumnDefinitions="*,*"
             ColumnSpacing="10"
-            RowDefinitions="Auto,Auto,*">
-
-            <Label Text="Aprobar PT" />
-            <Label Grid.Column="1" Text="Aprobar MP" />
+            RowDefinitions="Auto,Auto,Auto,*">
             <Button
+                Grid.ColumnSpan="2"
+                Command="{Binding ApproveSelectedCommand}"
+                FontSize="17"
+                HorizontalOptions="Center"
+                Text="Aprobar selección" />
+            <Label
                 Grid.Row="1"
+                Style="{StaticResource Label_tituloPtMp}"
+                Text="APROBAR PT" />
+            <Label
+                Grid.Row="1"
+                Grid.Column="1"
+                Style="{StaticResource Label_tituloPtMp}"
+                Text="APROBAR MP" />
+            <Button
+                Grid.Row="2"
                 Command="{Binding SelectAllPtCommand}"
                 CornerRadius="3"
+                FontSize="16"
                 HorizontalOptions="Center"
                 Text="Seleccionar todo PT" />
             <Button
-                Grid.Row="1"
+                Grid.Row="2"
                 Grid.Column="1"
                 Command="{Binding SelectAllMpCommand}"
                 CornerRadius="3"
+                FontSize="16"
                 HorizontalOptions="Center"
                 Text="Seleccionar todo MP" />
-            <CollectionView Grid.Row="2" ItemsSource="{Binding UnapprPtNotificadosInv}">
+
+            <CollectionView Grid.Row="3" ItemsSource="{Binding UnapprPtNotificadosInv}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:PtNotificado">
-                        <VerticalStackLayout>
+                        <Border Style="{StaticResource Border_ItemPtMp}">
 
-                            <Label FontSize="18">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding CodigoProduccion, StringFormat='{0} - '}" />
-                                        <Span Text="{Binding Orden, StringFormat='{0} - '}" />
-                                        <Span Text="{Binding Producto}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label Text="{Binding Fecha, StringFormat='Fecha: {0}'}" />
-                            <Label Text="{Binding NombreEmpleado, StringFormat='Por: {0}'}" />
-                            <Label Text="{Binding Notificado, StringFormat='{0} x.'}" />
-                            <Label Text="{Binding Serie, StringFormat='Serie'}" />
-                            <CheckBox IsChecked="{Binding IsSelected}" Color="Green" />
+                            <Grid ColumnDefinitions="3.5*,*">
 
-                        </VerticalStackLayout>
+                                <VerticalStackLayout>
+
+                                    <Label FontSize="18">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold" Text="{Binding Orden, StringFormat='{0} - '}" />
+                                                <Span Text="{Binding CodigoProduccion, StringFormat='{0} - '}" />
+                                                <Span Text="{Binding Producto}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label FontSize="18" Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy}'}" />
+                                    <Label FontSize="18">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold" Text="Cod. Empleado: " />
+                                                <Span Text="{Binding CodigoEmpleado, StringFormat='0}'}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                </VerticalStackLayout>
+
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        Text="{Binding Notificado, StringFormat='{0}x'}" />
+                                    <CheckBox IsChecked="{Binding IsSelected}" Color="#0f2b57" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
             <CollectionView
-                Grid.Row="2"
+                Grid.Row="3"
                 Grid.Column="1"
                 ItemsSource="{Binding UnapprMpNotificadosInv}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:MpNotificado">
-                        <VerticalStackLayout>
 
-                            <Label FontSize="18">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding CodigoProduccion, StringFormat='{0} - '}" />
-                                        <Span Text="{Binding Orden, StringFormat='{0} - '}" />
-                                        <Span Text="{Binding Producto}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                            <Label Text="{Binding Fecha, StringFormat='Fecha: {0}'}" />
-                            <Label Text="{Binding NombreEmpleado, StringFormat='Por: {0}'}" />
-                            <Label Text="{Binding Notificado, StringFormat='{0} x.'}" />
-                            <Label Text="{Binding Serie, StringFormat='Serie'}" />
-                            <CheckBox IsChecked="{Binding IsSelected}" Color="Green" />
+                        <Border Style="{StaticResource Border_ItemPtMp}">
 
-                        </VerticalStackLayout>
+                            <Grid ColumnDefinitions="3.5*,*">
+                                <VerticalStackLayout>
+
+                                    <Label FontSize="18">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold" Text="{Binding Orden, StringFormat='{0} - '}" />
+                                                <Span Text="{Binding CodigoProduccion, StringFormat='{0} - '}" />
+                                                <Span Text="{Binding Producto}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label FontSize="18" Text="{Binding Fecha, StringFormat='{0:dd/MM/yyyy}'}" />
+                                    <Label FontSize="18">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold" Text="Cod. Empleado: " />
+                                                <Span Text="{Binding CodigoEmpleado, StringFormat='0}'}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+
+                                </VerticalStackLayout>
+                                <VerticalStackLayout
+                                    Grid.Column="1"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+
+                                    <Label
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        Text="{Binding Notificado, StringFormat='{0}x'}" />
+                                    <CheckBox IsChecked="{Binding IsSelected}" Color="#0f2b57" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                        </Border>
+
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
         </Grid>
     </Grid>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <Style TargetType="Button">
+                <Setter Property="CornerRadius" Value="3" />
+            </Style>
+
+            <Style x:Key="Label_tituloPtMp" TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="#0f2b57" />
+                <Setter Property="FontSize" Value="17" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+
+            <Style x:Key="Border_ItemPtMp" TargetType="Border">
+                <Setter Property="StrokeShape" Value="{RoundRectangle CornerRadius='8'}" />
+                <Setter Property="BackgroundColor" Value="#ffffff" />
+                <Setter Property="Stroke" Value="#ababab" />
+                <Setter Property="Padding" Value="7,5" />
+                <Setter Property="Margin" Value="3" />
+            </Style>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
 </ContentPage>

@@ -38,7 +38,8 @@
     <ShellContent
         Title="Aprobar órdenes producción para inventario"
         ContentTemplate="{DataTemplate views:AprobarOrdenesPrdInvPage}"
-        Route="aprobarOrdenesPrdInv" />
+        Route="aprobarOrdenesPrdInv"
+        Shell.NavBarIsVisible="False" />
 
     <!--
         'NotificarPtPage' - "notificarPt"
