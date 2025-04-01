@@ -15,16 +15,15 @@
     Shell.PresentationMode="Modal">
 
     <Grid
-        Padding="15,25,15,15"
+        Padding="10,10,10,0"
         RowDefinitions="Auto,Auto,*"
-        RowSpacing="10">
+        RowSpacing="5">
 
         <Grid
-            Padding="7,0,15,0"
             ColumnDefinitions="*,Auto"
             ColumnSpacing="10"
             RowDefinitions="Auto,Auto,Auto"
-            RowSpacing="15">
+            RowSpacing="5">
 
             <Label
                 Padding="0,10,5,0"
@@ -46,11 +45,6 @@
                 Text="×"
                 TextColor="#0f2b57"
                 VerticalOptions="Start" />
-
-            <!--<VerticalStackLayout Grid.Row="1">
-                <Switch IsToggled="{Binding PorLote}" />
-                <Label Text="{Binding ModoNotificarText}" />
-            </VerticalStackLayout>-->
 
             <Grid
                 Grid.Row="1"
@@ -79,19 +73,19 @@
                     MaximumWidthRequest="200" />
             </Grid>
 
-            <!--<Label Grid.Row="2" Text="Binding Count, StringFormat='{0} item/s seleccionados.'}" />-->
-
-
         </Grid>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="*,2*,*"
+            ColumnSpacing="15">
 
             <urui:DatePickerField
                 Title="Fecha"
                 AccentColor="#0f2b57"
                 AllowClear="False"
                 BorderColor="Gray"
-                Date="{Binding FechaActual}"
+                Date="{Binding FechaActual, StringFormat='{0:dd/MM/yyyy}'}"
                 MaximumDate="{Binding RangoPeriodos.FechaMax}"
                 MinimumDate="{Binding RangoPeriodos.FechaMin}" />
 
@@ -101,10 +95,11 @@
                 AccentColor="#0f2b57"
                 BorderColor="Gray">
                 <Picker
+                    Margin="10,0"
                     ItemDisplayBinding="{Binding NombreEmpleado}"
                     ItemsSource="{Binding Empleados}"
                     SelectedItem="{Binding EmpleadoSelected}"
-                    VerticalOptions="Center" />
+                    VerticalOptions="CenterAndExpand" />
                 <urui:InputField.Validations>
                     <v:RequiredValidation />
                 </urui:InputField.Validations>
@@ -123,44 +118,66 @@
 
         <CollectionView
             Grid.Row="2"
-            Margin="0,0,0,10"
             IsGrouped="True"
             ItemsSource="{Binding OrdenesProduccionMaterialGroupSource}"
             SelectionMode="None">
+
+            <CollectionView.GroupFooterTemplate>
+                <DataTemplate>
+
+                    <BoxView
+                        Margin="0,15"
+                        CornerRadius="50"
+                        HeightRequest="1"
+                        Color="#c4c4c4" />
+
+                </DataTemplate>
+            </CollectionView.GroupFooterTemplate>
 
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="model:OrdenProduccionMaterialGroup">
 
                     <Grid
-                        Padding="0,0,0,17"
+                        Margin="0,5"
                         ColumnDefinitions="Auto,*"
-                        RowDefinitions="Auto,Auto,Auto">
+                        ColumnSpacing="10"
+                        RowDefinitions="Auto,Auto">
 
-                        <BoxView
-                            Grid.ColumnSpan="2"
-                            Margin="0,0,0,15"
-                            CornerRadius="50"
-                            HeightRequest="1"
-                            Color="#0f2b57" />
-
-                        <Border Grid.Row="1" BackgroundColor="Aquamarine">
+                        <Border
+                            Grid.RowSpan="2"
+                            Padding="9,5"
+                            BackgroundColor="#181f34"
+                            StrokeShape="{RoundRectangle CornerRadius=10}"
+                            VerticalOptions="Center">
                             <Label
                                 FontAttributes="Bold"
-                                HorizontalTextAlignment="Center"
-                                Text="{Binding Orden}" />
+                                FontSize="17"
+                                Text="{Binding Orden}"
+                                TextColor="#ffffff" />
                         </Border>
+
+                        <Label
+                            Grid.Column="1"
+                            FontAttributes="Bold"
+                            FontSize="20"
+                            LineBreakMode="WordWrap"
+                            Text="{Binding Material}"
+                            VerticalTextAlignment="Center" />
 
                         <Label
                             Grid.Row="1"
                             Grid.Column="1"
-                            Text="{Binding Material}" />
+                            FontSize="17">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span FontAttributes="Bold" Text="Cod. Material: " />
+                                    <Span Text="{Binding CodigoMaterial}" />
+                                    <Span FontAttributes="Bold" Text=" - Cod. Producción: " />
+                                    <Span Text="{Binding CodigoProduccion}" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
 
-                        <Label Grid.Row="2" Text="{Binding CodigoMaterial, StringFormat='({0}) - '}" />
-
-                        <Label
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Text="{Binding CodigoProduccion, StringFormat=' {0}'}" />
 
                     </Grid>
 
@@ -170,30 +187,47 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:OrdenProduccionMp">
 
-                    <Border Margin="3,2">
+                    <Border
+                        Margin="4"
+                        Padding="20,12"
+                        BackgroundColor="#ffffff"
+                        Stroke="#ababab"
+                        StrokeShape="{RoundRectangle CornerRadius='10'}">
+
                         <Grid
                             ColumnDefinitions="3*,1.5*,*"
                             ColumnSpacing="10"
                             RowDefinitions="Auto,*">
 
-                            <Label>
+                            <Label FontSize="17">
                                 <Label.FormattedText>
                                     <FormattedString>
-                                        <Span Text="{Binding CodigoProducto}" />
-                                        <Span Text="{Binding CodigoBodega, StringFormat='  -  ({0})  -'}" />
-                                        <Span Text="{Binding Producto, StringFormat='  {0}'}" />
+                                        <Span FontAttributes="Bold" Text="{Binding CodigoProducto, StringFormat='{0}:'}" />
+                                        <Span Text="{Binding Producto, StringFormat=' {0}'}" />
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
 
-                            <Label Grid.Row="1">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding Cantidad, StringFormat='x{0}'}" />
-                                        <Span Text="{Binding CodigoUnidad, StringFormat='  -  {0}'}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
+                            <VerticalStackLayout Grid.Row="1">
+
+                                <Label FontAttributes="Bold" FontSize="17">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span FontAttributes="Bold" Text="Cod. Material: " />
+                                            <Span Text="{Binding CodigoMaterial}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Grid.Row="1" FontSize="17">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Cantidad, StringFormat='x{0}'}" />
+                                            <Span Text="{Binding CodigoUnidad, StringFormat='  -  {0}'}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                            </VerticalStackLayout>
 
                             <Border
                                 Grid.RowSpan="2"
@@ -207,8 +241,15 @@
                                     ColumnSpacing="15"
                                     HorizontalOptions="Center"
                                     RowDefinitions="Auto,Auto">
-                                    <Label Text="Notificado" />
-                                    <Label Grid.Column="1" Text="Saldo" />
+                                    <Label
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Text="Notificado" />
+                                    <Label
+                                        Grid.Column="1"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        Text="Saldo" />
                                     <Entry
                                         Grid.Row="1"
                                         HorizontalTextAlignment="Center"
@@ -218,7 +259,7 @@
                                         Grid.Row="1"
                                         Grid.Column="1"
                                         Padding="4"
-                                        Background="Gold"
+                                        Stroke="#0f2b57"
                                         StrokeShape="{RoundRectangle CornerRadius='10'}">
                                         <Label Text="{Binding Saldo}" VerticalOptions="Center" />
                                     </Border>
@@ -239,17 +280,6 @@
             </CollectionView.ItemTemplate>
 
         </CollectionView>
-
-        <!--<Grid
-            Grid.Row="2"
-            ColumnDefinitions="2*,*"
-            ColumnSpacing="10">
-            <Button
-                Command="{Binding NotificarPtCommand}"
-                CornerRadius="3"
-                FontAttributes="Bold"
-                Text="Notificar" />
-        </Grid>-->
 
     </Grid>
 
