@@ -2,7 +2,6 @@
 using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
@@ -345,22 +344,6 @@ namespace ControYaApp.ViewModels
             );
         }
 
-        public ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
-        {
-            if (OrdenProduccionFilter.OrdenesProduccionFilters.Notified == filter)
-            {
-                return ordenesProduccionGroups
-                    .Where(opg => opg.All(oppt => oppt.Notificado == 0)).ToObservableCollection();
-
-            }
-            if (OrdenProduccionFilter.OrdenesProduccionFilters.Pending == filter)
-            {
-                return ordenesProduccionGroups
-                    .Where(opg => opg.All(oppt => oppt.Saldo > 0)).ToObservableCollection(); ;
-            }
-
-            return ordenesProduccionGroups;
-        }
 
 
     }

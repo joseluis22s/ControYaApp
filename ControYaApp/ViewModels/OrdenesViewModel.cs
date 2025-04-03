@@ -20,7 +20,7 @@ namespace ControYaApp.ViewModels
         public ISharedData SharedData { get; set; }
 
 
-        private OrdenProduccionFilter _ordenProduccionFilter;
+        private readonly OrdenProduccionFilter _ordenProduccionFilter;
 
         public OrdenProduccionPt OrdenProduccionPt { get; set; }
 
@@ -110,7 +110,7 @@ namespace ControYaApp.ViewModels
             GetOrdenesCommand = new AsyncRelayCommand(GetOrdenesProduccionAsync);
             //NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
             //NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
-            FilterOrdenesCommand = new AsyncRelayCommand(() => FilterOrdenes(SharedData.AllOrdenesProduccionGroups));
+            FilterOrdenesCommand = new AsyncRelayCommand(FilterOrdenes);
             SincronizarOrdenesProduccionCommand = new RelayCommand(SincronizarOrdenesProduccion);
             NotificarPmCommand = new AsyncRelayCommand<OrdenProduccionGroup>(NotificarPmAsync);
 
@@ -165,7 +165,7 @@ namespace ControYaApp.ViewModels
             {
                 if (SharedData.AllOrdenesProduccionGroups.Count != 0)
                 {
-                    OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, SharedData.AllOrdenesProduccionGroups);
+                    OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.PendingSaldo, SharedData.AllOrdenesProduccionGroups.ToList());
                     OrdenesGroupLoaded = true;
                 }
             }
@@ -259,24 +259,25 @@ namespace ControYaApp.ViewModels
 
         }
 
-        private async Task FilterOrdenes(ObservableCollection<OrdenProduccionGroup> allOrdenesGrouped)
+        private async Task FilterOrdenes()
         {
-            if (OrdenesProduccionGroups is not null)
+            List<OrdenProduccionGroup> allOrdenesProduccionGroups = new(SharedData.AllOrdenesProduccionGroups);
+            string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Con saldo pendiente", "Sin saldo pendiente");
+            if (action == "Con saldo pendiente")
             {
-                OrdenesProduccionGroups.Clear();
-            }
-            string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes", "Notificadas");
-            if (action == "Pendientes")
-            {
-                OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Pending, allOrdenesGrouped);
+                OrdenesProduccionGroups?.Clear();
+                OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.PendingSaldo, allOrdenesProduccionGroups);
                 return;
             }
-            if (action == "Notificadas")
+            if (action == "Sin saldo pendiente")
             {
-                OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.Notified, allOrdenesGrouped);
+                OrdenesProduccionGroups?.Clear();
+                OrdenesProduccionGroups = _ordenProduccionFilter.FilteredOrdenesProduccionGroup(OrdenProduccionFilter.OrdenesProduccionFilters.NoPendingSaldo, allOrdenesProduccionGroups);
                 return;
             }
-            OrdenesProduccionGroups = allOrdenesGrouped;
+
+            OrdenesProduccionGroups?.Clear();
+            OrdenesProduccionGroups = new(allOrdenesProduccionGroups);
         }
 
         public async Task NotificarPtAsync(OrdenProduccionPt ordenProduccionPt)

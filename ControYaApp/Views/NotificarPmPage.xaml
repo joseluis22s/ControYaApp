@@ -58,7 +58,7 @@
                     HorizontalOptions="Center"
                     Text="Notificar selección" />
 
-                <Button
+                <!--<Button
                     Grid.Column="1"
                     Padding="5"
                     BackgroundColor="#779bba"
@@ -70,7 +70,7 @@
                                                   Glyph={x:Static m:MaterialSharp.Filter_list},
                                                   Color=#ffffff}"
                     IsVisible="{Binding OrdenesGroupLoaded}"
-                    MaximumWidthRequest="200" />
+                    MaximumWidthRequest="200" />-->
             </Grid>
 
         </Grid>

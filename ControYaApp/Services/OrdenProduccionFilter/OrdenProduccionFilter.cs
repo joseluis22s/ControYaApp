@@ -9,28 +9,29 @@ namespace ControYaApp.Services.OrdenProduccionFilter
         public enum OrdenesProduccionFilters
         {
             All,
-            Pending,
-            Notified
+            PendingSaldo,
+            NoPendingSaldo
         }
 
-        public ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenesProduccionFilters filter, ObservableCollection<OrdenProduccionGroup> ordenesProduccionGroups)
+        public ObservableCollection<OrdenProduccionGroup> FilteredOrdenesProduccionGroup(OrdenesProduccionFilters filter, List<OrdenProduccionGroup> ordenesProduccionGroups)
         {
             // TODO: Revisar la condicion para notificado y saldo, por que son opuestos.
             //       Además, agregra un if para 'All'.
 
-            if (OrdenesProduccionFilters.Notified == filter)
+            if (OrdenesProduccionFilters.NoPendingSaldo == filter)
             {
                 return ordenesProduccionGroups
-                    .Where(opg => opg.All(oppt => oppt.Notificado <= 0)).ToObservableCollection();
+                    .Where(opg => opg.All(oppt => oppt.Saldo == 0)).ToObservableCollection();
 
             }
-            if (OrdenesProduccionFilters.Pending == filter)
+            if (OrdenesProduccionFilters.PendingSaldo == filter)
             {
-                return ordenesProduccionGroups
-                    .Where(opg => opg.All(oppt => oppt.Saldo > 0)).ToObservableCollection(); ;
+                var a = ordenesProduccionGroups
+                    .Where(opg => opg.All(oppt => oppt.Saldo > 0)).ToObservableCollection();
+                return a;
             }
+            return ordenesProduccionGroups.ToObservableCollection();
 
-            return ordenesProduccionGroups;
         }
     }
 }
