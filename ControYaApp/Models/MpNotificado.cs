@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using ControYaApp.ViewModels;
+using ControYaApp.ViewModels.Base;
 using SQLite;
 
 namespace ControYaApp.Models

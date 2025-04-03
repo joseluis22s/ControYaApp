@@ -5,9 +5,11 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.Pdf;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels
 {
@@ -129,9 +131,9 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPtViewModel(RestService restService, PtNotificadoRepo ptNotificadoRepo,
+        public NotificarPtViewModel(INavigationService navigationService, RestService restService, PtNotificadoRepo ptNotificadoRepo,
                                     OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo,
-                                    PdfService pdfService, ISharedData sharedData)
+                                    PdfService pdfService, ISharedData sharedData) : base(navigationService)
         {
             SharedData = sharedData;
             _pdfService = pdfService;

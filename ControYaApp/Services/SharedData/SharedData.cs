@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using ControYaApp.Models;
-using ControYaApp.ViewModels;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.Services.SharedData
 {

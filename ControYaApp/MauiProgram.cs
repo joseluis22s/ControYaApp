@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.Pdf;
 using ControYaApp.Services.SharedData;
@@ -9,7 +10,6 @@ using ControYaApp.ViewModels;
 using ControYaApp.ViewModels.Controls;
 using ControYaApp.Views;
 using ControYaApp.Views.Controls;
-using Microsoft.Extensions.Logging;
 using UraniumUI;
 
 namespace ControYaApp
@@ -48,6 +48,10 @@ namespace ControYaApp
         // AddTransient: Cada vez que se solicita una instancia, se crea una nueva. Generalmente a Views y ViewModels
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
         {
+            mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
+
+
+
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
             mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();

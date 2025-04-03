@@ -8,6 +8,7 @@ using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels
 {

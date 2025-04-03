@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.SharedData;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels
 {

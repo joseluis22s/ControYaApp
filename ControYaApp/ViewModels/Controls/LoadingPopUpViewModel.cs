@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels.Controls
 {

@@ -1,13 +1,18 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
+using ControYaApp.Services.Navigation;
 
-namespace ControYaApp.ViewModels
+namespace ControYaApp.ViewModels.Base
 {
     public abstract class BaseViewModel : ObservableRecipient, INotifyPropertyChanged
     {
+        public INavigationService NavigationService { get; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public BaseViewModel(INavigationService navigationService)
+        {
+            NavigationService = navigationService;
+        }
 
 
         protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
@@ -21,6 +26,8 @@ namespace ControYaApp.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

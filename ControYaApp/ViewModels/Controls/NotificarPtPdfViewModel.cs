@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Pdf;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels.Controls
 {

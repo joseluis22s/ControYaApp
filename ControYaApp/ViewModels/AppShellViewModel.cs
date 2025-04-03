@@ -7,6 +7,7 @@ using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
+using ControYaApp.ViewModels.Base;
 using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels

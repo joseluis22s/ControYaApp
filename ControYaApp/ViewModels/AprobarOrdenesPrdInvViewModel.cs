@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.WebService;
+using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels
 {
