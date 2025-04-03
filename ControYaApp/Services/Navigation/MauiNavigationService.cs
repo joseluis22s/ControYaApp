@@ -2,6 +2,11 @@
 {
     public class MauiNavigationService : INavigationService
     {
+        public Task LogOutAsync()
+        {
+            return Shell.Current.GoToAsync("//login");
+        }
+
         public Task GoToAsync(string route, IDictionary<string, object> routeParameters = null)
         {
             ShellNavigationState shellNavigation = new(route);

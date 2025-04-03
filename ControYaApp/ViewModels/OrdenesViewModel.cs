@@ -151,7 +151,7 @@ namespace ControYaApp.ViewModels
                         { "empleados", empleados},
                         { "rangosPeriodos", rangosPeriodos}
                     };
-                await Shell.Current.GoToAsync("notificarPm", navParameter);
+                await NavigationService.GoToAsync("notificarPm", navParameter);
 
             }
             catch (Exception ex)
@@ -295,7 +295,7 @@ namespace ControYaApp.ViewModels
                     { "empleados", empleados}
                 };
 
-                await Shell.Current.GoToAsync("notificarPt", navParameter);
+                await NavigationService.GoToAsync("notificarPt", navParameter);
 
             }
             catch (Exception ex)
@@ -339,7 +339,7 @@ namespace ControYaApp.ViewModels
             var res = await Shell.Current.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
             if (res)
             {
-                await Shell.Current.GoToAsync("//login");
+                await NavigationService.LogOutAsync();
             }
         }
 

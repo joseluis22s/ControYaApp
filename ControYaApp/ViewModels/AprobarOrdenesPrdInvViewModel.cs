@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
 
@@ -50,7 +51,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AprobarOrdenesPrdInvViewModel(LocalRepoService localRepoService, RestService restService)
+        public AprobarOrdenesPrdInvViewModel(INavigationService navigationServie, LocalRepoService localRepoService, RestService restService) : base(navigationServie)
         {
             _localRepoService = localRepoService;
             _restService = restService;

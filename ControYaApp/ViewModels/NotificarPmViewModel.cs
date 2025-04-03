@@ -6,6 +6,7 @@ using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.ViewModels.Base;
@@ -88,7 +89,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo)
+        public NotificarPmViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo) : base(navigationService)
         {
             SharedData = sharedData;
 
@@ -107,7 +108,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPmViewModel(ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter)
+        public NotificarPmViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter) : base(navigationService)
         {
             SharedData = sharedData;
 
@@ -195,7 +196,7 @@ namespace ControYaApp.ViewModels
 
                 await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
 
-                await GoBackAsync();
+                await NavigationService.GoBackAsync();
 
             }
             catch (Exception ex)
@@ -275,7 +276,7 @@ namespace ControYaApp.ViewModels
 
         private async Task GoBackAsync()
         {
-            await Shell.Current.GoToAsync("..");
+            await NavigationService.GoBackAsync();
         }
 
     }

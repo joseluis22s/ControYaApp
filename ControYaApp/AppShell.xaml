@@ -84,7 +84,7 @@
                 Grid.Column="1"
                 Padding="10,0"
                 BackgroundColor="#cacccf"
-                Command="{Binding GoToLoginCommand}"
+                Command="{Binding LogOutCommand}"
                 ContentLayout="0"
                 CornerRadius="3"
                 FontAttributes="Bold"

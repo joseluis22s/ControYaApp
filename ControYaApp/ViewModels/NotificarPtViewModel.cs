@@ -167,7 +167,7 @@ namespace ControYaApp.ViewModels
                 { "esNotificado", isNotified},
                 { "ordenProduccionPt", ordenProduccionPt}
             };
-            await Shell.Current.GoToAsync("..", navParameter);
+            await NavigationService.GoBackAsync(navParameter);
         }
 
         private async Task GoBackNotifiedFalseAsync(bool isNotified)
@@ -176,7 +176,7 @@ namespace ControYaApp.ViewModels
             {
                 { "esNotificado", isNotified}
             };
-            await Shell.Current.GoToAsync("..", navParameter);
+            await NavigationService.GoBackAsync(navParameter);
         }
 
 

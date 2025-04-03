@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
@@ -122,7 +123,7 @@ namespace ControYaApp.ViewModels
         public ICommand SincronizarOrdenesProduccionCommand { get; }
 
 
-        public HomeViewModel(ISharedData sharedData, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, LocalRepoService localRepoService, RestService restService)
+        public HomeViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, LocalRepoService localRepoService, RestService restService) : base(navigationService)
         {
             SharedData = sharedData;
 
@@ -284,7 +285,7 @@ namespace ControYaApp.ViewModels
             var res = await Shell.Current.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
             if (res)
             {
-                await Shell.Current.GoToAsync("//login");
+                await NavigationService.LogOutAsync();
             }
         }
 

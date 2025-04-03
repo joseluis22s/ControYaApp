@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.ViewModels.Base;
 
@@ -31,7 +32,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ConfigViewModel(DataConfigRepo dataConfigRepo, ISharedData sharedData)
+        public ConfigViewModel(INavigationService navigationServie, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationServie)
         {
             SharedData = sharedData; //No mover.
 
@@ -79,7 +80,7 @@ namespace ControYaApp.ViewModels
                     _isSaved = true;
 
                     await Toast.Make("Configuración guardada").Show();
-                    await Shell.Current.GoToAsync("..");
+                    await NavigationService.GoBackAsync();
                 }
 
             }
@@ -94,7 +95,7 @@ namespace ControYaApp.ViewModels
         {
             if (_isSaved)
             {
-                await Shell.Current.GoToAsync("..");
+                await NavigationService.GoBackAsync();
                 return;
             }
 
@@ -105,9 +106,7 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-                    //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
-                    await Shell.Current.GoToAsync("..");
+                    await NavigationService.GoBackAsync();
                     return;
                 }
             }
@@ -118,36 +117,9 @@ namespace ControYaApp.ViewModels
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
                     SharedData.Protocolo = _dataConfigSave.Protocolo;
-                    //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-                    //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
-                    await Shell.Current.GoToAsync("..");
+                    await NavigationService.GoBackAsync();
                 }
             }
-            //if (_dataConfigSave.Ip != SharedData.IpAddress)
-            //{
-            //    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar los cambios?", "Aceptar", "Cancelar");
-            //    if (res)
-            //    {
-            //        SharedData.IpAddress = _dataConfigSave.Ip;
-            //        SharedData.Protocolo = _dataConfigSave.Protocolo;
-            //        //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-            //        //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
-            //        await Shell.Current.GoToAsync("..");
-            //        return;
-            //    }
-            //}
-            //else
-            //{
-            //    var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
-            //    if (res)
-            //    {
-            //        SharedData.IpAddress = _dataConfigSave.Ip;
-            //        SharedData.Protocolo = _dataConfigSave.Protocolo;
-            //        //SharedData.AutoApproveProduccion = _dataConfigSave.AutoApproveProduccion;
-            //        //SharedData.AutoApproveInventario = _dataConfigSave.AutoApproveInventario;
-            //        await Shell.Current.GoToAsync("..");
-            //    }
-            //}
         }
 
 

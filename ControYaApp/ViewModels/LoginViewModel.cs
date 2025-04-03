@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
@@ -45,7 +46,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public LoginViewModel(UsuarioRepo usuarioRepo, RestService restService, DataConfigRepo dataConfigRepo, ISharedData sharedData)
+        public LoginViewModel(INavigationService navigationService, UsuarioRepo usuarioRepo, RestService restService, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationService)
         {
 
             SharedData = sharedData;
@@ -73,7 +74,7 @@ namespace ControYaApp.ViewModels
 
         private async Task GoToConfigAsync()
         {
-            await Shell.Current.GoToAsync("config");
+            await NavigationService.GoToAsync("config");
         }
 
 
@@ -90,7 +91,7 @@ namespace ControYaApp.ViewModels
                     var res = await Shell.Current.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
                     if (res)
                     {
-                        await Shell.Current.GoToAsync("config");
+                        await NavigationService.GoToAsync("config");
                     }
                     return;
                 }
@@ -136,7 +137,7 @@ namespace ControYaApp.ViewModels
             else
             {
                 SharedData.UsuarioSistema = usuarioRes.UsuarioSistema;
-                await Shell.Current.GoToAsync("//home");
+                await NavigationService.GoToAsync("//home");
             }
         }
     }

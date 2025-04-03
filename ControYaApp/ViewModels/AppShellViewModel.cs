@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
@@ -35,7 +36,7 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ICommand GoToLoginCommand { get; }
+        public ICommand LogOutCommand { get; }
 
         public ICommand FlyoutShellCommand { get; }
 
@@ -44,7 +45,8 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AppShellViewModel(DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService, ISharedData sharedData)
+        public AppShellViewModel(INavigationService navigationServie, DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService,
+            ISharedData sharedData) : base(navigationServie)
         {
             _restService = restService;
             _localRepoService = localRepoService;
@@ -54,7 +56,7 @@ namespace ControYaApp.ViewModels
 
             InitIpAddress();
 
-            GoToLoginCommand = new AsyncRelayCommand(GoToLoginAsync);
+            LogOutCommand = new AsyncRelayCommand(LogOutAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
             GetAndSaveDataCommand = new AsyncRelayCommand(GetAndSaveDataAsync);
         }
@@ -82,9 +84,9 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private async Task GoToLoginAsync()
+        private async Task LogOutAsync()
         {
-            await Shell.Current.GoToAsync("//login");
+            await NavigationService.LogOutAsync();
         }
 
 
@@ -128,10 +130,6 @@ namespace ControYaApp.ViewModels
                 await loadingPopUpp.CloseAsync();
             }
         }
-
-        //private async Task
-
-
 
 
     }
