@@ -8,7 +8,6 @@ using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
-using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -99,8 +98,7 @@ namespace ControYaApp.ViewModels
 
         private async Task GetAndSaveDataAsync()
         {
-            var loadingPopUpp = new LoadingPopUp();
-            _ = _dialogService.ShowLoadingPopUp();
+            _ = _dialogService.ShowLoadingPopUpAsync();
 
             try
             {
@@ -127,7 +125,7 @@ namespace ControYaApp.ViewModels
             }
             finally
             {
-                await _dialogService.HideLoadingPopUp();
+                await _dialogService.HideLoadingPopUpAsync();
             }
         }
 

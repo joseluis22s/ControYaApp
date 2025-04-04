@@ -8,7 +8,6 @@ using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
-using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -79,7 +78,6 @@ namespace ControYaApp.ViewModels
 
         private async Task GoToHomeAsync()
         {
-            var loadingPopUpp = new LoadingPopUp();
             _ = _dialogService.ShowLoadingPopUpAsync();
 
             try

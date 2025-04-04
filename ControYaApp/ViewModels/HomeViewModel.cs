@@ -11,7 +11,6 @@ using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
-using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
@@ -76,22 +75,20 @@ namespace ControYaApp.ViewModels
         }
 
 
-        private bool _ordenesGroupLoaded;
-        public bool OrdenesGroupLoaded
-        {
-            get => _ordenesGroupLoaded;
-            set
-            {
-                SetProperty(ref _ordenesGroupLoaded, value);
-            }
-        }
+        public bool OrdenesGroupLoaded => !OrdenesGroupIsNull;
 
 
         private bool _ordenesGroupIsNull;
         public bool OrdenesGroupIsNull
         {
             get => _ordenesGroupIsNull;
-            set => SetProperty(ref _ordenesGroupIsNull, value);
+            set
+            {
+                if (SetProperty(ref _ordenesGroupIsNull, value))
+                {
+                    OnPropertyChanged(nameof(OrdenesGroupLoaded));
+                }
+            }
         }
 
 
@@ -148,7 +145,6 @@ namespace ControYaApp.ViewModels
                 return;
             }
 
-            var loadingPopUpp = new LoadingPopUp();
             _ = _dialogService.ShowLoadingPopUpAsync();
 
             try
@@ -235,7 +231,6 @@ namespace ControYaApp.ViewModels
             SharedData.AllOrdenesProduccionGroups = await GetAllOrdenesProduccionAsync();
             if (SharedData.AllOrdenesProduccionGroups.Count > 0)
             {
-                OrdenesGroupLoaded = !(OrdenesGroupIsNull = false);
                 OrdenesProdCount = SharedData.AllOrdenesProduccionGroups.Count;
                 PendingOrdenesProdCount = SharedData.AllOrdenesProduccionGroups
                     .SelectMany(opg => opg)
@@ -277,7 +272,6 @@ namespace ControYaApp.ViewModels
 
                 return;
             }
-            OrdenesGroupLoaded = !(OrdenesGroupIsNull = true);
         }
 
 

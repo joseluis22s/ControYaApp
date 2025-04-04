@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using ControYaApp.Services.DI;
 using ControYaApp.Services.Dialog;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
@@ -26,7 +27,7 @@ namespace ControYaApp
                 .UseUraniumUIMaterial()
                 .ConfigureFonts(RegisterAppFonts)
                 .UseMauiCommunityToolkit()
-                .RegisterAppServices()
+                .RegisterApp()
                 .RegisterProduccionModule()
                 .ConfigureMauiHandlers(handlers =>
                 {
@@ -50,10 +51,23 @@ namespace ControYaApp
 
         // AddSingleton: Una sola instancia para la App. Debe durar. Generlamente a servicios
         // AddTransient: Cada vez que se solicita una instancia, se crea una nueva. Generalmente a Views y ViewModels
+        public static MauiAppBuilder RegisterApp(this MauiAppBuilder mauiAppBuilder)
+        {
+            // TODO: Probar si se puede eliminar la siguiente línea.
+            mauiAppBuilder.Services.AddSingleton<AppShell>();
+
+            mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+
+            mauiAppBuilder.RegisterAppServices();
+
+            return mauiAppBuilder;
+        }
+
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
             mauiAppBuilder.Services.AddSingleton<IDialogService, DialogService>();
+
 
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
@@ -77,7 +91,7 @@ namespace ControYaApp
 
         public static MauiAppBuilder RegisterProduccionViews(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<AppShell>();
+
             mauiAppBuilder.Services.AddTransient<LoadingPopUp>();
             mauiAppBuilder.Services.AddTransient<LoginPage>();
             mauiAppBuilder.Services.AddTransient<OrdenesPage>();
@@ -94,7 +108,6 @@ namespace ControYaApp
 
         public static MauiAppBuilder RegisterProduccionViewModels(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
             mauiAppBuilder.Services.AddTransient<LoadingPopUpViewModel>();
             mauiAppBuilder.Services.AddTransient<LoginViewModel>();
             mauiAppBuilder.Services.AddTransient<OrdenesViewModel>();
@@ -112,13 +125,29 @@ namespace ControYaApp
 
         public static MauiAppBuilder RegisterProduccionServices(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
-            mauiAppBuilder.Services.AddSingleton<OrdenProduccionPtRepo>();
-            mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
-            mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
-            mauiAppBuilder.Services.AddSingleton<MpNotificadoRepo>();
+
+            mauiAppBuilder.Services.AddSingleton<PrdDbReposService>(
+                serviceProvider =>
+                {
+                    var ordenProduccionRepo = serviceProvider.GetRequiredService<OrdenProduccionRepo>();
+                    var ordenProduccionPtRepo = serviceProvider.GetRequiredService<OrdenProduccionPtRepo>();
+                    var ordenProduccionMpRepo = serviceProvider.GetRequiredService<OrdenProduccionMpRepo>();
+                    var ptNotificadoRepo = serviceProvider.GetRequiredService<PtNotificadoRepo>();
+                    var mpNotificadoRepo = serviceProvider.GetRequiredService<MpNotificadoRepo>();
+
+                    return new PrdDbReposService(ordenProduccionRepo,
+                        ordenProduccionPtRepo, ordenProduccionMpRepo,
+                        ptNotificadoRepo, mpNotificadoRepo);
+                }
+            );
+
+
             mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
+
+
+
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionFilter>();
+
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpFilter>();
 
 

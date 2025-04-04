@@ -141,6 +141,7 @@
 	<ItemGroup>
 	  <Folder Include="Modules\Produccion\Models\" />
 	  <Folder Include="Services\Constants\" />
+	  <Folder Include="Services\AppEnvironment\" />
 	</ItemGroup>
 
 </Project>
