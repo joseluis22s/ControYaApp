@@ -16,7 +16,6 @@ namespace ControYaApp
         {
             var viewModel = _provider.GetRequiredService<AppShellViewModel>();
             return new Window(new AppShell(viewModel));
-            //return new Window(new PruebaPDfgGenerar());
         }
     }
 }

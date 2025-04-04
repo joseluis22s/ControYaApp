@@ -10,6 +10,7 @@ using ControYaApp.ViewModels;
 using ControYaApp.ViewModels.Controls;
 using ControYaApp.Views;
 using ControYaApp.Views.Controls;
+using Microsoft.Extensions.Logging;
 using UraniumUI;
 
 namespace ControYaApp
@@ -22,7 +23,9 @@ namespace ControYaApp
             builder
                 .UseMauiApp<App>().UseUraniumUI()
                 .UseUraniumUIMaterial()
-                .ConfigureFonts(RegisterAppFonts).UseMauiCommunityToolkit()
+                .ConfigureFonts(RegisterAppFonts)
+                .UseMauiCommunityToolkit()
+                .RegisterAppServices()
                 .RegisterProduccionModule()
                 .ConfigureMauiHandlers(handlers =>
                 {
@@ -49,15 +52,13 @@ namespace ControYaApp
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
-
-
-
+            mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
             mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
             mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
             mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
-            mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
+
             mauiAppBuilder.Services.AddTransient<PdfService>();
             return mauiAppBuilder;
         }
@@ -117,14 +118,6 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionFilter>();
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpFilter>();
 
-
-            mauiAppBuilder.Services.AddSingleton<RestService>();
-            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
-            mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
-            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
-            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
-            mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
-            mauiAppBuilder.Services.AddTransient<PdfService>();
 
             return mauiAppBuilder;
         }
