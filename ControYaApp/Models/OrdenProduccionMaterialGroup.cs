@@ -1,6 +1,6 @@
 ﻿namespace ControYaApp.Models
 {
-    public class OrdenProduccionMaterialGroup : List<OrdenProduccionMp>
+    public partial class OrdenProduccionMaterialGroup : List<OrdenProduccionMp>
     {
         public string CodigoProduccion { get; set; }
 

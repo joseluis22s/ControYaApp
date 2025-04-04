@@ -1,6 +1,6 @@
 ﻿namespace ControYaApp.Models
 {
-    public class OrdenProduccionGroup : List<OrdenProduccionPt>
+    public partial class OrdenProduccionGroup : List<OrdenProduccionPt>
     {
         public OrdenProduccion OrdenProduccion { get; private set; }
 

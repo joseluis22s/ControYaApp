@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.Pdf;
 using ControYaApp.ViewModels.Base;
 
@@ -61,18 +62,18 @@ namespace ControYaApp.ViewModels.Controls
         public ICommand GenerarPdfCommand { get; }
 
 
-        public NotificarPtPdfViewModel(PdfService pdfService)
+        public NotificarPtPdfViewModel(INavigationService navigationService, PdfService pdfService) : base(navigationService)
         {
 
             _pdfService = pdfService;
 
-            GoBackCommand = new AsyncRelayCommand(GoBackAsync);
+            GoBackCommand = new RelayCommand(GoBackAsync);
             GenerarPdfCommand = new RelayCommand(GenerarPdf);
 
         }
 
 
-        private async Task GoBackAsync()
+        private async void GoBackAsync()
         {
             await Shell.Current.GoToAsync("..");
         }

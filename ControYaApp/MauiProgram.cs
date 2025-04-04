@@ -98,7 +98,6 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddTransient<ConfigViewModel>();
             mauiAppBuilder.Services.AddTransient<HomeViewModel>();
             mauiAppBuilder.Services.AddTransient<NotificarPmViewModel>();
-            mauiAppBuilder.Services.AddTransient<AutorizarOrdenesPrdViewModel>();
             mauiAppBuilder.Services.AddTransient<AprobarOrdenesPrdViewModel>();
             mauiAppBuilder.Services.AddTransient<AprobarOrdenesPrdInvViewModel>();
 

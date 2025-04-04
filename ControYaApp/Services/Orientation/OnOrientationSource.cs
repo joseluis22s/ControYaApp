@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace ControYaApp.Services.Orientation
 {
-    public class OnOrientationSource : INotifyPropertyChanged
+    public partial class OnOrientationSource : INotifyPropertyChanged
     {
         private object _defaultValue;
         private object _portraitValue;

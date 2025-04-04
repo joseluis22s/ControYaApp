@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
 using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
@@ -88,10 +89,10 @@ namespace ControYaApp.ViewModels
         public ICommand NotificarPmCommand { get; }
 
 
-        public OrdenesViewModel(RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
+        public OrdenesViewModel(INavigationService navigationService, RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
                                 ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel,
                                 OrdenProduccionMpRepo ordenProduccionMpRepo, OrdenProduccionFilter ordenProduccionFilter,
-                                PeriodoRepo periodoRepo)
+                                PeriodoRepo periodoRepo) : base(navigationService)
         {
 
             SharedData = sharedData;

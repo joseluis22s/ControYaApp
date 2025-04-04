@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
-using ControYaApp.ViewModels.Base;
+using ControYaApp.Services.NotifyPropertyChanged;
 using SQLite;
 
 namespace ControYaApp.Models
 {
-    public class MpNotificado : BaseViewModel
+    public partial class MpNotificado : NotifyPropertyChanged
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]
