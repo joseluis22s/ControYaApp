@@ -265,7 +265,7 @@ namespace ControYaApp.ViewModels
         private async Task FilterOrdenes()
         {
             List<OrdenProduccionGroup> allOrdenesProduccionGroups = new(SharedData.AllOrdenesProduccionGroups);
-            string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Con saldo pendiente", "Sin saldo pendiente");
+            string action = await _dialogService.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Con saldo pendiente", "Sin saldo pendiente");
             if (action == "Con saldo pendiente")
             {
                 OrdenesProduccionGroups?.Clear();

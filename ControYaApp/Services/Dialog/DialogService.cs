@@ -9,13 +9,13 @@ namespace ControYaApp.Services.Dialog
         {
             return Toast.Make(message, duration, textSize).Show();
         }
-        public Task<bool> DisplayAlert(string title, string message, string accept, string cancel, FlowDirection flowDirection)
+        public Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
         {
-            return AppShell.Current.DisplayAlert(title, message, accept, cancel, flowDirection);
+            return AppShell.Current.DisplayAlert(title, message, accept, cancel);
         }
-        public Task<string> DisplayActionSheet(string title, string cancel, string destruction, FlowDirection flowDirection, params string[] buttons)
+        public Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)
         {
-            return AppShell.Current.DisplayActionSheet(title, cancel, destruction, flowDirection, buttons);
+            return AppShell.Current.DisplayActionSheet(title, cancel, destruction, buttons);
         }
 
 

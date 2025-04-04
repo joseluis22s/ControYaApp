@@ -142,7 +142,7 @@ namespace ControYaApp.ViewModels
             {
                 OrdenesProduccionMaterialGroupSource.Clear();
             }
-            string action = await Shell.Current.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes");
+            string action = await _dialogService.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes");
 
             if (action == "Pendientes")
             {
