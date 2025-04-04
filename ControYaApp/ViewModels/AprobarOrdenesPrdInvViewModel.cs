@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
@@ -13,7 +13,7 @@ namespace ControYaApp.ViewModels
 {
     public partial class AprobarOrdenesPrdInvViewModel : BaseViewModel
     {
-
+        private readonly IDialogService _dialogService;
         private readonly LocalRepoService _localRepoService;
 
         private readonly RestService _restService;
@@ -51,8 +51,9 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AprobarOrdenesPrdInvViewModel(INavigationService navigationServie, LocalRepoService localRepoService, RestService restService) : base(navigationServie)
+        public AprobarOrdenesPrdInvViewModel(INavigationService navigationServie, IDialogService dialogService, LocalRepoService localRepoService, RestService restService) : base(navigationServie)
         {
+            _dialogService = dialogService;
             _localRepoService = localRepoService;
             _restService = restService;
 
@@ -74,7 +75,6 @@ namespace ControYaApp.ViewModels
         {
             if (UnapprPtNotificadosInv is null || UnapprPtNotificadosInv.Count == 0)
             {
-                //await Toast.Make("No existen registros de PT").Show();
                 return;
             }
             foreach (var notificado in UnapprPtNotificadosInv)
@@ -88,7 +88,6 @@ namespace ControYaApp.ViewModels
         {
             if (UnapprMpNotificadosInv is null || UnapprMpNotificadosInv.Count == 0)
             {
-                //await Toast.Make("No existen registros de MP").Show();
                 return;
             }
             foreach (var notificado in UnapprMpNotificadosInv)
@@ -103,7 +102,8 @@ namespace ControYaApp.ViewModels
 
             if (accessType != NetworkAccess.Internet)
             {
-                await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
+                await _dialogService.ShowToast("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
+                // TODO: Eliminar -> await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
                 return;
             }
 
@@ -114,7 +114,8 @@ namespace ControYaApp.ViewModels
                 var selectedMpNotificados = UnapprMpNotificadosInv.Where(mp => mp.IsSelected == true).ToList();
                 if (selectedPtNotificados.Count == 0 && selectedMpNotificados.Count == 0)
                 {
-                    await Toast.Make("Ningún registro seleccionado").Show();
+                    await _dialogService.ShowToast("Ningún registro seleccionado");
+                    // TODO: Eliminar -> await Toast.Make("Ningún registro seleccionado").Show();
                     return;
                 }
             }
@@ -164,7 +165,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                // TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 

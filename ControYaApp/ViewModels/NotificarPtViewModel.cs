@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.Pdf;
@@ -17,7 +17,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(Empleados), "empleados")]
     public partial class NotificarPtViewModel : BaseViewModel
     {
-
+        private readonly IDialogService _dialogService;
         private PdfService _pdfService;
 
         private readonly PeriodoRepo _periodoRepo;
@@ -131,10 +131,11 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPtViewModel(INavigationService navigationService, RestService restService, PtNotificadoRepo ptNotificadoRepo,
+        public NotificarPtViewModel(INavigationService navigationService, IDialogService dialogService, RestService restService, PtNotificadoRepo ptNotificadoRepo,
                                     OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo,
                                     PdfService pdfService, ISharedData sharedData) : base(navigationService)
         {
+            _dialogService = dialogService;
             SharedData = sharedData;
             _pdfService = pdfService;
             _restService = restService;
@@ -212,7 +213,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
 
         }
@@ -221,30 +223,29 @@ namespace ControYaApp.ViewModels
         {
             if (Saldo < 0)
             {
-                await Toast.Make("Saldo agotado").Show();
+                await _dialogService.ShowToast("Saldo agotado");
+                //TODO: Eliminar -> await Toast.Make("Saldo agotado").Show();
                 return false;
             }
 
-            //if (OrdenProduccionPt.Notificado > OrdenProduccionPt.Saldo)
-            //{
-            //    await Toast.Make("Valor de notificado mayor al límite").Show();
-            //    return false;
-            //}
             if (Convert.ToDecimal(Notificado) > Cantidad)
             {
-                await Toast.Make("Valor a notificar excede el límite").Show();
+                await _dialogService.ShowToast("Valor a notificar excede el límite");
+                //TODO: Eliminar -> await Toast.Make("Valor a notificar excede el límite").Show();
                 return false;
             }
 
             if (Convert.ToDecimal(Notificado) <= 0)
             {
-                await Toast.Make("Valor a notificar no válido").Show();
+                await _dialogService.ShowToast("Valor a notificar no válido");
+                //TODO: Eliminar -> await Toast.Make("Valor a notificar no válido").Show();
                 return false;
             }
 
             if (EmpleadoSelected is null)
             {
-                await Toast.Make($"Debe elegir un empleado").Show();
+                await _dialogService.ShowToast("Debe elegir un empleado");
+                //TODO: Eliminar -> await Toast.Make($"Debe elegir un empleado").Show();
                 return false;
             }
 
@@ -263,11 +264,13 @@ namespace ControYaApp.ViewModels
             try
             {
                 // TODO: Controlar que notifique la menos una vez para poder generar
-                await Toast.Make($"Botón para generar un pdf", ToastDuration.Long).Show();
+                await _dialogService.ShowToast("Botón para generar un pdf", ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make($"Botón para generar un pdf", ToastDuration.Long).Show();
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
         }
 
@@ -280,8 +283,6 @@ namespace ControYaApp.ViewModels
                 CodigoMaterial = ordenProduccionPt.CodigoMaterial,
                 Fecha = FechaActual,
                 Producto = ordenProduccionPt.Producto,
-                // TODO: Eliminar esat linea
-                // Notificado = ordenProduccionPt.Notificado + notificado,
                 Notificado = notificado,
                 CodigoEmpleado = codigoEmpleado,
                 Serie = serie,

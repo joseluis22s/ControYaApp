@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
@@ -11,6 +11,7 @@ namespace ControYaApp.ViewModels
 {
     public partial class ConfigViewModel : BaseViewModel
     {
+        private readonly IDialogService _dialogService;
         private bool _isSaved;
 
         private DataConfig _dataConfigSave = new();
@@ -32,8 +33,9 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ConfigViewModel(INavigationService navigationServie, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationServie)
+        public ConfigViewModel(INavigationService navigationServie, IDialogService dialogService, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationServie)
         {
+            _dialogService = dialogService;
             SharedData = sharedData; //No mover.
 
             _dataConfigRepo = dataConfigRepo;
@@ -79,14 +81,16 @@ namespace ControYaApp.ViewModels
 
                     _isSaved = true;
 
-                    await Toast.Make("Configuración guardada").Show();
+                    await _dialogService.ShowToast("Configuración guardada");
+                    //TODO: Eliminar -> await Toast.Make("Configuración guardada").Show();
                     await NavigationService.GoBackAsync();
                 }
 
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
         }
 

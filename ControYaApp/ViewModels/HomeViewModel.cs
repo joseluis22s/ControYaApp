@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.DI;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
@@ -18,6 +18,7 @@ namespace ControYaApp.ViewModels
 {
     public partial class HomeViewModel : BaseViewModel
     {
+        private readonly IDialogService _dialogService;
         private readonly OrdenProduccionRepo _ordenProduccionRepo;
 
         private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
@@ -123,8 +124,9 @@ namespace ControYaApp.ViewModels
         public ICommand SincronizarOrdenesProduccionCommand { get; }
 
 
-        public HomeViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, LocalRepoService localRepoService, RestService restService) : base(navigationService)
+        public HomeViewModel(INavigationService navigationService, IDialogService dialogService, ISharedData sharedData, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, LocalRepoService localRepoService, RestService restService) : base(navigationService)
         {
+            _dialogService = dialogService;
             SharedData = sharedData;
 
             _ordenProduccionRepo = ordenProduccionRepo;
@@ -143,7 +145,8 @@ namespace ControYaApp.ViewModels
 
             if (accessType != NetworkAccess.Internet)
             {
-                await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
+                await _dialogService.ShowToast("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
                 return;
             }
 
@@ -218,7 +221,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
             finally
             {
@@ -297,7 +301,6 @@ namespace ControYaApp.ViewModels
 
                 if (ordenesProduccionDb.Count == 0)
                 {
-                    //await Toast.Make("No se han encontrado ordenes de producción", ToastDuration.Long).Show();
                     return [];
                 }
                 else
@@ -308,7 +311,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             return null;
         }
@@ -318,7 +322,6 @@ namespace ControYaApp.ViewModels
             var ordenesProduccionMpDb = await _localRepoService.OrdenProduccionMpRepo.GetAllOrdenesProduccionMpAsync();
             if (ordenesProduccionMpDb.Count == 0)
             {
-                //await Toast.Make("No se han encontrado ordenes de producción", ToastDuration.Long).Show();
                 return [];
             }
             return ordenesProduccionMpDb;

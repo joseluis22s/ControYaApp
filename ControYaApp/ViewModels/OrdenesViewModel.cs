@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
@@ -19,6 +19,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(OrdenProduccionPt), "ordenProduccionPt")]
     public partial class OrdenesViewModel : BaseViewModel
     {
+        private readonly IDialogService _dialogService;
         public ISharedData SharedData { get; set; }
 
 
@@ -89,12 +90,12 @@ namespace ControYaApp.ViewModels
         public ICommand NotificarPmCommand { get; }
 
 
-        public OrdenesViewModel(INavigationService navigationService, RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
+        public OrdenesViewModel(INavigationService navigationService, IDialogService dialogService, RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
                                 ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel,
                                 OrdenProduccionMpRepo ordenProduccionMpRepo, OrdenProduccionFilter ordenProduccionFilter,
                                 PeriodoRepo periodoRepo) : base(navigationService)
         {
-
+            _dialogService = dialogService;
             SharedData = sharedData;
 
             _ordenProduccionMpRepo = ordenProduccionMpRepo;
@@ -129,12 +130,14 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionMpSourceDb = await _ordenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
                 if (ordenesProduccionMpDb is null)
                 {
-                    await Toast.Make("Problemas al recuperar datos.", ToastDuration.Long).Show();
+                    await _dialogService.ShowToast("Problemas al recuperar datos.", ToastDuration.Long);
+                    //TODO: Eliminar -> await Toast.Make("Problemas al recuperar datos.", ToastDuration.Long).Show();
                     return;
                 }
                 if (ordenesProduccionMpDb.Count == 0)
                 {
-                    await Toast.Make("Usuario sin materiales de producción asignados para esta orden de producción.", ToastDuration.Long).Show();
+                    await _dialogService.ShowToast("Usuario sin materiales de producción asignados para esta orden de producción.", ToastDuration.Long);
+                    //TODO: Eliminar -> await Toast.Make("Usuario sin materiales de producción asignados para esta orden de producción.", ToastDuration.Long).Show();
                     return;
                 }
 
@@ -157,7 +160,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 
@@ -173,7 +177,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
         }
 
@@ -237,7 +242,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 
@@ -248,7 +254,8 @@ namespace ControYaApp.ViewModels
             {
                 if (SharedData.AllOrdenesProduccionGroups.Count == 0)
                 {
-                    await Toast.Make("No se han encontrado ordenes de producción").Show();
+                    await _dialogService.ShowToast("No se han encontrado ordenes de producción");
+                    //TODO: Eliminar -> await Toast.Make("No se han encontrado ordenes de producción").Show();
                     return;
                 }
                 OrdenesProduccionGroups = SharedData.AllOrdenesProduccionGroups;
@@ -256,7 +263,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
 
         }
@@ -301,7 +309,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
         }
 

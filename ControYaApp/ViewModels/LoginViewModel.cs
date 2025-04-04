@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
@@ -15,7 +15,7 @@ namespace ControYaApp.ViewModels
 {
     public partial class LoginViewModel : BaseViewModel
     {
-
+        private readonly IDialogService _dialogService;
         public ISharedData SharedData { get; set; }
 
 
@@ -46,9 +46,9 @@ namespace ControYaApp.ViewModels
 
 
 
-        public LoginViewModel(INavigationService navigationService, UsuarioRepo usuarioRepo, RestService restService, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationService)
+        public LoginViewModel(INavigationService navigationService, IDialogService dialogService, UsuarioRepo usuarioRepo, RestService restService, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationService)
         {
-
+            _dialogService = dialogService;
             SharedData = sharedData;
 
 
@@ -119,7 +119,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             finally
             {
@@ -132,7 +133,8 @@ namespace ControYaApp.ViewModels
             if ((usuarioRes is null) ||
                 (usuarioRes.NombreUsuario != usuario.NombreUsuario && usuarioRes.Contrasena != usuario.Contrasena))
             {
-                await Toast.Make("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long).Show();
+                await _dialogService.ShowToast("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long).Show();
             }
             else
             {

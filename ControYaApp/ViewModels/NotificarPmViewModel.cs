@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
@@ -19,7 +19,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(Empleados), "empleados")]
     public partial class NotificarPmViewModel : BaseViewModel
     {
-
+        private readonly IDialogService _dialogService;
         private readonly OrdenProduccionMpRepo _ordenProduccionMpRepo;
 
 
@@ -89,17 +89,17 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPmViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo) : base(navigationService)
-        {
-            SharedData = sharedData;
+        //public NotificarPmViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo) : base(navigationService)
+        //{
+        //    SharedData = sharedData;
 
-            _ordenProduccionMpRepo = ordenProduccionMpRepo;
-            _pmNotificadoRepo = pmNotificadoRepo;
+        //    _ordenProduccionMpRepo = ordenProduccionMpRepo;
+        //    _pmNotificadoRepo = pmNotificadoRepo;
 
-            GoBackCommand = new AsyncRelayCommand(GoBackAsync);
-            NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
-            FilterOrdenesProduccionMpCommand = new AsyncRelayCommand(() => FilterOrdenesProduccionMpAsync(OrdenesProduccionMaterialGroup));
-        }
+        //    GoBackCommand = new AsyncRelayCommand(GoBackAsync);
+        //    NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
+        //    FilterOrdenesProduccionMpCommand = new AsyncRelayCommand(() => FilterOrdenesProduccionMpAsync(OrdenesProduccionMaterialGroup));
+        //}
 
 
 
@@ -108,8 +108,9 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPmViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter) : base(navigationService)
+        public NotificarPmViewModel(INavigationService navigationService, IDialogService dialogService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter) : base(navigationService)
         {
+            _dialogService = dialogService;
             SharedData = sharedData;
 
             _ordenProduccionMpRepo = ordenProduccionMpRepo;
@@ -164,13 +165,15 @@ namespace ControYaApp.ViewModels
 
                 if (selectedItems == null || selectedItems.Count == 0)
                 {
-                    await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
+                    await _dialogService.ShowToast("Ningún item seleccionado.", ToastDuration.Long);
+                    //TODO: Eliminar -> await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
                 }
 
                 if (EmpleadoSelected is null)
                 {
-                    await Toast.Make("Ningún empleado seleccionado.", ToastDuration.Long).Show();
+                    await _dialogService.ShowToast("Ningún item seleccionado.", ToastDuration.Long);
+                    //TODO: Eliminar -> await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
                 }
 
@@ -194,14 +197,16 @@ namespace ControYaApp.ViewModels
 
                 int savedOrdUpdateCount = await _pmNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
 
-                await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
+                await _dialogService.ShowToast($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
 
                 await NavigationService.GoBackAsync();
 
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 

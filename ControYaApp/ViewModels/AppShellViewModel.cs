@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Services.DI;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
@@ -15,6 +15,7 @@ namespace ControYaApp.ViewModels
 {
     public partial class AppShellViewModel : BaseViewModel
     {
+        private readonly IDialogService _dialogService;
         private readonly RestService _restService;
 
         private readonly LocalRepoService _localRepoService;
@@ -45,9 +46,10 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AppShellViewModel(INavigationService navigationServie, DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService,
+        public AppShellViewModel(INavigationService navigationServie, IDialogService dialogService, DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService,
             ISharedData sharedData) : base(navigationServie)
         {
+            _dialogService = dialogService;
             _restService = restService;
             _localRepoService = localRepoService;
             _dataConfigRepo = dataConfigRepo;
@@ -123,7 +125,8 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await Toast.Make(ex.Message, ToastDuration.Long).Show();
+                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                //TODO: ELIMINAR -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             finally
             {
