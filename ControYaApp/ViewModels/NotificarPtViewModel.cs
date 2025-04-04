@@ -214,7 +214,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
 
         }
@@ -224,28 +223,24 @@ namespace ControYaApp.ViewModels
             if (Saldo < 0)
             {
                 await _dialogService.ShowToast("Saldo agotado");
-                //TODO: Eliminar -> await Toast.Make("Saldo agotado").Show();
                 return false;
             }
 
             if (Convert.ToDecimal(Notificado) > Cantidad)
             {
                 await _dialogService.ShowToast("Valor a notificar excede el límite");
-                //TODO: Eliminar -> await Toast.Make("Valor a notificar excede el límite").Show();
                 return false;
             }
 
             if (Convert.ToDecimal(Notificado) <= 0)
             {
                 await _dialogService.ShowToast("Valor a notificar no válido");
-                //TODO: Eliminar -> await Toast.Make("Valor a notificar no válido").Show();
                 return false;
             }
 
             if (EmpleadoSelected is null)
             {
                 await _dialogService.ShowToast("Debe elegir un empleado");
-                //TODO: Eliminar -> await Toast.Make($"Debe elegir un empleado").Show();
                 return false;
             }
 
@@ -265,12 +260,10 @@ namespace ControYaApp.ViewModels
             {
                 // TODO: Controlar que notifique la menos una vez para poder generar
                 await _dialogService.ShowToast("Botón para generar un pdf", ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make($"Botón para generar un pdf", ToastDuration.Long).Show();
             }
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
         }
 

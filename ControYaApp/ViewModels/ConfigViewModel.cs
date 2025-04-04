@@ -82,7 +82,6 @@ namespace ControYaApp.ViewModels
                     _isSaved = true;
 
                     await _dialogService.ShowToast("Configuración guardada");
-                    //TODO: Eliminar -> await Toast.Make("Configuración guardada").Show();
                     await NavigationService.GoBackAsync();
                 }
 
@@ -90,7 +89,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message);
-                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
         }
 

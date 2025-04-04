@@ -126,7 +126,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                //TODO: ELIMINAR -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             finally
             {

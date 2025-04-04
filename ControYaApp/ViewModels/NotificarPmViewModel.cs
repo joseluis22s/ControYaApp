@@ -166,14 +166,12 @@ namespace ControYaApp.ViewModels
                 if (selectedItems == null || selectedItems.Count == 0)
                 {
                     await _dialogService.ShowToast("Ningún item seleccionado.", ToastDuration.Long);
-                    //TODO: Eliminar -> await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
                 }
 
                 if (EmpleadoSelected is null)
                 {
                     await _dialogService.ShowToast("Ningún item seleccionado.", ToastDuration.Long);
-                    //TODO: Eliminar -> await Toast.Make("Ningún item seleccionado.", ToastDuration.Long).Show();
                     return;
                 }
 
@@ -198,7 +196,6 @@ namespace ControYaApp.ViewModels
                 int savedOrdUpdateCount = await _pmNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
 
                 await _dialogService.ShowToast($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long).Show();
 
                 await NavigationService.GoBackAsync();
 
@@ -206,7 +203,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 

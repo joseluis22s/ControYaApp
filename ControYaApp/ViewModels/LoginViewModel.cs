@@ -120,7 +120,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             finally
             {
@@ -134,7 +133,6 @@ namespace ControYaApp.ViewModels
                 (usuarioRes.NombreUsuario != usuario.NombreUsuario && usuarioRes.Contrasena != usuario.Contrasena))
             {
                 await _dialogService.ShowToast("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long).Show();
             }
             else
             {

@@ -103,7 +103,6 @@ namespace ControYaApp.ViewModels
             if (accessType != NetworkAccess.Internet)
             {
                 await _dialogService.ShowToast("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
-                // TODO: Eliminar -> await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
                 return;
             }
 
@@ -115,7 +114,6 @@ namespace ControYaApp.ViewModels
                 if (selectedPtNotificados.Count == 0 && selectedMpNotificados.Count == 0)
                 {
                     await _dialogService.ShowToast("Ningún registro seleccionado");
-                    // TODO: Eliminar -> await Toast.Make("Ningún registro seleccionado").Show();
                     return;
                 }
             }
@@ -166,7 +164,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                // TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
         }
 

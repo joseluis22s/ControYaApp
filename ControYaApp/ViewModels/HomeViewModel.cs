@@ -146,7 +146,6 @@ namespace ControYaApp.ViewModels
             if (accessType != NetworkAccess.Internet)
             {
                 await _dialogService.ShowToast("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make("Sin conexión. No se puede realizar esta acción", ToastDuration.Long).Show();
                 return;
             }
 
@@ -222,7 +221,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message);
-                //TODO: Eliminar -> await Toast.Make(ex.Message).Show();
             }
             finally
             {
@@ -312,7 +310,6 @@ namespace ControYaApp.ViewModels
             catch (Exception ex)
             {
                 await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-                //TODO: Eliminar -> await Toast.Make(ex.Message, ToastDuration.Long).Show();
             }
             return null;
         }
