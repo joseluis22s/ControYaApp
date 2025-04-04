@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
@@ -14,6 +15,9 @@ namespace ControYaApp.ViewModels
     public partial class LoginViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
+        private readonly AppDbReposService _appDbReposService;
+
+
         public ISharedData SharedData { get; set; }
 
 
@@ -44,15 +48,16 @@ namespace ControYaApp.ViewModels
 
 
 
-        public LoginViewModel(INavigationService navigationService, IDialogService dialogService, UsuarioRepo usuarioRepo, RestService restService, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationService)
+        public LoginViewModel(INavigationService navigationService, IDialogService dialogService,
+            RestService restService, ISharedData sharedData) : base(navigationService)
         {
             _dialogService = dialogService;
+
+
             SharedData = sharedData;
 
 
             _restService = restService;
-            _usuarioRepo = usuarioRepo;
-            _dataConfigRepo = dataConfigRepo;
 
 
             GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);

@@ -3,9 +3,9 @@ using System.Windows.Input;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
-using ControYaApp.Services.DI;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
@@ -17,11 +17,9 @@ namespace ControYaApp.ViewModels
     public partial class HomeViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
-        private readonly OrdenProduccionRepo _ordenProduccionRepo;
+        private readonly AppDbReposService _appDbReposService;
+        private readonly PrdDbReposService _prdDbReposService;
 
-        private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
-
-        private readonly LocalRepoService _localRepoService;
 
         private readonly RestService _restService;
 
@@ -120,15 +118,18 @@ namespace ControYaApp.ViewModels
         public ICommand SincronizarOrdenesProduccionCommand { get; }
 
 
-        public HomeViewModel(INavigationService navigationService, IDialogService dialogService, ISharedData sharedData, OrdenProduccionRepo ordenProduccionRepo, OrdenProduccionPtRepo ordenProduccionPtRepo, LocalRepoService localRepoService, RestService restService) : base(navigationService)
+        public HomeViewModel(INavigationService navigationService, IDialogService dialogService,
+            PrdDbReposService prdDbReposService, AppDbReposService appDbReposService,
+            ISharedData sharedData, RestService restService) : base(navigationService)
         {
             _dialogService = dialogService;
+            _appDbReposService = appDbReposService;
+            _prdDbReposService = prdDbReposService;
+
+
             SharedData = sharedData;
 
-            _ordenProduccionRepo = ordenProduccionRepo;
-            _ordenProduccionPtRepo = ordenProduccionPtRepo;
             _restService = restService;
-            _localRepoService = localRepoService;
 
             SincronizarOrdenesProduccionCommand = new AsyncRelayCommand(SincronizarOrdenesProduccionAsync);
 
@@ -150,8 +151,8 @@ namespace ControYaApp.ViewModels
             try
             {
                 //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-                var allPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
-                var allMpNotificados = await _localRepoService.MpNotificadoRepo.GetAllMpNotificadoAsync();
+                var allPtNotificados = await _prdDbReposService.PtNotificadoRepo.GetAllPtNotificadoAsync();
+                var allMpNotificados = await _prdDbReposService.MpNotificadoRepo.GetAllMpNotificadoAsync();
 
                 // Cuando haya PT notficados (que AllPtNotificados no sea nullo y cuando no es nulo que al menos haya uno)
                 // notifica los que esten con `NotificarManyPtAsync()` y luego los elimina con `DeleteAllPtNotificado()`.
@@ -170,7 +171,7 @@ namespace ControYaApp.ViewModels
                     };
                     await _restService.NotificarManyPtAsync(req);
 
-                    await _localRepoService.PtNotificadoRepo.DeleteAllPtNotificado();
+                    await _prdDbReposService.PtNotificadoRepo.DeleteAllPtNotificado();
                 }
 
                 if (allMpNotificados is not null && allMpNotificados.Count != 0)
@@ -186,7 +187,7 @@ namespace ControYaApp.ViewModels
                     };
                     await _restService.NotificarManyMpAsync(req);
 
-                    await _localRepoService.MpNotificadoRepo.DeleteAllMpNotificado();
+                    await _prdDbReposService.MpNotificadoRepo.DeleteAllMpNotificado();
                 }
 
 
@@ -199,14 +200,15 @@ namespace ControYaApp.ViewModels
                 var unapprovedPtNoticados = await _restService.GetUnapproveddPtPrdInv();
                 var unapprovedMpNoticados = await _restService.GetUnapproveddMpPrdInv();
 
-                await _localRepoService.MpNotificadoRepo.SaveAllUnapprMpNotficado(unapprovedMpNoticados);
-                await _localRepoService.PtNotificadoRepo.SaveAllUnapprPtNotficado(unapprovedPtNoticados);
-                await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
-                await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
-                await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
-                await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
-                await _localRepoService.OrdenesProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
-                await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
+                await _prdDbReposService.MpNotificadoRepo.SaveAllUnapprMpNotficado(unapprovedMpNoticados);
+                await _prdDbReposService.PtNotificadoRepo.SaveAllUnapprPtNotficado(unapprovedPtNoticados);
+                await _prdDbReposService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
+                await _prdDbReposService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
+                await _prdDbReposService.OrdenProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
+
+                await _appDbReposService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
+                await _appDbReposService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
+                await _appDbReposService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
 
 
 
@@ -240,8 +242,8 @@ namespace ControYaApp.ViewModels
                     .Select(opg => opg)
                     .Count(op => op.Saldo > 0);
 
-                var allPtNotificados = await _localRepoService.PtNotificadoRepo.GetAllPtNotificadoAsync();
-                var allMpNotificados = await _localRepoService.MpNotificadoRepo.GetAllMpNotificadoAsync();
+                var allPtNotificados = await _prdDbReposService.PtNotificadoRepo.GetAllPtNotificadoAsync();
+                var allMpNotificados = await _prdDbReposService.MpNotificadoRepo.GetAllMpNotificadoAsync();
 
                 // Informe de PT
                 PtNotificadoDesyncCount = allPtNotificados is not null ? allPtNotificados.Count(pt => pt.Sincronizado == false) : 0;
@@ -288,7 +290,7 @@ namespace ControYaApp.ViewModels
         {
             try
             {
-                var ordenesProduccionDb = await _ordenProduccionRepo.GetAllOrdenesProduccionAsync();
+                var ordenesProduccionDb = await _prdDbReposService.OrdenProduccionRepo.GetAllOrdenesProduccionAsync();
 
                 if (ordenesProduccionDb.Count == 0)
                 {
@@ -296,7 +298,7 @@ namespace ControYaApp.ViewModels
                 }
                 else
                 {
-                    var ordenesProduccionPt = await _ordenProduccionPtRepo.GetAllOrdenesProduccionPt();
+                    var ordenesProduccionPt = await _prdDbReposService.OrdenProduccionPtRepo.GetAllOrdenesProduccionPt();
                     return MapOrdenesProduccionGrouped(ordenesProduccionDb, ordenesProduccionPt);
                 }
             }
@@ -309,7 +311,7 @@ namespace ControYaApp.ViewModels
 
         private async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionMpAsync()
         {
-            var ordenesProduccionMpDb = await _localRepoService.OrdenProduccionMpRepo.GetAllOrdenesProduccionMpAsync();
+            var ordenesProduccionMpDb = await _prdDbReposService.OrdenProduccionMpRepo.GetAllOrdenesProduccionMpAsync();
             if (ordenesProduccionMpDb.Count == 0)
             {
                 return [];

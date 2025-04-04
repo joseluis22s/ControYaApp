@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
-using ControYaApp.Services.DI;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
@@ -14,11 +14,11 @@ namespace ControYaApp.ViewModels
     public partial class AppShellViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
+        private readonly AppDbReposService _appDbReposService;
+        private readonly PrdDbReposService _prdDbReposService;
+
         private readonly RestService _restService;
 
-        private readonly LocalRepoService _localRepoService;
-
-        private DataConfigRepo _dataConfigRepo;
 
 
 
@@ -44,13 +44,17 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AppShellViewModel(INavigationService navigationServie, IDialogService dialogService, DataConfigRepo dataConfigRepo, RestService restService, LocalRepoService localRepoService,
+        public AppShellViewModel(INavigationService navigationServie, IDialogService dialogService,
+            AppDbReposService appDbReposService, PrdDbReposService prdDbReposService,
+            RestService restService,
             ISharedData sharedData) : base(navigationServie)
         {
             _dialogService = dialogService;
+            _appDbReposService = appDbReposService;
+            _prdDbReposService = prdDbReposService;
+
+
             _restService = restService;
-            _localRepoService = localRepoService;
-            _dataConfigRepo = dataConfigRepo;
 
             SharedData = sharedData;
 
@@ -66,7 +70,7 @@ namespace ControYaApp.ViewModels
 
         private async void InitIpAddress()
         {
-            var dataConfig = await _dataConfigRepo.GetDataConfigAsync();
+            var dataConfig = await _appDbReposService.DataConfigRepo.GetDataConfigAsync();
             if (dataConfig is null)
             {
                 SharedData.IpAddress = "";
@@ -112,12 +116,13 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
                 var empleados = await _restService.GetAllEmpleadosAsync();
 
-                await _localRepoService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
-                await _localRepoService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
-                await _localRepoService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
-                await _localRepoService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
-                await _localRepoService.OrdenesProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
-                await _localRepoService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
+                await _appDbReposService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
+                await _appDbReposService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
+                await _appDbReposService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
+
+                await _prdDbReposService.OrdenProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
+                await _prdDbReposService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
+                await _prdDbReposService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
             }
             catch (Exception ex)
             {

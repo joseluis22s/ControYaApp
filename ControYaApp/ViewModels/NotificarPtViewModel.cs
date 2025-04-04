@@ -3,8 +3,9 @@ using System.Windows.Input;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.Pdf;
 using ControYaApp.Services.SharedData;
@@ -18,13 +19,13 @@ namespace ControYaApp.ViewModels
     public partial class NotificarPtViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
+        private readonly AppDbReposService _appDbReposService;
+        private readonly PrdDbReposService _prdDbReposService;
+
+
+
         private PdfService _pdfService;
 
-        private readonly PeriodoRepo _periodoRepo;
-
-        private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
-
-        private readonly PtNotificadoRepo _ptNotificadoRepo;
 
         private readonly RestService _restService;
 
@@ -131,17 +132,19 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPtViewModel(INavigationService navigationService, IDialogService dialogService, RestService restService, PtNotificadoRepo ptNotificadoRepo,
-                                    OrdenProduccionPtRepo ordenProduccionPtRepo, PeriodoRepo periodoRepo,
+        public NotificarPtViewModel(INavigationService navigationService, IDialogService dialogService, RestService restService,
+                                    AppDbReposService appDbReposService, PrdDbReposService prdDbReposService,
                                     PdfService pdfService, ISharedData sharedData) : base(navigationService)
         {
             _dialogService = dialogService;
+            _appDbReposService = appDbReposService;
+            _prdDbReposService = prdDbReposService;
+
+
             SharedData = sharedData;
             _pdfService = pdfService;
             _restService = restService;
-            _ptNotificadoRepo = ptNotificadoRepo;
-            _ordenProduccionPtRepo = ordenProduccionPtRepo;
-            _periodoRepo = periodoRepo;
+
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPtCommand = new AsyncRelayCommand(NotificarPtAsync);
@@ -193,9 +196,9 @@ namespace ControYaApp.ViewModels
 
                 var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado);
                 OrdenProduccionPt.Notificado += ptNotificado.Notificado;
-                await _ordenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
+                await _prdDbReposService.OrdenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
-                await _ptNotificadoRepo.SavePtNotificadoAsync(ptNotificado);
+                await _prdDbReposService.PtNotificadoRepo.SavePtNotificadoAsync(ptNotificado);
 
                 _isNotified = true;
 
@@ -287,7 +290,7 @@ namespace ControYaApp.ViewModels
 
         private async Task<Periodos> GetRangosPeriodosAsync()
         {
-            return await _periodoRepo.GetRangosPeriodosAsync();
+            return await _appDbReposService.PeriodoRepo.GetRangosPeriodosAsync();
         }
 
 

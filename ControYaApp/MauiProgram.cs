@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Maui;
-using ControYaApp.Services.DI;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.LocalDatabase.Repositories;
@@ -67,16 +67,23 @@ namespace ControYaApp
         {
             mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
             mauiAppBuilder.Services.AddSingleton<IDialogService, DialogService>();
-
-
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
-            mauiAppBuilder.Services.AddSingleton<RestService>();
-            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
-            mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
-            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
-            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
 
+            mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddTransient<PdfService>();
+
+            mauiAppBuilder.Services.AddSingleton<AppDbReposService>(
+                serviceProvider =>
+                {
+                    var dataConfigRepo = serviceProvider.GetRequiredService<DataConfigRepo>();
+                    var empleadosRepo = serviceProvider.GetRequiredService<EmpleadosRepo>();
+                    var periodoRepo = serviceProvider.GetRequiredService<PeriodoRepo>();
+                    var usuarioRepo = serviceProvider.GetRequiredService<UsuarioRepo>();
+
+                    return new AppDbReposService(dataConfigRepo, empleadosRepo,
+                        periodoRepo, usuarioRepo);
+                }
+            );
             return mauiAppBuilder;
         }
 
@@ -140,9 +147,6 @@ namespace ControYaApp
                         ptNotificadoRepo, mpNotificadoRepo);
                 }
             );
-
-
-            mauiAppBuilder.Services.AddSingleton<LocalRepoService>();
 
 
 

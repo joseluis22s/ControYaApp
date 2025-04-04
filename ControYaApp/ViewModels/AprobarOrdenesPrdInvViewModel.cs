@@ -3,8 +3,8 @@ using System.Windows.Input;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
-using ControYaApp.Services.DI;
 using ControYaApp.Services.Dialog;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
@@ -14,7 +14,8 @@ namespace ControYaApp.ViewModels
     public partial class AprobarOrdenesPrdInvViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
-        private readonly LocalRepoService _localRepoService;
+        private readonly PrdDbReposService _prdDbReposService;
+
 
         private readonly RestService _restService;
 
@@ -51,10 +52,13 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AprobarOrdenesPrdInvViewModel(INavigationService navigationServie, IDialogService dialogService, LocalRepoService localRepoService, RestService restService) : base(navigationServie)
+        public AprobarOrdenesPrdInvViewModel(INavigationService navigationServie, IDialogService dialogService,
+            PrdDbReposService prdDbReposService, RestService restService) : base(navigationServie)
         {
             _dialogService = dialogService;
-            _localRepoService = localRepoService;
+            _prdDbReposService = prdDbReposService;
+
+
             _restService = restService;
 
             SelectAllPtCommand = new RelayCommand(SelectAllPt);
@@ -148,16 +152,16 @@ namespace ControYaApp.ViewModels
 
                 // PARA QUE EL USUARIO TENGA FEEDBACK DE LO QUE OCURRE
                 // - Se eliminan todos los PT y MP "sincronizados" de la DB local.
-                await _localRepoService.PtNotificadoRepo.DeleteSyncApprovedPtNotificado();
-                await _localRepoService.MpNotificadoRepo.DeleteSyncApprovedMpNotificado();
+                await _prdDbReposService.PtNotificadoRepo.DeleteSyncApprovedPtNotificado();
+                await _prdDbReposService.MpNotificadoRepo.DeleteSyncApprovedMpNotificado();
 
                 // - Se consultan todos los PT y MP no aprobados pero si sincronizados a la API.
                 var ptNotificados = await _restService.GetUnapproveddPtPrdInv();
                 var mpNotificados = await _restService.GetUnapproveddMpPrdInv();
 
                 // - Se guardan de nuevo a la DB
-                await _localRepoService.PtNotificadoRepo.SaveAllUnapprPtNotficado(ptNotificados);
-                await _localRepoService.MpNotificadoRepo.SaveAllUnapprMpNotficado(mpNotificados);
+                await _prdDbReposService.PtNotificadoRepo.SaveAllUnapprPtNotficado(ptNotificados);
+                await _prdDbReposService.MpNotificadoRepo.SaveAllUnapprMpNotficado(mpNotificados);
 
                 InitData();
             }
@@ -170,13 +174,13 @@ namespace ControYaApp.ViewModels
 
         private async Task<List<PtNotificado>> GetUnapprPtNotificadosInv()
         {
-            return await _localRepoService.PtNotificadoRepo.GetUnapprPtNotificadosInv();
+            return await _prdDbReposService.PtNotificadoRepo.GetUnapprPtNotificadosInv();
         }
 
 
         private async Task<List<MpNotificado>> GetUnapprMpNotificadosInv()
         {
-            return await _localRepoService.MpNotificadoRepo.GetUnapprMpNotificadosInv();
+            return await _prdDbReposService.MpNotificadoRepo.GetUnapprMpNotificadosInv();
         }
     }
 }

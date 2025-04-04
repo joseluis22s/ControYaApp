@@ -5,8 +5,9 @@ using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using ControYaApp.Models;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
@@ -20,6 +21,10 @@ namespace ControYaApp.ViewModels
     public partial class OrdenesViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
+        private readonly AppDbReposService _appDbReposService;
+        private readonly PrdDbReposService _prdDbReposService;
+
+
         public ISharedData SharedData { get; set; }
 
 
@@ -29,16 +34,9 @@ namespace ControYaApp.ViewModels
 
         public bool EsNotificado { get; set; }
 
-        private readonly OrdenProduccionPtRepo _ordenProduccionPtRepo;
-        private readonly PeriodoRepo _periodoRepo;
 
-        private readonly EmpleadosRepo _empleadosRepo;
-
-        private readonly OrdenProduccionMpRepo _ordenProduccionMpRepo;
 
         private readonly AppShellViewModel _appShellViewModel;
-
-        private readonly HomeViewModel _homeViewModel;
 
         public Periodos RangoPeriodos { get; set; }
 
@@ -90,23 +88,22 @@ namespace ControYaApp.ViewModels
         public ICommand NotificarPmCommand { get; }
 
 
-        public OrdenesViewModel(INavigationService navigationService, IDialogService dialogService, RestService restService, OrdenProduccionPtRepo ordenProduccionPtRepo, EmpleadosRepo empleadosRepo,
-                                ISharedData sharedData, AppShellViewModel appShellViewModel, HomeViewModel homeViewModel,
-                                OrdenProduccionMpRepo ordenProduccionMpRepo, OrdenProduccionFilter ordenProduccionFilter,
-                                PeriodoRepo periodoRepo) : base(navigationService)
+        public OrdenesViewModel(INavigationService navigationService, IDialogService dialogService,
+            AppDbReposService appDbReposService, PrdDbReposService prdDbReposService,
+            RestService restService, ISharedData sharedData,
+                                OrdenProduccionFilter ordenProduccionFilter, AppShellViewModel appShellViewModel) : base(navigationService)
         {
             _dialogService = dialogService;
+            _appDbReposService = appDbReposService;
+            _prdDbReposService = prdDbReposService;
+
+
             SharedData = sharedData;
 
-            _ordenProduccionMpRepo = ordenProduccionMpRepo;
-            _ordenProduccionPtRepo = ordenProduccionPtRepo;
-            _empleadosRepo = empleadosRepo;
-            _periodoRepo = periodoRepo;
 
             _ordenProduccionFilter = ordenProduccionFilter;
-
             _appShellViewModel = appShellViewModel;
-            _homeViewModel = homeViewModel;
+
 
             InitData();
 
@@ -126,8 +123,8 @@ namespace ControYaApp.ViewModels
         {
             try
             {
-                var ordenesProduccionMpDb = await _ordenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
-                var ordenesProduccionMpSourceDb = await _ordenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
+                var ordenesProduccionMpDb = await _prdDbReposService.OrdenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
+                var ordenesProduccionMpSourceDb = await _prdDbReposService.OrdenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
                 if (ordenesProduccionMpDb is null)
                 {
                     await _dialogService.ShowToast("Problemas al recuperar datos.", ToastDuration.Long);
@@ -141,7 +138,7 @@ namespace ControYaApp.ViewModels
 
                 List<OrdenProduccionMaterialGroup> ordenesProduccionMaterialGroup = new(MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpDb));
                 var ordenesProduccionMaterialGroupSource = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpSourceDb);
-                var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+                var empleados = await _appDbReposService.EmpleadosRepo.GetAllEmpleadosAsync();
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
                 var rangosPeriodos = await GetRangosPeriodosAsync();
@@ -213,7 +210,7 @@ namespace ControYaApp.ViewModels
             {
                 if (EsNotificado)
                 {
-                    var notificadoValue = await _ordenProduccionPtRepo.GetNotificadoValue(OrdenProduccionPt);
+                    var notificadoValue = await _prdDbReposService.OrdenProduccionPtRepo.GetNotificadoValue(OrdenProduccionPt);
 
                     // TODO: Verificar si el valor de notificado cambia. Creo que falta en la propiedad notificado de OrdenProduccionPt
                     //       o directamente usar notificapropertuychanged aqui.
@@ -287,7 +284,7 @@ namespace ControYaApp.ViewModels
         {
             try
             {
-                var empleados = await _empleadosRepo.GetAllEmpleadosAsync();
+                var empleados = await _appDbReposService.EmpleadosRepo.GetAllEmpleadosAsync();
 
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
@@ -333,7 +330,7 @@ namespace ControYaApp.ViewModels
 
         private async Task<Periodos> GetRangosPeriodosAsync()
         {
-            return await _periodoRepo.GetRangosPeriodosAsync();
+            return await _appDbReposService.PeriodoRepo.GetRangosPeriodosAsync();
         }
 
         internal async Task BackButtonPressed()

@@ -5,7 +5,7 @@ using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
+using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
 using ControYaApp.Services.SharedData;
@@ -20,10 +20,7 @@ namespace ControYaApp.ViewModels
     public partial class NotificarPmViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
-        private readonly OrdenProduccionMpRepo _ordenProduccionMpRepo;
-
-
-        private readonly MpNotificadoRepo _pmNotificadoRepo;
+        private readonly PrdDbReposService _prdDbReposService;
 
         public ISharedData SharedData { get; set; }
 
@@ -108,13 +105,15 @@ namespace ControYaApp.ViewModels
 
 
 
-        public NotificarPmViewModel(INavigationService navigationService, IDialogService dialogService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo, OrdenProduccionMpFilter ordenProduccionMpFilter) : base(navigationService)
+        public NotificarPmViewModel(INavigationService navigationService, IDialogService dialogService,
+            PrdDbReposService prdDbReposService, ISharedData sharedData, OrdenProduccionMpFilter ordenProduccionMpFilter) : base(navigationService)
         {
             _dialogService = dialogService;
+            _prdDbReposService = prdDbReposService;
+
             SharedData = sharedData;
 
-            _ordenProduccionMpRepo = ordenProduccionMpRepo;
-            _pmNotificadoRepo = pmNotificadoRepo;
+
             _ordenProduccionMpFilter = ordenProduccionMpFilter;
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
@@ -191,9 +190,9 @@ namespace ControYaApp.ViewModels
                                                   EmpleadoSelected.CodigoEmpleado,
                                                   SharedData.UsuarioSistema);
 
-                int updatedCount = await _ordenProduccionMpRepo.UpdateSelectedNotificadoAsync(selectedOriginalItems);
+                int updatedCount = await _prdDbReposService.OrdenProduccionMpRepo.UpdateSelectedNotificadoAsync(selectedOriginalItems);
 
-                int savedOrdUpdateCount = await _pmNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
+                int savedOrdUpdateCount = await _prdDbReposService.MpNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
 
                 await _dialogService.ShowToast($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long);
 

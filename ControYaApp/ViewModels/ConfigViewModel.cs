@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
+using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.ViewModels.Base;
@@ -12,12 +12,15 @@ namespace ControYaApp.ViewModels
     public partial class ConfigViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
+        private readonly AppDbReposService _appDbReposService;
+
+
+
         private bool _isSaved;
 
         private DataConfig _dataConfigSave = new();
 
 
-        private readonly DataConfigRepo _dataConfigRepo;
 
 
 
@@ -33,12 +36,15 @@ namespace ControYaApp.ViewModels
 
 
 
-        public ConfigViewModel(INavigationService navigationServie, IDialogService dialogService, DataConfigRepo dataConfigRepo, ISharedData sharedData) : base(navigationServie)
+        public ConfigViewModel(INavigationService navigationServie, IDialogService dialogService,
+            AppDbReposService appDbReposService, ISharedData sharedData) : base(navigationServie)
         {
             _dialogService = dialogService;
+            _appDbReposService = appDbReposService;
+
+
             SharedData = sharedData; //No mover.
 
-            _dataConfigRepo = dataConfigRepo;
 
             InitData();
 
@@ -77,7 +83,7 @@ namespace ControYaApp.ViewModels
                     _dataConfigSave.Ip = SharedData.IpAddress;
                     _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
                     _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
-                    await _dataConfigRepo.SaveIpServidor(_dataConfigSave);
+                    await _appDbReposService.DataConfigRepo.SaveIpServidor(_dataConfigSave);
 
                     _isSaved = true;
 
