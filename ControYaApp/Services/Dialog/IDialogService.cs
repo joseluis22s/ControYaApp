@@ -9,5 +9,9 @@ namespace ControYaApp.Services.Dialog
         Task<bool> DisplayAlert(string title = "Title", string message = "Message", string accept = "Accept", string cancel = "Cancel");
 
         Task<string> DisplayActionSheet(string title = "Title", string cancel = "Cancel", string destruction = null, params string[] buttons);
+
+        Task ShowLoadingPopUp();
+
+        Task HideLoadingPopUp();
     }
 }

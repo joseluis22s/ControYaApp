@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Dialog;
@@ -81,7 +80,7 @@ namespace ControYaApp.ViewModels
         private async Task GoToHomeAsync()
         {
             var loadingPopUpp = new LoadingPopUp();
-            _ = Shell.Current.CurrentPage.ShowPopupAsync(loadingPopUpp);
+            _ = _dialogService.ShowLoadingPopUp();
 
             try
             {
@@ -123,7 +122,7 @@ namespace ControYaApp.ViewModels
             }
             finally
             {
-                await loadingPopUpp.CloseAsync();
+                await _dialogService.HideLoadingPopUp();
             }
         }
 
