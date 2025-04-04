@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core;
+using ControYaApp.Services.Navigation;
 using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels.Controls
@@ -7,7 +8,7 @@ namespace ControYaApp.ViewModels.Controls
     {
         private readonly IPopupService _popupService;
 
-        public LoadingPopUpViewModel(IPopupService popupService, Func<Task> operacion)
+        public LoadingPopUpViewModel(INavigationService navigationService, IPopupService popupService, Func<Task> operacion) : base(navigationService)
         {
             _popupService = popupService;
             EjecutarOperacion(operacion).GetAwaiter();

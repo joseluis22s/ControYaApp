@@ -4,7 +4,7 @@ using SQLite;
 
 namespace ControYaApp.Models
 {
-    public partial class OrdenProduccionMp : NotifyPropertyChanged
+    public partial class OrdenProduccionMp : MauiNotifyPropertyChanged
     {
         [JsonIgnore]
         [PrimaryKey, AutoIncrement]

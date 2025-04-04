@@ -3,7 +3,7 @@ using ControYaApp.Services.NotifyPropertyChanged;
 
 namespace ControYaApp.ViewModels.Base
 {
-    public abstract class BaseViewModel : NotifyPropertyChanged
+    public abstract class BaseViewModel : MauiNotifyPropertyChanged
     {
         public INavigationService NavigationService { get; }
 

@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using ControYaApp.Models;
-using ControYaApp.ViewModels.Base;
+using ControYaApp.Services.NotifyPropertyChanged;
 
 namespace ControYaApp.Services.SharedData
 {
-    public class SharedData : BaseViewModel, ISharedData
+    public partial class SharedData : MauiNotifyPropertyChanged, ISharedData
     {
 
         private string? _usuarioSistema;

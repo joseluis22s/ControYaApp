@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace ControYaApp.Services.NotifyPropertyChanged
 {
-    public abstract partial class NotifyPropertyChanged : INotifyPropertyChanged
+    public abstract partial class MauiNotifyPropertyChanged : INotifyPropertyChanged
     {
 
         protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)

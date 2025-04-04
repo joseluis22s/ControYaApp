@@ -1,10 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using ControYaApp.Models;
 
 namespace ControYaApp.Services.SharedData
 {
-    public interface ISharedData : INotifyPropertyChanged
+    public interface ISharedData
     {
         string? NombreUsuario { get; set; }
 
