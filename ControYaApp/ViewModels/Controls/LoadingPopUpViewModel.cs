@@ -4,7 +4,7 @@ using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels.Controls
 {
-    public class LoadingPopUpViewModel : BaseViewModel
+    public partial class LoadingPopUpViewModel : BaseViewModel
     {
         private readonly IPopupService _popupService;
 

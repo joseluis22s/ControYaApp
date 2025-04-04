@@ -11,7 +11,7 @@ using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels
 {
-    public class AprobarOrdenesPrdViewModel : BaseViewModel
+    public partial class AprobarOrdenesPrdViewModel : BaseViewModel
     {
         private readonly LocalRepoService _localRepoService;
 

@@ -9,7 +9,7 @@ using ControYaApp.ViewModels.Base;
 
 namespace ControYaApp.ViewModels
 {
-    public class ConfigViewModel : BaseViewModel
+    public partial class ConfigViewModel : BaseViewModel
     {
         private bool _isSaved;
 

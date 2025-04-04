@@ -16,7 +16,7 @@ using ControYaApp.Views.Controls;
 
 namespace ControYaApp.ViewModels
 {
-    public class HomeViewModel : BaseViewModel
+    public partial class HomeViewModel : BaseViewModel
     {
         private readonly OrdenProduccionRepo _ordenProduccionRepo;
 

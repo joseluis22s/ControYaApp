@@ -15,7 +15,7 @@ namespace ControYaApp.ViewModels
 {
     [QueryProperty(nameof(OrdenProduccionPt), "ordenProduccionPt")]
     [QueryProperty(nameof(Empleados), "empleados")]
-    public class NotificarPtViewModel : BaseViewModel
+    public partial class NotificarPtViewModel : BaseViewModel
     {
 
         private PdfService _pdfService;
