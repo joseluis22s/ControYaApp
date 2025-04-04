@@ -149,7 +149,7 @@ namespace ControYaApp.ViewModels
             }
 
             var loadingPopUpp = new LoadingPopUp();
-            _ = _dialogService.ShowLoadingPopUp();
+            _ = _dialogService.ShowLoadingPopUpAsync();
 
             try
             {
@@ -223,7 +223,7 @@ namespace ControYaApp.ViewModels
             }
             finally
             {
-                await _dialogService.HideLoadingPopUp();
+                await _dialogService.HideLoadingPopUpAsync();
             }
 
 

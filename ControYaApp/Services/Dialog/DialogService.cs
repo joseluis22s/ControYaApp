@@ -22,13 +22,13 @@ namespace ControYaApp.Services.Dialog
             return AppShell.Current.DisplayActionSheet(title, cancel, destruction, buttons);
         }
 
-        public async Task ShowLoadingPopUp()
+        public async Task ShowLoadingPopUpAsync()
         {
             loadingPopUp = new();
             await AppShell.Current.CurrentPage.ShowPopupAsync(loadingPopUp);
         }
 
-        public async Task HideLoadingPopUp()
+        public async Task HideLoadingPopUpAsync()
         {
             if (loadingPopUp != null)
             {

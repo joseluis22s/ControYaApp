@@ -10,8 +10,8 @@ namespace ControYaApp.Services.Dialog
 
         Task<string> DisplayActionSheet(string title = "Title", string cancel = "Cancel", string destruction = null, params string[] buttons);
 
-        Task ShowLoadingPopUp();
+        Task ShowLoadingPopUpAsync();
 
-        Task HideLoadingPopUp();
+        Task HideLoadingPopUpAsync();
     }
 }
