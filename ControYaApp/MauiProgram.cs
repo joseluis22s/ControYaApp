@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using ControYaApp.Services.DI;
+using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.OrdenProduccionFilter;
@@ -52,6 +53,8 @@ namespace ControYaApp
         public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
+            mauiAppBuilder.Services.AddSingleton<IDialogService, DialogService>();
+
             mauiAppBuilder.Services.AddSingleton<ISharedData, SharedData>();
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();

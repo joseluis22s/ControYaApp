@@ -75,7 +75,7 @@ namespace ControYaApp.ViewModels.Controls
 
         private async void GoBackAsync()
         {
-            await Shell.Current.GoToAsync("..");
+            await NavigationService.GoBackAsync();
         }
 
 
