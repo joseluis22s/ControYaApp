@@ -106,8 +106,7 @@ namespace ControYaApp.ViewModels
             try
             {
                 //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-
-                await Shell.Current.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
+                await _dialogService.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
                 var usuarios = await _restService.GetAllUsuariosAsync();
                 var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);

@@ -199,7 +199,7 @@ namespace ControYaApp.ViewModels
 
                 _isNotified = true;
 
-                var res = await Shell.Current.DisplayAlert($"Se ha notificado la cantidad {Notificado}", "¿Desea generar un pdf?", "Aceptar", "No generar");
+                var res = await _dialogService.DisplayAlert($"Se ha notificado la cantidad {Notificado}", "¿Desea generar un pdf?", "Aceptar", "No generar");
                 if (res)
                 {
                     //await Toast.Make("Aqui se genera un PDF", ToastDuration.Long).Show();

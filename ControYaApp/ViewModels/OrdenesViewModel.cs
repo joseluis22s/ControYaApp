@@ -338,7 +338,7 @@ namespace ControYaApp.ViewModels
 
         internal async Task BackButtonPressed()
         {
-            var res = await Shell.Current.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
+            var res = await _dialogService.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
             if (res)
             {
                 await NavigationService.LogOutAsync();

@@ -88,7 +88,7 @@ namespace ControYaApp.ViewModels
                 var dataConfig = await _dataConfigRepo.GetDataConfigAsync();
                 if (dataConfig is null)
                 {
-                    var res = await Shell.Current.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
+                    var res = await _dialogService.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
                     if (res)
                     {
                         await NavigationService.GoToAsync("config");

@@ -69,7 +69,7 @@ namespace ControYaApp.ViewModels
             {
                 string ip = SharedData.Protocolo + SharedData.IpAddress;
 
-                var res = await Shell.Current.DisplayAlert("Guardar", "¿Desea guardar la configuración?", "Aceptar", "Cancelar");
+                var res = await _dialogService.DisplayAlert("Guardar", "¿Desea guardar la configuración?", "Aceptar", "Cancelar");
 
                 if (res)
                 {
@@ -103,7 +103,7 @@ namespace ControYaApp.ViewModels
 
             if (string.IsNullOrEmpty(SharedData.IpAddress))
             {
-                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
+                var res = await _dialogService.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
                 if (res)
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
@@ -114,7 +114,7 @@ namespace ControYaApp.ViewModels
             }
             else
             {
-                var res = await Shell.Current.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
+                var res = await _dialogService.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
                 if (res)
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
