@@ -23,6 +23,14 @@ namespace ControYaApp.Models
             set => SetProperty(ref _isSelected, value);
         }
 
+
+        [JsonIgnore]
+        public string Detalles { get; set; }
+
+        [JsonIgnore]
+        public string SerieLote { get; set; }
+
+
         public int IdMaterialProduccion { get; set; }
 
         public string Centro { get; set; }
@@ -61,8 +69,6 @@ namespace ControYaApp.Models
         }
 
         public string CodigoUsuarioAprobar { get; set; }
-
-
 
 
     }

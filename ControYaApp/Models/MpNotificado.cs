@@ -44,5 +44,9 @@ namespace ControYaApp.Models
         public bool AprobarAutoInventario { get; set; }
 
         public bool Sincronizado { get; set; }
+
+        public string SerieLote { get; set; }
+
+        public string Detalles { get; set; }
     }
 }

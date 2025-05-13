@@ -1,4 +1,4 @@
-using ControYaApp.ViewModels;
+using CbMovil.ViewModels;
 
 namespace ControYaApp.Views;
 

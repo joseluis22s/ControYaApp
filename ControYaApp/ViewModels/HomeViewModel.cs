@@ -75,7 +75,7 @@ namespace ControYaApp.ViewModels
 
         public bool OrdenesGroupLoaded => !OrdenesGroupIsNull;
 
-
+        // TODO: A lo mejor se eliminna esto dependideno del comportamiento de bool.
         private bool _ordenesGroupIsNull;
         public bool OrdenesGroupIsNull
         {
@@ -150,45 +150,42 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-                var allPtNotificados = await _prdDbReposService.PtNotificadoRepo.GetAllPtNotificadoAsync();
-                var allMpNotificados = await _prdDbReposService.MpNotificadoRepo.GetAllMpNotificadoAsync();
+                List<PtNotificado> ptNotificadosNoSinc = await _prdDbReposService.PtNotificadoRepo.GetPtNotificadosNoSyncAsync() ?? new();
+                List<MpNotificado> mpNotificadosNoSinc = await _prdDbReposService.MpNotificadoRepo.GetMpNotificadosNoSyncAsync() ?? new();
 
                 // Cuando haya PT notficados (que AllPtNotificados no sea nullo y cuando no es nulo que al menos haya uno)
                 // notifica los que esten con `NotificarManyPtAsync()` y luego los elimina con `DeleteAllPtNotificado()`.
                 //
                 // Lo mismo ocurre con MP notificados.
-                if (allPtNotificados is not null && allPtNotificados.Count != 0)
+                if (ptNotificadosNoSinc is not null && ptNotificadosNoSinc.Count != 0)
                 {
-                    var ptNotificadosDesync = allPtNotificados.Where(pt => pt.Sincronizado == false).ToList();
-                    foreach (var item in ptNotificadosDesync)
+                    foreach (var item in ptNotificadosNoSinc)
                     {
                         item.Sincronizado = true;
                     }
-                    var req = new
-                    {
-                        ptNotificados = ptNotificadosDesync
-                    };
-                    await _restService.NotificarManyPtAsync(req);
-
-                    await _prdDbReposService.PtNotificadoRepo.DeleteAllPtNotificado();
                 }
 
-                if (allMpNotificados is not null && allMpNotificados.Count != 0)
+                if (mpNotificadosNoSinc is not null && mpNotificadosNoSinc.Count != 0)
                 {
-                    var mpNotificadosDesync = allMpNotificados.Where(mp => mp.Sincronizado == false).ToList();
-                    foreach (var item in mpNotificadosDesync)
+                    foreach (var item in mpNotificadosNoSinc)
                     {
                         item.Sincronizado = true;
                     }
-                    var req = new
-                    {
-                        mpNotificados = mpNotificadosDesync
-                    };
-                    await _restService.NotificarManyMpAsync(req);
-
-                    await _prdDbReposService.MpNotificadoRepo.DeleteAllMpNotificado();
                 }
+
+                var req = new
+                {
+                    PtNotificados = ptNotificadosNoSinc,
+                    MpNotificados = mpNotificadosNoSinc
+                };
+
+                if (!await _restService.ProcessPtMpNotificados(req))
+                {
+                    await _dialogService.ShowToast("Error al sincronizar los PT y MP notificados", ToastDuration.Long);
+                    return;
+                }
+                await _prdDbReposService.PtNotificadoRepo.DeleteAllPtNotificado();
+                await _prdDbReposService.MpNotificadoRepo.DeleteAllMpNotificado();
 
 
                 var usuarios = await _restService.GetAllUsuariosAsync();
@@ -197,8 +194,8 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionPt = await _restService.GetAllOrdenesProduccionPtAsync(SharedData.UsuarioSistema);
                 var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
                 var empleados = await _restService.GetAllEmpleadosAsync();
-                var unapprovedPtNoticados = await _restService.GetUnapproveddPtPrdInv();
-                var unapprovedMpNoticados = await _restService.GetUnapproveddMpPrdInv();
+                var unapprovedPtNoticados = await _restService.GetUnapproveddPtPrdInv(SharedData.UsuarioSistema);
+                var unapprovedMpNoticados = await _restService.GetUnapproveddMpPrdInv(SharedData.UsuarioSistema);
 
                 await _prdDbReposService.MpNotificadoRepo.SaveAllUnapprMpNotficado(unapprovedMpNoticados);
                 await _prdDbReposService.PtNotificadoRepo.SaveAllUnapprPtNotficado(unapprovedPtNoticados);
@@ -242,8 +239,8 @@ namespace ControYaApp.ViewModels
                     .Select(opg => opg)
                     .Count(op => op.Saldo > 0);
 
-                var allPtNotificados = await _prdDbReposService.PtNotificadoRepo.GetAllPtNotificadoAsync();
-                var allMpNotificados = await _prdDbReposService.MpNotificadoRepo.GetAllMpNotificadoAsync();
+                var allPtNotificados = await _prdDbReposService.PtNotificadoRepo.GetAllPtNotificadosAsync();
+                var allMpNotificados = await _prdDbReposService.MpNotificadoRepo.GetAllMpNotificadosAsync();
 
                 // Informe de PT
                 PtNotificadoDesyncCount = allPtNotificados is not null ? allPtNotificados.Count(pt => pt.Sincronizado == false) : 0;

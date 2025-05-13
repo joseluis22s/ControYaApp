@@ -17,6 +17,8 @@ namespace ControYaApp.Services.SharedData
 
         bool AutoApproveInventario { get; set; }
 
+        bool EnableSeries { get; set; }
+
         ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
 
     }

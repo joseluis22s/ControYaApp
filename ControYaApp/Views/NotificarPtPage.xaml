@@ -66,7 +66,7 @@
                     ColumnDefinitions="{orientation:OnOrientation Default='*,2*',
                                                                   Landscape='*,3*',
                                                                   TypeConverter={x:Type ColumnDefinitionCollectionTypeConverter}}"
-                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                    RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                     RowSpacing="4">
 
                     <Border Style="{StaticResource Border_Label}">
@@ -94,11 +94,15 @@
                     </Border>
 
                     <Border Grid.Row="6" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Empleado" />
+                        <Label Style="{StaticResource Label_Text}" Text="Responsable" />
                     </Border>
 
                     <Border Grid.Row="7" Style="{StaticResource Border_Label}">
-                        <Label Style="{StaticResource Label_Text}" Text="Serie" />
+                        <Label Style="{StaticResource Label_Text}" Text="Serie/Lote" />
+                    </Border>
+
+                    <Border Grid.Row="8" Style="{StaticResource Border_Label}">
+                        <Label Style="{StaticResource Label_Text}" Text="Detalles" />
                     </Border>
 
 
@@ -166,6 +170,13 @@
                         AccentColor="#0f2b57"
                         BorderColor="Transparent"
                         Text="{Binding Serie}" />
+
+                    <urui:TextField
+                        Grid.Row="8"
+                        Grid.Column="1"
+                        AccentColor="#0f2b57"
+                        BorderColor="Transparent"
+                        Text="{Binding Detalles}" />
 
                 </Grid>
 

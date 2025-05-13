@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui;
+﻿using CbMovil.ViewModels;
+using CommunityToolkit.Maui;
 using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase;
@@ -72,6 +73,12 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<RestService>();
             mauiAppBuilder.Services.AddTransient<PdfService>();
 
+
+            mauiAppBuilder.Services.AddSingleton<DataConfigRepo>();
+            mauiAppBuilder.Services.AddSingleton<EmpleadosRepo>();
+            mauiAppBuilder.Services.AddSingleton<PeriodoRepo>();
+            mauiAppBuilder.Services.AddSingleton<UsuarioRepo>();
+
             mauiAppBuilder.Services.AddSingleton<AppDbReposService>(
                 serviceProvider =>
                 {
@@ -132,6 +139,11 @@ namespace ControYaApp
 
         public static MauiAppBuilder RegisterProduccionServices(this MauiAppBuilder mauiAppBuilder)
         {
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionPtRepo>();
+            mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
+            mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<MpNotificadoRepo>();
 
             mauiAppBuilder.Services.AddSingleton<PrdDbReposService>(
                 serviceProvider =>

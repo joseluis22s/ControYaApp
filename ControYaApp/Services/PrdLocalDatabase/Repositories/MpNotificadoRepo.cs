@@ -37,12 +37,21 @@ namespace ControYaApp.Services.LocalDatabase.Repositories
             catch (Exception) { throw; }
         }
 
-        public async Task<List<MpNotificado>> GetAllMpNotificadoAsync()
+        public async Task<List<MpNotificado>> GetAllMpNotificadosAsync()
         {
             try
             {
                 await InitAsync();
                 return await _database.Table<MpNotificado>().ToListAsync();
+            }
+            catch (Exception) { throw; }
+        }
+        public async Task<List<MpNotificado>> GetMpNotificadosNoSyncAsync()
+        {
+            try
+            {
+                await InitAsync();
+                return await _database.Table<MpNotificado>().Where(pt => pt.Sincronizado == false).ToListAsync();
             }
             catch (Exception) { throw; }
         }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using ControYaApp.Models;
@@ -23,17 +22,11 @@ namespace ControYaApp.Services.WebService
 
         private readonly string _getAllOrdenesProduccionMpUri = "/ordenes-produccion/get-all-mp";
 
-        private readonly string _SpNotificarPtUri = "/notificados/sp-notificarpt";
-
-        private readonly string _notificarPtUri = "/notificados/pt";
-
-        private readonly string _notificarMpUri = "/notificados/mp";
-
         private readonly string _getUnAprrovedPtPrdInv = "/notificados/get-unapproved-pt";
 
         private readonly string _getUnAprrovedMpPrdInv = "/notificados/get-unapproved-mp";
 
-        private readonly string _approvePtMpPrdInv = "/notificados/approve-ptmp-prdinv";
+        private readonly string _processNotified = "/notificados/process-ptmp-notificados";
 
 
         private readonly HttpClient _client = new();
@@ -125,7 +118,6 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-
         public async Task<ObservableCollection<OrdenProduccion>> GetAllOrdenesProduccionAsync(string codigoUsuarioAprobar)
         {
             string uri = GetIp() + _getAllOrdenesProduccionUri + $"?codigoUsuarioAprobar={codigoUsuarioAprobar}";
@@ -154,7 +146,6 @@ namespace ControYaApp.Services.WebService
             }
             return [];
         }
-
 
         public async Task<Periodos> GetRangosPeriodos()
         {
@@ -188,7 +179,6 @@ namespace ControYaApp.Services.WebService
             return periodos;
         }
 
-
         public async Task<ObservableCollection<OrdenProduccionPt>> GetAllOrdenesProduccionPtAsync(string codigoUsuarioAprobar)
         {
             string uri = GetIp() + _getAllOrdenesProduccionPtUri + $"?codigoUsuarioAprobar={codigoUsuarioAprobar}";
@@ -217,7 +207,6 @@ namespace ControYaApp.Services.WebService
             }
             return [];
         }
-
 
         public async Task<ObservableCollection<OrdenProduccionMp>> GetAllOrdenesProduccionPmAsync(string codigoUsuarioAprobar)
         {
@@ -248,7 +237,6 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-
         public async Task<ObservableCollection<EmpleadoSistema>> GetAllEmpleadosAsync()
         {
             string uri = GetIp() + _getAllEmpleadosUri;
@@ -277,75 +265,9 @@ namespace ControYaApp.Services.WebService
             return [];
         }
 
-
-        public async Task<bool> SpNotificarPtAsync(PtNotificado ptNotificado)
+        public async Task<List<PtNotificado>> GetUnapproveddPtPrdInv(string codigoUsuarioSistema)
         {
-            string uri = GetIp() + _SpNotificarPtUri;
-
-            try
-            {
-                string json = JsonSerializer.Serialize(ptNotificado, _jsonSerializerOptions);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync(uri, content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                // TODO: Eliminar esta línea.
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                throw;
-            }
-            return false;
-        }
-
-
-        public async Task NotificarManyPtAsync(object ptNotificados)
-        {
-            string uri = GetIp() + _notificarPtUri;
-
-            try
-            {
-                string json = JsonSerializer.Serialize(ptNotificados, _jsonSerializerOptions);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync(uri, content);
-                // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
-            }
-            catch (Exception ex)
-            {
-                // TODO: Eliminar esta línea.
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                throw;
-            }
-        }
-
-
-        public async Task NotificarManyMpAsync(object mpNotificados)
-        {
-            string uri = GetIp() + _notificarMpUri;
-
-            try
-            {
-                string json = JsonSerializer.Serialize(mpNotificados, _jsonSerializerOptions);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync(uri, content);
-                // TODO: Agregar un if con !response.Stactuscode para mandar mensajes.
-            }
-            catch (Exception ex)
-            {
-                // TODO: Eliminar esta línea.
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-                throw;
-            }
-        }
-
-
-        public async Task<List<PtNotificado>> GetUnapproveddPtPrdInv()
-        {
-            string uri = GetIp() + _getUnAprrovedPtPrdInv;
+            string uri = GetIp() + _getUnAprrovedPtPrdInv + $"?codigoUsuarioSistema={codigoUsuarioSistema}";
             List<PtNotificado> items = [];
             try
             {
@@ -366,9 +288,9 @@ namespace ControYaApp.Services.WebService
         }
 
 
-        public async Task<List<MpNotificado>> GetUnapproveddMpPrdInv()
+        public async Task<List<MpNotificado>> GetUnapproveddMpPrdInv(string codigoUsuarioSistema)
         {
-            string uri = GetIp() + _getUnAprrovedMpPrdInv;
+            string uri = GetIp() + _getUnAprrovedMpPrdInv + $"?codigoUsuarioSistema={codigoUsuarioSistema}";
             List<MpNotificado> items = [];
             try
             {
@@ -388,18 +310,17 @@ namespace ControYaApp.Services.WebService
             return items;
         }
 
-        public async Task ApprovePtMpNotificados(object ptMpNotificados)
-        {
-            // option = 0 -> PRD
-            // option = 1 -> INV
-            string uri = GetIp() + _approvePtMpPrdInv;
+
+        public async Task<bool> ProcessPtMpNotificados(object ptMpNotificados)
+        {// TODO: control cuano ambos etsan vacios
+            string uri = GetIp() + _processNotified;
 
             try
             {
                 string json = JsonSerializer.Serialize(ptMpNotificados, _jsonSerializerOptions);
                 StringContent content = new(json, Encoding.UTF8, "application/json");
                 var response = await _client.PutAsync(uri, content);
-                // TODO: ver si es internal server error y tirar la excepcion
+                return response.IsSuccessStatusCode;
             }
             catch (Exception)
             {

@@ -7,7 +7,7 @@ using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.ViewModels.Base;
 
-namespace ControYaApp.ViewModels
+namespace CbMovil.ViewModels
 {
     public partial class ConfigViewModel : BaseViewModel
     {
@@ -60,6 +60,7 @@ namespace ControYaApp.ViewModels
             _dataConfigSave.Ip = SharedData.IpAddress;
             _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
             _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
+            _dataConfigSave.EnableSeries = SharedData.EnableSeries;
         }
 
         private async void SelectedItemChanged(string selectedItem)
@@ -73,7 +74,6 @@ namespace ControYaApp.ViewModels
         {
             try
             {
-                string ip = SharedData.Protocolo + SharedData.IpAddress;
 
                 var res = await _dialogService.DisplayAlert("Guardar", "¿Desea guardar la configuración?", "Aceptar", "Cancelar");
 
@@ -83,6 +83,7 @@ namespace ControYaApp.ViewModels
                     _dataConfigSave.Ip = SharedData.IpAddress;
                     _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
                     _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
+                    _dataConfigSave.EnableSeries = SharedData.EnableSeries;
                     await _appDbReposService.DataConfigRepo.SaveIpServidor(_dataConfigSave);
 
                     _isSaved = true;
@@ -90,7 +91,6 @@ namespace ControYaApp.ViewModels
                     await _dialogService.ShowToast("Configuración guardada");
                     await NavigationService.GoBackAsync();
                 }
-
             }
             catch (Exception ex)
             {
@@ -129,9 +129,5 @@ namespace ControYaApp.ViewModels
                 }
             }
         }
-
-
-
-
     }
 }

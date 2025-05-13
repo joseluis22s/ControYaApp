@@ -95,6 +95,14 @@ namespace ControYaApp.ViewModels
         }
 
 
+        private string? _detalles;
+        public string? Detalles
+        {
+            get => _detalles;
+            set => SetProperty(ref _detalles, value);
+        }
+
+
         private EmpleadoSistema? _empleadoSelected;
         public EmpleadoSistema? EmpleadoSelected
         {
@@ -194,7 +202,7 @@ namespace ControYaApp.ViewModels
                     return;
                 }
 
-                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado);
+                var ptNotificado = MapPtNotificado(OrdenProduccionPt, EmpleadoSelected.CodigoEmpleado, Serie, Notificado, Detalles);
                 OrdenProduccionPt.Notificado += ptNotificado.Notificado;
                 await _prdDbReposService.OrdenProduccionPtRepo.UpdateNotificadoAsync(OrdenProduccionPt);
 
@@ -211,7 +219,6 @@ namespace ControYaApp.ViewModels
                     //return;
                 }
                 await GoBackAsync();
-                return;
 
             }
             catch (Exception ex)
@@ -270,7 +277,7 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serie, decimal notificado)
+        private PtNotificado MapPtNotificado(OrdenProduccionPt ordenProduccionPt, string? codigoEmpleado, string? serieLote, decimal notificado, string detalles)
         {
             return new PtNotificado
             {
@@ -281,10 +288,11 @@ namespace ControYaApp.ViewModels
                 Producto = ordenProduccionPt.Producto,
                 Notificado = notificado,
                 CodigoEmpleado = codigoEmpleado,
-                Serie = serie,
+                SerieLote = serieLote,
                 CodigoUsuario = ordenProduccionPt.CodigoUsuarioAprobar,
                 AprobarAutoProduccion = SharedData.AutoApproveProduccion,
-                AprobarAutoInventario = SharedData.AutoApproveInventario
+                AprobarAutoInventario = SharedData.AutoApproveInventario,
+                Detalles = detalles
             };
         }
 

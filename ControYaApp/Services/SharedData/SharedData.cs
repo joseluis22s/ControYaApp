@@ -74,6 +74,14 @@ namespace ControYaApp.Services.SharedData
         }
 
 
+        private bool _enableSeries;
+        public bool EnableSeries
+        {
+            get => _enableSeries;
+            set => SetProperty(ref _enableSeries, value);
+        }
+
+
         public ObservableCollection<OrdenProduccionGroup> AllOrdenesProduccionGroups { get; set; }
 
     }

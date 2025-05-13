@@ -14,5 +14,7 @@ namespace ControYaApp.Models
         public bool AutoApproveProduccion { get; set; }
 
         public bool AutoApproveInventario { get; set; }
+
+        public bool EnableSeries { get; set; }
     }
 }

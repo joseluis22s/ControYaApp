@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
-using ControYaApp.Services.LocalDatabase.Repositories;
 using ControYaApp.Services.Navigation;
 using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
@@ -23,10 +22,6 @@ namespace ControYaApp.ViewModels
 
 
         private readonly RestService _restService;
-
-        private readonly UsuarioRepo _usuarioRepo;
-
-        private readonly DataConfigRepo _dataConfigRepo;
 
 
 
@@ -49,10 +44,11 @@ namespace ControYaApp.ViewModels
 
 
         public LoginViewModel(INavigationService navigationService, IDialogService dialogService,
+            AppDbReposService appDbReposService,
             RestService restService, ISharedData sharedData) : base(navigationService)
         {
             _dialogService = dialogService;
-
+            _appDbReposService = appDbReposService;
 
             SharedData = sharedData;
 
@@ -62,14 +58,6 @@ namespace ControYaApp.ViewModels
 
             GoToHomeCommand = new AsyncRelayCommand(GoToHomeAsync);
             GoToConfigCommand = new AsyncRelayCommand(GoToConfigAsync);
-
-            // TODO: Eliminar el siguiente objeto.
-            var mockUsuario = new Usuario
-            {
-                NombreUsuario = SharedData.NombreUsuario = "jadame",
-                Contrasena = Contrasena = "admin123"
-            };
-            // TODO: Fin eliminar objeto.
         }
 
 
@@ -87,7 +75,7 @@ namespace ControYaApp.ViewModels
 
             try
             {
-                var dataConfig = await _dataConfigRepo.GetDataConfigAsync();
+                var dataConfig = await _appDbReposService.DataConfigRepo.GetDataConfigAsync();
                 if (dataConfig is null)
                 {
                     var res = await _dialogService.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
@@ -110,7 +98,7 @@ namespace ControYaApp.ViewModels
                 NetworkAccess accessType = Connectivity.Current.NetworkAccess;
                 if (accessType != NetworkAccess.Internet)
                 {
-                    var usuarioDb = await _usuarioRepo.CheckUsuarioCredentialsAsync(usuario);
+                    var usuarioDb = await _appDbReposService.UsuarioRepo.CheckUsuarioCredentialsAsync(usuario);
                     await ValidateNavigationToHome(usuarioDb, usuario);
                 }
                 else

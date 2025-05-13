@@ -148,19 +148,6 @@
                                     Text="{Binding OrdenProduccion.Detalle}" />
                             </Grid>
 
-                            <!--<Button
-                                Grid.RowSpan="4"
-                                Grid.Column="1"
-                                Padding="11"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:OrdenesViewModel}}, Path=NotificarPmCommand}"
-                                CommandParameter="{Binding}"
-                                CornerRadius="5"
-                                HeightRequest="50"
-                                HorizontalOptions="Center"
-                                ImageSource="{FontImageSource FontFamily=MaterialSharp,
-                                                              Glyph={x:Static m:MaterialSharp.Inventory},
-                                                              Color=#ffffff}"
-                                WidthRequest="50" />-->
 
                         </Grid>
 
@@ -338,10 +325,5 @@
         </ResourceDictionary>
 
     </ContentPage.Resources>
-
-    <!--<ContentPage.BackgroundColor>
-        <Color>#8db3d6</Color>
-    </ContentPage.BackgroundColor>-->
-
 
 </ContentPage>

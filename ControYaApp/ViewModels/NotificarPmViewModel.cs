@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
 using ControYaApp.Services.Dialog;
@@ -85,21 +84,6 @@ namespace ControYaApp.ViewModels
         public ICommand SeleccionarTodosCommand { get; }
 
 
-
-        //public NotificarPmViewModel(INavigationService navigationService, ISharedData sharedData, OrdenProduccionMpRepo ordenProduccionMpRepo, MpNotificadoRepo pmNotificadoRepo) : base(navigationService)
-        //{
-        //    SharedData = sharedData;
-
-        //    _ordenProduccionMpRepo = ordenProduccionMpRepo;
-        //    _pmNotificadoRepo = pmNotificadoRepo;
-
-        //    GoBackCommand = new AsyncRelayCommand(GoBackAsync);
-        //    NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
-        //    FilterOrdenesProduccionMpCommand = new AsyncRelayCommand(() => FilterOrdenesProduccionMpAsync(OrdenesProduccionMaterialGroup));
-        //}
-
-
-
         private readonly OrdenProduccionMpFilter _ordenProduccionMpFilter;
 
 
@@ -135,24 +119,6 @@ namespace ControYaApp.ViewModels
             }
         }
 
-        private async Task FilterOrdenesProduccionMpAsync(List<OrdenProduccionMaterialGroup> allOrdenesMpGrouped)
-        {
-            if (OrdenesProduccionMaterialGroupSource is not null)
-            {
-                OrdenesProduccionMaterialGroupSource.Clear();
-            }
-            string action = await _dialogService.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Pendientes");
-
-            if (action == "Pendientes")
-            {
-                OrdenesProduccionMaterialGroupSource = _ordenProduccionMpFilter.FilteredOrdenesProduccionMpGroup(OrdenProduccionMpFilter.OrdenesProduccionMpFilters.Pending, allOrdenesMpGrouped.ToObservableCollection());
-                return;
-            }
-
-            OrdenesProduccionMaterialGroupSource = allOrdenesMpGrouped.ToObservableCollection();
-        }
-
-
         private async Task NotificarPm()
         {
             try
@@ -170,7 +136,7 @@ namespace ControYaApp.ViewModels
 
                 if (EmpleadoSelected is null)
                 {
-                    await _dialogService.ShowToast("Ningún item seleccionado.", ToastDuration.Long);
+                    await _dialogService.ShowToast("Ningún empleado seleccionado.", ToastDuration.Long);
                     return;
                 }
 
@@ -210,47 +176,15 @@ namespace ControYaApp.ViewModels
             if (OrdenesProduccionMaterialGroup == null || OrdenesProduccionMaterialGroupSource == null)
                 return;
 
-            foreach (var sourceGroup in OrdenesProduccionMaterialGroupSource)
+            foreach (OrdenProduccionMaterialGroup sourceGroup in OrdenesProduccionMaterialGroupSource)
             {
-                foreach (var sourceItem in sourceGroup.Where(i => i.IsSelected))
+                foreach (OrdenProduccionMp sourceItem in sourceGroup.Where(i => i.IsSelected))
                 {
                     OrdenesProduccionMaterialGroup
                         .SelectMany(g => g)
                         .FirstOrDefault(i => i.Id == sourceItem.Id).Notificado += sourceItem.Notificado;
-
-                    //if (originalItem != null)
-                    //{
-                    //    // Sumamos el Notificado del source al Notificado original
-                    //    originalItem.Notificado += sourceItem.Notificado;
-                    //}
                 }
             }
-        }
-
-        private List<OrdenProduccionMp> MapOrdenProduccionMpSelected(ObservableCollection<OrdenProduccionMaterialGroup> itemsGroupSource, List<OrdenProduccionMaterialGroup> itemsGroup)
-        {
-            var selectedItems = new List<OrdenProduccionMp>();
-
-            foreach (var itemGroupSource in itemsGroupSource)
-            {
-                foreach (var uiItem in itemGroupSource.Where(item => item.IsSelected))
-                {
-                    // Busca el mismo item en la copia "original"
-                    var originalItem = itemsGroup
-                        .SelectMany(group => group)
-                        .FirstOrDefault(item => item.Id == uiItem.Id);
-
-                    if (originalItem != null)
-                    {
-                        // Calcula la diferencia entre el valor nuevo (UI) y el original
-                        var incremento = uiItem.Notificado - originalItem.Notificado;
-                        originalItem.Notificado += incremento; // Actualiza solo si es necesario
-                        selectedItems.Add(originalItem);
-                    }
-                }
-            }
-
-            return selectedItems;
         }
 
         private List<MpNotificado> MapPmNotificado(List<OrdenProduccionMp> ordenesProduccionMp, bool AutoApproveProduccion, bool AutoApproveInventario,
@@ -269,7 +203,9 @@ namespace ControYaApp.ViewModels
                     AprobarAutoInventario = AutoApproveInventario,
                     CodigoEmpleado = codigoEmpleado,
                     Fecha = fecha,
-                    CodigoUsuario = codigoUsuario
+                    CodigoUsuario = codigoUsuario,
+                    Detalles = item.Detalles,
+                    SerieLote = item.SerieLote,
                 })
                 .ToList();
         }

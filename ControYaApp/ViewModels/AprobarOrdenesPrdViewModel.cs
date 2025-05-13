@@ -6,6 +6,7 @@ using ControYaApp.Models;
 using ControYaApp.Services.Dialog;
 using ControYaApp.Services.LocalDatabase;
 using ControYaApp.Services.Navigation;
+using ControYaApp.Services.SharedData;
 using ControYaApp.Services.WebService;
 using ControYaApp.ViewModels.Base;
 
@@ -17,6 +18,9 @@ namespace ControYaApp.ViewModels
         private readonly PrdDbReposService _prdDbReposService;
 
 
+
+
+        public ISharedData SharedData { get; set; }
 
         private readonly RestService _restService;
 
@@ -53,11 +57,13 @@ namespace ControYaApp.ViewModels
 
 
 
-        public AprobarOrdenesPrdViewModel(INavigationService navigationServie, IDialogService dialogService,
+        public AprobarOrdenesPrdViewModel(INavigationService navigationServie, IDialogService dialogService, ISharedData sharedData,
             PrdDbReposService prdDbReposService, RestService restService) : base(navigationServie)
         {
             _dialogService = dialogService;
             _prdDbReposService = prdDbReposService;
+
+            SharedData = sharedData;
 
 
             _restService = restService;
@@ -146,13 +152,16 @@ namespace ControYaApp.ViewModels
             }
             var req = new
             {
-                approvedPtNotificados = approvedPtNotificados,
-                approvedMpNotificados = approvedMpNotificados
+                PtNotificados = approvedPtNotificados,
+                MpNotificados = approvedMpNotificados
             };
             try
             {
-
-                await _restService.ApprovePtMpNotificados(req);
+                if (!await _restService.ProcessPtMpNotificados(req))
+                {
+                    await _dialogService.ShowToast("Error al Aprobar los PT y MP notificados", ToastDuration.Long);
+                    return;
+                }
 
                 // PARA QUE EL USUARIO TENGA FEEDBACK DE LO QUE OCURRE
                 // - Se eliminan todos los PT y MP "sincronizados" de la DB local.
@@ -160,8 +169,8 @@ namespace ControYaApp.ViewModels
                 await _prdDbReposService.MpNotificadoRepo.DeleteSyncApprovedMpNotificado();
 
                 // - Se consultan todos los PT y MP no aprobados pero si sincronizados a la API.
-                var ptNotificados = await _restService.GetUnapproveddPtPrdInv();
-                var mpNotificados = await _restService.GetUnapproveddMpPrdInv();
+                var ptNotificados = await _restService.GetUnapproveddPtPrdInv(SharedData.UsuarioSistema);
+                var mpNotificados = await _restService.GetUnapproveddMpPrdInv(SharedData.UsuarioSistema);
 
                 // - Se guardan de nuevo a la DB
                 await _prdDbReposService.PtNotificadoRepo.SaveAllUnapprPtNotficado(ptNotificados);
