@@ -111,7 +111,7 @@ namespace ControYaApp.ViewModels
 
             if (accessType != NetworkAccess.Internet)
             {
-                await _dialogService.ShowToast("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
+                await _dialogService.ShowToastAsync("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
                 return;
             }
 
@@ -122,7 +122,7 @@ namespace ControYaApp.ViewModels
                 var selectedMpNotificados = UnapprMpNotificadosInv.Where(mp => mp.IsSelected == true).ToList();
                 if (selectedPtNotificados.Count == 0 && selectedMpNotificados.Count == 0)
                 {
-                    await _dialogService.ShowToast("Ningún registro seleccionado");
+                    await _dialogService.ShowToastAsync("Ningún registro seleccionado");
                     return;
                 }
             }
@@ -155,7 +155,7 @@ namespace ControYaApp.ViewModels
             {
                 if (!await _restService.ProcessPtMpNotificados(req))
                 {
-                    await _dialogService.ShowToast("Error al Aprobar los PT y MP notificados", ToastDuration.Long);
+                    await _dialogService.ShowToastAsync("Error al Aprobar los PT y MP notificados", ToastDuration.Long);
                     return;
                 }
 
@@ -176,7 +176,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CbMovil.Models;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Models;
@@ -16,6 +17,7 @@ namespace ControYaApp.ViewModels
     [QueryProperty(nameof(OrdenesProduccionMaterialGroupSource), "ordenesProdMpGroupedSource")]
     [QueryProperty(nameof(RangoPeriodos), "rangosPeriodos")]
     [QueryProperty(nameof(Empleados), "empleados")]
+    [QueryProperty(nameof(Lotes), "lotes")]
     public partial class NotificarPmViewModel : BaseViewModel
     {
         private readonly IDialogService _dialogService;
@@ -52,6 +54,15 @@ namespace ControYaApp.ViewModels
             get => _fechaActual;
             set => SetProperty(ref _fechaActual, value);
         }
+
+        private List<Lote> _lotes;
+        public List<Lote> Lotes
+        {
+            get => _lotes;
+            set => SetProperty(ref _lotes, value);
+        }
+
+
         private EmpleadoSistema? _empleadoSelected;
         public EmpleadoSistema? EmpleadoSelected
         {
@@ -84,9 +95,6 @@ namespace ControYaApp.ViewModels
         public ICommand SeleccionarTodosCommand { get; }
 
 
-        private readonly OrdenProduccionMpFilter _ordenProduccionMpFilter;
-
-
 
 
         public NotificarPmViewModel(INavigationService navigationService, IDialogService dialogService,
@@ -97,8 +105,6 @@ namespace ControYaApp.ViewModels
 
             SharedData = sharedData;
 
-
-            _ordenProduccionMpFilter = ordenProduccionMpFilter;
 
             GoBackCommand = new AsyncRelayCommand(GoBackAsync);
             NotificarPmCommand = new AsyncRelayCommand(NotificarPm);
@@ -130,14 +136,36 @@ namespace ControYaApp.ViewModels
 
                 if (selectedItems == null || selectedItems.Count == 0)
                 {
-                    await _dialogService.ShowToast("Ningún item seleccionado.", ToastDuration.Long);
+                    await _dialogService.ShowToastAsync("Ningún item seleccionado.", ToastDuration.Long);
                     return;
                 }
 
                 if (EmpleadoSelected is null)
                 {
-                    await _dialogService.ShowToast("Ningún empleado seleccionado.", ToastDuration.Long);
+                    await _dialogService.ShowToastAsync("Ningún empleado seleccionado.", ToastDuration.Long);
                     return;
+                }
+
+                if (SharedData.EnableLotes)
+                {
+                    var isLoteSelected = selectedItems.All(i => i.SelectedLote == null);
+                    if (isLoteSelected)
+                    {
+                        await _dialogService.ShowToastAsync("Debe elegir un lote");
+                        return;
+                    }
+                }
+                else
+                {
+                    var items = selectedItems.Where(i => string.IsNullOrWhiteSpace(i.SerieLote)).ToList();
+                    if (items.Count != 0)
+                    {
+                        foreach (var item in items)
+                        {
+                            item.Detalles = string.Empty;
+                            item.SerieLote = string.Empty;
+                        };
+                    }
                 }
 
                 // Actualizamos los valores originales
@@ -160,14 +188,14 @@ namespace ControYaApp.ViewModels
 
                 int savedOrdUpdateCount = await _prdDbReposService.MpNotificadoRepo.SaveMpNotificadosAsync(pmNotificados);
 
-                await _dialogService.ShowToast($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long);
+                await _dialogService.ShowToastAsync($"{updatedCount} items actualizados y {savedOrdUpdateCount} notificados.", ToastDuration.Long);
 
                 await NavigationService.GoBackAsync();
 
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
         }
 
@@ -205,7 +233,7 @@ namespace ControYaApp.ViewModels
                     Fecha = fecha,
                     CodigoUsuario = codigoUsuario,
                     Detalles = item.Detalles,
-                    SerieLote = item.SerieLote,
+                    SerieLote = item.SerieLote
                 })
                 .ToList();
         }

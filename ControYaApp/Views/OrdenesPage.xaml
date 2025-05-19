@@ -267,11 +267,11 @@
                             RowDefinitions="Auto,Auto"
                             RowSpacing="10">
                             <Label Text="No se han sincronizado ordenes" />
-                            <Button
+                            <!--<Button
                                 Grid.Row="1"
                                 Command="{Binding SincronizarOrdenesProduccionCommand}"
                                 HorizontalOptions="Center"
-                                Text="Sincronizar ordenes" />
+                                Text="Sincronizar ordenes" />-->
                         </Grid>
                     </Grid>
                 </ContentView>

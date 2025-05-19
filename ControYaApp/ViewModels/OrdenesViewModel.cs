@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CbMovil.Models;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
@@ -65,7 +66,6 @@ namespace ControYaApp.ViewModels
             get => _ordenesGroupLoaded;
             set => SetProperty(ref _ordenesGroupLoaded, value);
         }
-        public string Comer { get; set; }
 
 
         private bool _ordenesGroupIsNull;
@@ -127,12 +127,12 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionMpSourceDb = await _prdDbReposService.OrdenProduccionMpRepo.GetOrdenesProduccionMpByOrdenProduccion(ordenProduccion.OrdenProduccion);
                 if (ordenesProduccionMpDb is null)
                 {
-                    await _dialogService.ShowToast("Problemas al recuperar datos.", ToastDuration.Long);
+                    await _dialogService.ShowToastAsync("Problemas al recuperar datos.", ToastDuration.Long);
                     return;
                 }
                 if (ordenesProduccionMpDb.Count == 0)
                 {
-                    await _dialogService.ShowToast("Usuario sin materiales de producción asignados para esta orden de producción.", ToastDuration.Long);
+                    await _dialogService.ShowToastAsync("Usuario sin materiales de producción asignados para esta orden de producción.", ToastDuration.Long);
                     return;
                 }
 
@@ -140,6 +140,8 @@ namespace ControYaApp.ViewModels
                 var ordenesProduccionMaterialGroupSource = MapOrdenesProduccionMaterialGrouped(ordenesProduccionMpSourceDb);
                 var empleados = await _appDbReposService.EmpleadosRepo.GetAllEmpleadosAsync();
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
+                var lotes = await GetLotesAsync();
+                lotes = lotes.OrderBy(o => o.Nombre).ToList();
 
                 var rangosPeriodos = await GetRangosPeriodosAsync();
 
@@ -148,14 +150,15 @@ namespace ControYaApp.ViewModels
                         { "ordenesProdMpGrouped", ordenesProduccionMaterialGroup},
                         { "ordenesProdMpGroupedSource", ordenesProduccionMaterialGroupSource},
                         { "empleados", empleados},
-                        { "rangosPeriodos", rangosPeriodos}
+                        { "rangosPeriodos", rangosPeriodos},
+                        { "lotes", lotes}
                     };
                 await NavigationService.GoToAsync("notificarPm", navParameter);
 
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
         }
 
@@ -171,7 +174,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
         }
 
@@ -235,7 +238,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
         }
 
@@ -246,7 +249,7 @@ namespace ControYaApp.ViewModels
             {
                 if (SharedData.AllOrdenesProduccionGroups.Count == 0)
                 {
-                    await _dialogService.ShowToast("No se han encontrado ordenes de producción");
+                    await _dialogService.ShowToastAsync("No se han encontrado ordenes de producción");
                     return;
                 }
                 OrdenesProduccionGroups = SharedData.AllOrdenesProduccionGroups;
@@ -254,7 +257,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
 
         }
@@ -262,7 +265,7 @@ namespace ControYaApp.ViewModels
         private async Task FilterOrdenes()
         {
             List<OrdenProduccionGroup> allOrdenesProduccionGroups = new(SharedData.AllOrdenesProduccionGroups);
-            string action = await _dialogService.DisplayActionSheet("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Con saldo pendiente", "Sin saldo pendiente");
+            string action = await _dialogService.DisplayActionSheetAsync("Filtrar ordenes de producción:", "Cancelar", null, "Todas", "Con saldo pendiente", "Sin saldo pendiente");
             if (action == "Con saldo pendiente")
             {
                 OrdenesProduccionGroups?.Clear();
@@ -288,10 +291,13 @@ namespace ControYaApp.ViewModels
 
                 empleados = empleados.OrderBy(e => e.NombreEmpleado).ToObservableCollection();
 
+                var lotes = await GetLotesAsync();
+
                 var navParameter = new ShellNavigationQueryParameters
                 {
                     { "ordenProduccionPt", ordenProduccionPt},
-                    { "empleados", empleados}
+                    { "empleados", empleados},
+                    { "lotes", lotes}
                 };
 
                 await NavigationService.GoToAsync("notificarPt", navParameter);
@@ -299,7 +305,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
         }
 
@@ -335,11 +341,16 @@ namespace ControYaApp.ViewModels
 
         internal async Task BackButtonPressed()
         {
-            var res = await _dialogService.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
+            var res = await _dialogService.DisplayAlertAsync("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
             if (res)
             {
                 await NavigationService.LogOutAsync();
             }
+        }
+
+        private async Task<List<Lote>> GetLotesAsync()
+        {
+            return await _prdDbReposService.LoteRepo.GetAllLotesAsync();
         }
 
 

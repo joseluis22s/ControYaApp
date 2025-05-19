@@ -78,7 +78,7 @@ namespace ControYaApp.ViewModels
                 var dataConfig = await _appDbReposService.DataConfigRepo.GetDataConfigAsync();
                 if (dataConfig is null)
                 {
-                    var res = await _dialogService.DisplayAlert("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
+                    var res = await _dialogService.DisplayAlertAsync("Alerta", "Primero debe registar la direccion IP del servidor", "Ir", "Cerrar");
                     if (res)
                     {
                         await NavigationService.GoToAsync("config");
@@ -88,7 +88,7 @@ namespace ControYaApp.ViewModels
 
                 var usuario = new Usuario
                 {
-                    NombreUsuario = SharedData.NombreUsuario,
+                    NombreUsuario = SharedData.NombreUsuario, // viene de la View
                     Contrasena = Contrasena
                 };
 
@@ -109,7 +109,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
             finally
             {
@@ -122,7 +122,7 @@ namespace ControYaApp.ViewModels
             if ((usuarioRes is null) ||
                 (usuarioRes.NombreUsuario != usuario.NombreUsuario && usuarioRes.Contrasena != usuario.Contrasena))
             {
-                await _dialogService.ShowToast("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long);
+                await _dialogService.ShowToastAsync("Usuario no encontrado o credenciales incorrectas", ToastDuration.Long);
             }
             else
             {

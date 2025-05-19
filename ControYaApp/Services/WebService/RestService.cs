@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text;
 using System.Text.Json;
+using CbMovil.Models;
 using ControYaApp.Models;
 using ControYaApp.Services.SharedData;
 
@@ -28,6 +29,9 @@ namespace ControYaApp.Services.WebService
 
         private readonly string _processNotified = "/notificados/process-ptmp-notificados";
 
+        private readonly string _getAllLotes = "/lotes/get-all";
+
+        private readonly string _saveAllNewLotes = "/lotes/save-all-new";
 
         private readonly HttpClient _client = new();
 
@@ -88,7 +92,6 @@ namespace ControYaApp.Services.WebService
             }
             catch (Exception) { throw; }
         }
-
 
         public async Task<ObservableCollection<Usuario>> GetAllUsuariosAsync()
         {
@@ -328,5 +331,45 @@ namespace ControYaApp.Services.WebService
             }
         }
 
+        public async Task<List<Lote>> GetAllLotesAsync()
+        {
+            string uri = GetIp() + _getAllLotes;
+            try
+            {
+                StringContent content = new("", Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string resContent = await response.Content.ReadAsStringAsync();
+                    var values = JsonSerializer.Deserialize<Dictionary<string, ObservableCollection<Lote>>>(resContent, _jsonSerializerOptions);
+                    if (values != null &&
+                        values.TryGetValue("lotes", out ObservableCollection<Lote>? lotes))
+                    {
+                        return new List<Lote>(lotes);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return [];
+        }
+
+        public async Task SaveAllNewLoteAsync(object lotes)
+        {
+            string uri = GetIp() + _saveAllNewLotes;
+            try
+            {
+                string json = JsonSerializer.Serialize(lotes, _jsonSerializerOptions);
+                StringContent content = new(json, Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(uri, content);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
     }
 }

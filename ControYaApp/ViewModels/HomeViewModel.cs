@@ -142,7 +142,7 @@ namespace ControYaApp.ViewModels
 
             if (accessType != NetworkAccess.Internet)
             {
-                await _dialogService.ShowToast("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
+                await _dialogService.ShowToastAsync("Sin conexión. No se puede realizar esta acción", ToastDuration.Long);
                 return;
             }
 
@@ -181,12 +181,21 @@ namespace ControYaApp.ViewModels
 
                 if (!await _restService.ProcessPtMpNotificados(req))
                 {
-                    await _dialogService.ShowToast("Error al sincronizar los PT y MP notificados", ToastDuration.Long);
+                    await _dialogService.ShowToastAsync("Error al sincronizar los PT y MP notificados", ToastDuration.Long);
                     return;
                 }
                 await _prdDbReposService.PtNotificadoRepo.DeleteAllPtNotificado();
                 await _prdDbReposService.MpNotificadoRepo.DeleteAllMpNotificado();
 
+                var nuevosLotes = await _prdDbReposService.LoteRepo.GetLotesNoSyncAsync();
+                if (nuevosLotes.Count != 0)
+                {
+                    var reqLotes = new
+                    {
+                        nuevosLotes
+                    };
+                    await _restService.SaveAllNewLoteAsync(reqLotes);
+                }
 
                 var usuarios = await _restService.GetAllUsuariosAsync();
                 var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);
@@ -196,25 +205,24 @@ namespace ControYaApp.ViewModels
                 var empleados = await _restService.GetAllEmpleadosAsync();
                 var unapprovedPtNoticados = await _restService.GetUnapproveddPtPrdInv(SharedData.UsuarioSistema);
                 var unapprovedMpNoticados = await _restService.GetUnapproveddMpPrdInv(SharedData.UsuarioSistema);
+                var lotes = await _restService.GetAllLotesAsync();
 
+                await _prdDbReposService.LoteRepo.SaveAllLoteAsync(lotes);
                 await _prdDbReposService.MpNotificadoRepo.SaveAllUnapprMpNotficado(unapprovedMpNoticados);
                 await _prdDbReposService.PtNotificadoRepo.SaveAllUnapprPtNotficado(unapprovedPtNoticados);
                 await _prdDbReposService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
                 await _prdDbReposService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
                 await _prdDbReposService.OrdenProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
-
                 await _appDbReposService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
                 await _appDbReposService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
                 await _appDbReposService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
-
-
 
                 InitData();
 
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message);
+                await _dialogService.ShowToastAsync(ex.Message);
             }
             finally
             {
@@ -267,16 +275,13 @@ namespace ControYaApp.ViewModels
                     pt.AprobarAutoProduccion == true &&
                     pt.AprobarAutoInventario == false
                     ) : 0;
-
-
-                return;
             }
         }
 
 
         internal async Task BackButtonPressed()
         {
-            var res = await _dialogService.DisplayAlert("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
+            var res = await _dialogService.DisplayAlertAsync("Salir", "¿Desea cerrar sesión?", "Aceptar", "Cancelar");
             if (res)
             {
                 await NavigationService.LogOutAsync();
@@ -301,7 +306,7 @@ namespace ControYaApp.ViewModels
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+                await _dialogService.ShowToastAsync(ex.Message, ToastDuration.Long);
             }
             return null;
         }

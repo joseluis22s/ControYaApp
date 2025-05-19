@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using CbMovil.Models;
 using ControYaApp.Services.NotifyPropertyChanged;
 using SQLite;
 
@@ -27,6 +28,23 @@ namespace ControYaApp.Models
         [JsonIgnore]
         public string Detalles { get; set; }
 
+
+        private Lote? _selectedLote;
+        [Ignore]
+        [JsonIgnore]
+        public Lote? SelectedLote
+        {
+            get => _selectedLote;
+            set
+            {
+                if (SetProperty(ref _selectedLote, value))
+                {
+                    SerieLote = value?.Nombre;
+                }
+            }
+        }
+
+        [Ignore]
         [JsonIgnore]
         public string SerieLote { get; set; }
 
@@ -55,6 +73,7 @@ namespace ControYaApp.Models
 
 
         private decimal _notificado;
+
         public decimal Notificado
         {
             get => _notificado;
@@ -70,6 +89,6 @@ namespace ControYaApp.Models
 
         public string CodigoUsuarioAprobar { get; set; }
 
-
+        public bool? HabilitarSerieLote { get; set; }
     }
 }

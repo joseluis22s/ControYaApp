@@ -3,6 +3,7 @@
     x:Class="ControYaApp.Views.NotificarPmPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:condition="clr-namespace:CbMovil.Services.ConditionalRender"
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:model="clr-namespace:ControYaApp.Models"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
@@ -198,7 +199,7 @@
                         StrokeShape="{RoundRectangle CornerRadius='10'}">
 
                         <Grid
-                            ColumnDefinitions="3*,1.5*,*"
+                            ColumnDefinitions="3*,*,*"
                             ColumnSpacing="10"
                             RowDefinitions="Auto,*,Auto">
 
@@ -221,7 +222,7 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
-                                <Label Grid.Row="1" FontSize="17">
+                                <Label FontSize="17">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="{Binding Cantidad, StringFormat='x{0}'}" />
@@ -229,44 +230,42 @@
                                         </FormattedString>
                                     </Label.FormattedText>
                                 </Label>
+                                <Border
+                                    Padding="3,5"
+                                    HorizontalOptions="Center"
+                                    StrokeShape="{RoundRectangle CornerRadius='7'}">
+                                    <Label FontSize="17">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span FontAttributes="Bold" Text="Saldo: " />
+                                                <Span Text="{Binding Saldo}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </Border>
 
                             </VerticalStackLayout>
 
                             <Border
                                 Grid.RowSpan="2"
                                 Grid.Column="1"
-                                Padding="0,5"
-                                BackgroundColor="Beige"
+                                Padding="15,5"
+                                BackgroundColor="#fbfff2"
+                                HorizontalOptions="Center"
                                 Stroke="#0f2b57"
-                                StrokeShape="{RoundRectangle CornerRadius='7'}">
-                                <Grid
-                                    ColumnDefinitions="Auto,Auto"
-                                    ColumnSpacing="15"
-                                    HorizontalOptions="Center"
-                                    RowDefinitions="Auto,Auto">
+                                StrokeShape="{RoundRectangle CornerRadius='7'}"
+                                VerticalOptions="Center">
+                                <VerticalStackLayout HorizontalOptions="Center">
                                     <Label
                                         FontAttributes="Bold"
                                         HorizontalOptions="Center"
                                         Text="Notificado" />
-                                    <Label
-                                        Grid.Column="1"
-                                        FontAttributes="Bold"
-                                        HorizontalOptions="Center"
-                                        Text="Saldo" />
                                     <Entry
                                         Grid.Row="1"
                                         HorizontalTextAlignment="Center"
                                         Keyboard="Numeric"
                                         Text="{Binding Notificado}" />
-                                    <Border
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Padding="4"
-                                        Stroke="#0f2b57"
-                                        StrokeShape="{RoundRectangle CornerRadius='10'}">
-                                        <Label Text="{Binding Saldo}" VerticalOptions="Center" />
-                                    </Border>
-                                </Grid>
+                                </VerticalStackLayout>
                             </Border>
 
                             <CheckBox
@@ -275,27 +274,53 @@
                                 HeightRequest="18"
                                 IsChecked="{Binding IsSelected}"
                                 VerticalOptions="Center" />
+                            <condition:If Condition="{Binding HabilitarSerieLote}">
+                                <condition:If.True>
+                                    <Border
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="3"
+                                        BackgroundColor="#f1f1f1"
+                                        Stroke="#0f2b57"
+                                        StrokeShape="{RoundRectangle CornerRadius='10'}">
+                                        <urui2:ExpanderView Padding="10,5">
+                                            <urui2:ExpanderView.Header>
+                                                <Label
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    Text="Ver más"
+                                                    TextColor="#0f2b57" />
+                                            </urui2:ExpanderView.Header>
 
-                            <Border
-                                Grid.Row="2"
-                                Grid.ColumnSpan="3"
-                                BackgroundColor="#f1f1f1"
-                                Stroke="#0f2b57"
-                                StrokeShape="{RoundRectangle CornerRadius='10'}">
-                                <urui2:ExpanderView Padding="10,5">
-                                    <urui2:ExpanderView.Header>
-                                        <Label
-                                            FontAttributes="Bold"
-                                            FontSize="16"
-                                            Text="Ver más"
-                                            TextColor="#0f2b57" />
-                                    </urui2:ExpanderView.Header>
-                                    <HorizontalStackLayout>
-                                        <urui:TextField Text="{Binding SerieLote}" />
-                                        <urui:TextField Title="Detalles" Text="{Binding Detalles}" />
-                                    </HorizontalStackLayout>
-                                </urui2:ExpanderView>
-                            </Border>
+                                            <HorizontalStackLayout>
+                                                <condition:If Condition="{Binding Source={RelativeSource AncestorType={x:Type viewModel:NotificarPmViewModel}}, Path=SharedData.EnableLotes}">
+
+                                                    <condition:If.True>
+                                                        <urui:InputField
+                                                            Title="Lotes"
+                                                            AccentColor="#0f2b57"
+                                                            BorderColor="Transparent">
+                                                            <Picker
+                                                                Margin="6,0,0,0"
+                                                                ItemDisplayBinding="{Binding Nombre}"
+                                                                ItemsSource="{Binding Source={RelativeSource AncestorType={x:Type viewModel:NotificarPmViewModel}}, Path=Lotes}"
+                                                                SelectedItem="{Binding SelectedLote}"
+                                                                VerticalOptions="Center" />
+                                                            <urui:InputField.Validations>
+                                                                <v:RequiredValidation />
+                                                            </urui:InputField.Validations>
+                                                        </urui:InputField>
+                                                    </condition:If.True>
+                                                    <condition:If.False>
+                                                        <urui:TextField Title="SerieLote" Text="{Binding SerieLote}" />
+                                                    </condition:If.False>
+                                                </condition:If>
+                                                <urui:TextField Title="Detalles" Text="{Binding Detalles}" />
+                                            </HorizontalStackLayout>
+                                        </urui2:ExpanderView>
+                                    </Border>
+                                </condition:If.True>
+                            </condition:If>
+
                         </Grid>
                     </Border>
 

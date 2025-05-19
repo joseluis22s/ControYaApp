@@ -3,6 +3,7 @@
     x:Class="ControYaApp.Views.NotificarPtPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:condition="clr-namespace:CbMovil.Services.ConditionalRender"
     xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
     xmlns:orientation="clr-namespace:ControYaApp.Services.Orientation"
     xmlns:urui="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
@@ -163,13 +164,38 @@
                             <v:RequiredValidation />
                         </urui:InputField.Validations>
                     </urui:InputField>
-
-                    <urui:TextField
+                    <condition:If
                         Grid.Row="7"
                         Grid.Column="1"
-                        AccentColor="#0f2b57"
-                        BorderColor="Transparent"
-                        Text="{Binding Serie}" />
+                        Condition="{Binding SharedData.EnableLotes}">
+                        <condition:If.True>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <urui:InputField AccentColor="#0f2b57" BorderColor="Transparent">
+                                    <Picker
+                                        ItemDisplayBinding="{Binding Nombre}"
+                                        ItemsSource="{Binding Lotes}"
+                                        SelectedItem="{Binding SelectedLote}"
+                                        VerticalOptions="Center" />
+                                    <urui:InputField.Validations>
+                                        <v:RequiredValidation />
+                                    </urui:InputField.Validations>
+                                </urui:InputField>
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding AddLoteCommand}"
+                                    Text="+" />
+                            </Grid>
+                        </condition:If.True>
+                        <condition:If.False>
+                            <urui:TextField
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                AccentColor="#0f2b57"
+                                BorderColor="Transparent"
+                                Text="{Binding SerieLote}" />
+                        </condition:If.False>
+                    </condition:If>
+
 
                     <urui:TextField
                         Grid.Row="8"

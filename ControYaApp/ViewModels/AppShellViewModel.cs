@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
@@ -62,7 +61,7 @@ namespace ControYaApp.ViewModels
 
             LogOutCommand = new AsyncRelayCommand(LogOutAsync);
             FlyoutShellCommand = new RelayCommand(FlyoutShell);
-            GetAndSaveDataCommand = new AsyncRelayCommand(GetAndSaveDataAsync);
+            //GetAndSaveDataCommand = new AsyncRelayCommand(GetAndSaveDataAsync);
         }
 
 
@@ -84,7 +83,7 @@ namespace ControYaApp.ViewModels
                 SharedData.Protocolo = dataConfig.Protocolo;
                 SharedData.AutoApproveProduccion = dataConfig.AutoApproveProduccion;
                 SharedData.AutoApproveInventario = dataConfig.AutoApproveInventario;
-
+                SharedData.EnableLotes = dataConfig.EnableLotes;
             }
         }
 
@@ -100,39 +99,39 @@ namespace ControYaApp.ViewModels
             IsConected = Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
         }
 
-        private async Task GetAndSaveDataAsync()
-        {
-            _ = _dialogService.ShowLoadingPopUpAsync();
+        //private async Task GetAndSaveDataAsync()
+        //{
+        //    _ = _dialogService.ShowLoadingPopUpAsync();
 
-            try
-            {
-                //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
-                await _dialogService.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
+        //    try
+        //    {
+        //        //WeakReferenceMessenger.Default.Send(new ClearDataMessage("Vaciar"));
+        //        await _dialogService.DisplayAlert("¿Seguro que desea extraer datos?", "Se sobreescribiran los que están actualmente guardados", "Aceptar", "Cancelar");
 
-                var usuarios = await _restService.GetAllUsuariosAsync();
-                var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);
-                var rangoPeriodos = await _restService.GetRangosPeriodos();
-                var ordenesProduccionPt = await _restService.GetAllOrdenesProduccionPtAsync(SharedData.UsuarioSistema);
-                var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
-                var empleados = await _restService.GetAllEmpleadosAsync();
+        //        var usuarios = await _restService.GetAllUsuariosAsync();
+        //        var ordenesProduccion = await _restService.GetAllOrdenesProduccionAsync(SharedData.UsuarioSistema);
+        //        var rangoPeriodos = await _restService.GetRangosPeriodos();
+        //        var ordenesProduccionPt = await _restService.GetAllOrdenesProduccionPtAsync(SharedData.UsuarioSistema);
+        //        var ordenesProduccionPm = await _restService.GetAllOrdenesProduccionPmAsync(SharedData.UsuarioSistema);
+        //        var empleados = await _restService.GetAllEmpleadosAsync();
 
-                await _appDbReposService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
-                await _appDbReposService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
-                await _appDbReposService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
+        //        await _appDbReposService.EmpleadosRepo.SaveAllEmpleadosAsync(empleados);
+        //        await _appDbReposService.PeriodoRepo.SaveRangosPeriodosAsync(rangoPeriodos);
+        //        await _appDbReposService.UsuarioRepo.SaveAllUsuariosAsync(usuarios);
 
-                await _prdDbReposService.OrdenProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
-                await _prdDbReposService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
-                await _prdDbReposService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
-            }
-            catch (Exception ex)
-            {
-                await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
-            }
-            finally
-            {
-                await _dialogService.HideLoadingPopUpAsync();
-            }
-        }
+        //        await _prdDbReposService.OrdenProduccionRepo.SaveAllOrdenesProduccionAsync(ordenesProduccion);
+        //        await _prdDbReposService.OrdenProduccionMpRepo.SaveAllOrdenesProduccionPmAsync(ordenesProduccionPm);
+        //        await _prdDbReposService.OrdenProduccionPtRepo.SaveAllOrdenesProduccionPtAsync(ordenesProduccionPt);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await _dialogService.ShowToast(ex.Message, ToastDuration.Long);
+        //    }
+        //    finally
+        //    {
+        //        await _dialogService.HideLoadingPopUpAsync();
+        //    }
+        //}
 
 
     }

@@ -92,7 +92,7 @@
                             Grid.ColumnSpan="2"
                             Spacing="10">
                             <Label Text="Habilitar lotes" />
-                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.EnableSeries}" />
+                            <Switch HeightRequest="17" IsToggled="{Binding SharedData.EnableLotes}" />
                         </HorizontalStackLayout>
 
 

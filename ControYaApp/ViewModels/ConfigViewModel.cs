@@ -60,7 +60,7 @@ namespace CbMovil.ViewModels
             _dataConfigSave.Ip = SharedData.IpAddress;
             _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
             _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
-            _dataConfigSave.EnableSeries = SharedData.EnableSeries;
+            _dataConfigSave.EnableLotes = SharedData.EnableLotes;
         }
 
         private async void SelectedItemChanged(string selectedItem)
@@ -75,7 +75,7 @@ namespace CbMovil.ViewModels
             try
             {
 
-                var res = await _dialogService.DisplayAlert("Guardar", "¿Desea guardar la configuración?", "Aceptar", "Cancelar");
+                var res = await _dialogService.DisplayAlertAsync("Guardar", "¿Desea guardar la configuración?", "Aceptar", "Cancelar");
 
                 if (res)
                 {
@@ -83,18 +83,18 @@ namespace CbMovil.ViewModels
                     _dataConfigSave.Ip = SharedData.IpAddress;
                     _dataConfigSave.AutoApproveProduccion = SharedData.AutoApproveProduccion;
                     _dataConfigSave.AutoApproveInventario = SharedData.AutoApproveInventario;
-                    _dataConfigSave.EnableSeries = SharedData.EnableSeries;
+                    _dataConfigSave.EnableLotes = SharedData.EnableLotes;
                     await _appDbReposService.DataConfigRepo.SaveIpServidor(_dataConfigSave);
 
                     _isSaved = true;
 
-                    await _dialogService.ShowToast("Configuración guardada");
+                    await _dialogService.ShowToastAsync("Configuración guardada");
                     await NavigationService.GoBackAsync();
                 }
             }
             catch (Exception ex)
             {
-                await _dialogService.ShowToast(ex.Message);
+                await _dialogService.ShowToastAsync(ex.Message);
             }
         }
 
@@ -109,7 +109,7 @@ namespace CbMovil.ViewModels
 
             if (string.IsNullOrEmpty(SharedData.IpAddress))
             {
-                var res = await _dialogService.DisplayAlert("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
+                var res = await _dialogService.DisplayAlertAsync("Alerta", "¿Está seguro que desea salir sin guardar una dirección IP?", "Aceptar", "Cancelar");
                 if (res)
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;
@@ -120,7 +120,7 @@ namespace CbMovil.ViewModels
             }
             else
             {
-                var res = await _dialogService.DisplayAlert("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
+                var res = await _dialogService.DisplayAlertAsync("Alerta", "¿Está seguro que desea salir de la configuración?", "Aceptar", "Cancelar");
                 if (res)
                 {
                     SharedData.IpAddress = _dataConfigSave.Ip;

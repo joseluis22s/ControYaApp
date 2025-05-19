@@ -74,11 +74,11 @@ namespace ControYaApp.Services.SharedData
         }
 
 
-        private bool _enableSeries;
-        public bool EnableSeries
+        private bool _enableLotes;
+        public bool EnableLotes
         {
-            get => _enableSeries;
-            set => SetProperty(ref _enableSeries, value);
+            get => _enableLotes;
+            set => SetProperty(ref _enableLotes, value);
         }
 
 

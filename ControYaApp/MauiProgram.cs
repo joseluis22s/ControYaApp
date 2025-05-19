@@ -1,4 +1,5 @@
-﻿using CbMovil.ViewModels;
+﻿using CbMovil.Services.PrdLocalDatabase.Repositories;
+using CbMovil.ViewModels;
 using CommunityToolkit.Maui;
 using ControYaApp.Services.AppLocalDatabase;
 using ControYaApp.Services.Dialog;
@@ -144,6 +145,7 @@ namespace ControYaApp
             mauiAppBuilder.Services.AddSingleton<OrdenProduccionMpRepo>();
             mauiAppBuilder.Services.AddSingleton<PtNotificadoRepo>();
             mauiAppBuilder.Services.AddSingleton<MpNotificadoRepo>();
+            mauiAppBuilder.Services.AddSingleton<LoteRepo>();
 
             mauiAppBuilder.Services.AddSingleton<PrdDbReposService>(
                 serviceProvider =>
@@ -153,10 +155,11 @@ namespace ControYaApp
                     var ordenProduccionMpRepo = serviceProvider.GetRequiredService<OrdenProduccionMpRepo>();
                     var ptNotificadoRepo = serviceProvider.GetRequiredService<PtNotificadoRepo>();
                     var mpNotificadoRepo = serviceProvider.GetRequiredService<MpNotificadoRepo>();
+                    var loteRepo = serviceProvider.GetRequiredService<LoteRepo>();
 
                     return new PrdDbReposService(ordenProduccionRepo,
                         ordenProduccionPtRepo, ordenProduccionMpRepo,
-                        ptNotificadoRepo, mpNotificadoRepo);
+                        ptNotificadoRepo, mpNotificadoRepo, loteRepo);
                 }
             );
 
